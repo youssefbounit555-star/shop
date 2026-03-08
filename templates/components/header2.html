@@ -1,0 +1,52 @@
+{% load static %}
+  <!-- ===== LOGGED IN USER HEADER ===== -->
+    <header class="header-user" style="margin-top: 70px;">
+        <div class="container">
+            <div class="header-wrapper">
+                <div class="logo">
+                    <i style="color:#6366f1;" class="fas fa-shopping-bag"></i>
+                    <span style="color:#6366f1;">ElegantShop</span>
+                </div>
+
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a style="color:#333;" href="{% url 'store:home' %}">Home</a></li>
+                        <li><a style="color:#333;" href="{% url 'store:store' %}">Shop</a></li>
+                        <li><a style="color:#333;" href="{% url 'store:discounts' %}">Discounts</a></li>
+                        <li><a style="color:#333;" href="#" data-open-ai-widget="true">AI Agents</a></li>
+                        <li><a style="color:#333;" href="{% url 'store:about' %}">About</a></li>
+                        <li><a style="color:#333;" href="{% url 'store:contact' %}">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="header-user-actions">
+                    <a class="icon-btn" id="notificationBtn" href="{% url 'store:wishlist' %}" title="Wishlist">
+                        <span class="notification-badge">{{ wishlist_items_count|default:0 }}</span>
+                        <i class="fas fa-heart"></i>
+                    </a>
+                    <a class="icon-btn" id="cartBtn2" href="{% url 'store:cart' %}" title="Cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="notification-badge">{{ cart_items_count|default:0 }}</span>
+                    </a>
+                    <div class="user-profile-dropdown">
+                        <button class="user-profile-btn">
+                            <img src="{% if profile.avatar %}{{ profile.avatar.url }}{% else %}{% static 'images/default-avatar.svg' %}{% endif %}" alt="{{ profile.user.username }}" class="avatar">
+                            <span class="user-name">{{ profile.user.get_full_name|default:profile.user.username }}</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="{% url 'user:profile' %}"><i class="fas fa-user"></i> Profile</a>
+                            <a href="{% url 'dashboard:index' %}"><i class="fas fa-th-large"></i> Dashboard</a>
+                            <a href="{% url 'store:cart' %}"><i class="fas fa-cart-shopping"></i> My Cart</a>
+                            <a href="{% url 'store:wishlist' %}"><i class="fas fa-heart"></i> My Wishlist</a>
+                            <a href="{% url 'dashboard:orders' %}"><i class="fas fa-shopping-bag"></i> My Orders</a>
+                            <a href="{% url 'dashboard:chat' %}"><i class="fas fa-comments"></i> Messages</a>
+                            <a href="{% url 'dashboard:goals' %}"><i class="fas fa-tasks"></i> My Goals</a>
+                            <hr>
+                            <a href="{% url 'user:logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>

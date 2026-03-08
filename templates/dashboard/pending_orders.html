@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Pending Orders - Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 style="font-size: 32px; margin-bottom: 30px;">
+                <i class="fas fa-hourglass-half" style="color: #667eea;"></i> Pending Orders
+            </h2>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        <i class="fas fa-info-circle"></i> {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if pending_orders %}
+                <div class="alert alert-info" style="margin-bottom: 30px;">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>{{ pending_count }} order(s) awaiting your confirmation.</strong>
+                    Please review each order below and confirm or cancel.
+                </div>
+
+                <div class="pending-orders-list">
+                    {% for order in pending_orders %}
+                        <div class="card mb-4" style="border-left: 4px solid #ffc107;">
+                            <div class="card-header" style="background: #f8f9fa; padding: 15px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <h5 style="margin: 0; color: #333;">Order <strong>{{ order.order_id }}</strong></h5>
+                                        <small style="color: #666;">Created: {{ order.created_at|date:"M d, Y H:i" }}</small>
+                                    </div>
+                                    <span class="badge" style="background: #ffc107; color: #333; font-size: 12px; padding: 8px 12px;">
+                                        <i class="fas fa-clock"></i> Pending Confirmation
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <!-- Customer Information -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <h6 style="color: #667eea; font-weight: 600; margin-bottom: 10px;">
+                                            <i class="fas fa-user"></i> Customer Information
+                                        </h6>
+                                        <p style="margin: 5px 0;">
+                                            <strong>Name:</strong> {{ order.full_name }}
+                                        </p>
+                                        <p style="margin: 5px 0;">
+                                            <strong>Email:</strong> {{ order.email }}
+                                        </p>
+                                        <p style="margin: 5px 0;">
+                                            <strong>Phone:</strong> {{ order.phone }}
+                                        </p>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <h6 style="color: #667eea; font-weight: 600; margin-bottom: 10px;">
+                                            <i class="fas fa-map-marker-alt"></i> Delivery Address
+                                        </h6>
+                                        <p style="margin: 5px 0;">
+                                            <strong>Address:</strong> {{ order.address }}
+                                        </p>
+                                        <p style="margin: 5px 0;">
+                                            <strong>City:</strong> {{ order.city }}
+                                        </p>
+                                        <p style="margin: 5px 0;">
+                                            <strong>Country:</strong> {{ order.country }}
+                                        </p>
+                                        {% if order.postal_code %}
+                                            <p style="margin: 5px 0;">
+                                                <strong>ZIP Code:</strong> {{ order.postal_code }}
+                                            </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Order Items -->
+                                <h6 style="color: #667eea; font-weight: 600; margin-bottom: 15px;">
+                                    <i class="fas fa-box"></i> Order Items
+                                </h6>
+                                <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                                    {% for item in order.items.all %}
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #ddd;">
+                                            <div style="flex: 1;">
+                                                <p style="margin: 0; font-weight: 500;">
+                                                    {{ item.product.name }}
+                                                </p>
+                                                <small style="color: #999;">SKU: {{ item.product.sku }}</small>
+                                            </div>
+                                            <div style="text-align: right;">
+                                                <p style="margin: 0;">Qty: <strong>{{ item.quantity }}</strong></p>
+                                                <p style="margin: 0; font-weight: 600; color: #667eea;">${{ item.subtotal }}</p>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                                <!-- Payment & Total -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <h6 style="color: #667eea; font-weight: 600; margin-bottom: 10px;">
+                                            <i class="fas fa-credit-card"></i> Payment Information
+                                        </h6>
+                                        <p style="margin: 5px 0;">
+                                            <strong>Payment Method:</strong> {{ order.get_payment_method_display }}
+                                        </p>
+                                        <p style="margin: 5px 0;">
+                                            <strong>Payment Status:</strong>
+                                            {% if order.payment_status == 'pending' %}
+                                                <span class="badge" style="background: #ffc107; color: #333;">Pending</span>
+                                            {% elif order.payment_status == 'completed' %}
+                                                <span class="badge" style="background: #28a745; color: white;">Completed</span>
+                                            {% else %}
+                                                <span class="badge" style="background: #dc3545; color: white;">Failed</span>
+                                            {% endif %}
+                                        </p>
+                                        {% if order.customer_notes %}
+                                            <p style="margin-top: 10px;">
+                                                <strong>Notes:</strong> {{ order.customer_notes }}
+                                            </p>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="col-md-6" style="border-left: 2px solid #eee; padding-left: 20px;">
+                                        <h6 style="color: #667eea; font-weight: 600; margin-bottom: 10px;">
+                                            <i class="fas fa-calculator"></i> Order Total
+                                        </h6>
+                                        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px;">
+                                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                                <span>Subtotal:</span>
+                                                <strong>${{ order.subtotal }}</strong>
+                                            </div>
+                                            {% if order.tax_amount > 0 %}
+                                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                                    <span>Tax:</span>
+                                                    <strong>${{ order.tax_amount }}</strong>
+                                                </div>
+                                            {% endif %}
+                                            {% if order.shipping_cost > 0 %}
+                                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                                    <span>Shipping:</span>
+                                                    <strong>${{ order.shipping_cost }}</strong>
+                                                </div>
+                                            {% endif %}
+                                            {% if order.discount_amount > 0 %}
+                                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #28a745;">
+                                                    <span>Discount:</span>
+                                                    <strong>-${{ order.discount_amount }}</strong>
+                                                </div>
+                                            {% endif %}
+                                            <div style="display: flex; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 2px solid #ddd; font-size: 18px;">
+                                                <span style="font-weight: 600;">Total:</span>
+                                                <strong style="color: #667eea;">${{ order.total_price }}</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                                    <form method="post" action="{% url 'dashboard:confirm_order' order.id %}" style="flex: 1;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-success" style="width: 100%;" 
+                                                onclick="return confirm('Are you sure you want to confirm this order?');">
+                                            <i class="fas fa-check-circle"></i> Confirm Order
+                                        </button>
+                                    </form>
+                                    <form method="post" action="{% url 'dashboard:cancel_order' order.id %}" style="flex: 1;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger" style="width: 100%;" 
+                                                onclick="return confirm('Are you sure you want to cancel this order?');">
+                                            <i class="fas fa-times-circle"></i> Cancel Order
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div style="background: #e8f4e8; padding: 40px; border-radius: 8px; text-align: center;">
+                    <i class="fas fa-check-circle" style="font-size: 48px; color: #28a745; margin-bottom: 20px;"></i>
+                    <h4 style="color: #28a745; margin-bottom: 10px;">No Pending Orders</h4>
+                    <p style="color: #555; margin-bottom: 20px;">
+                        You don't have any orders waiting for confirmation.
+                    </p>
+                    <a href="{% url 'store:store' %}" class="btn btn-primary" style="display: inline-block;">
+                        <i class="fas fa-shopping-bag"></i> Continue Shopping
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .pending-orders-list .card {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .pending-orders-list .card:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .btn-success, .btn-danger {
+        font-weight: 500;
+    }
+
+    .badge {
+        font-weight: 600;
+    }
+</style>
+{% endblock %}

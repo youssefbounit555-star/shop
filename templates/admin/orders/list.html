@@ -1,0 +1,98 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Orders Management - Admin{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>
+        <i class="fas fa-receipt"></i>
+        Orders Management
+    </h1>
+    <div class="actions">
+        <a href="{% url 'admin_panel:orders_export' %}" class="btn btn-secondary">
+            <i class="fas fa-download"></i> Export CSV
+        </a>
+    </div>
+</div>
+
+<!-- Filter Panel -->
+<div class="filter-panel">
+    <h6><i class="fas fa-filter"></i> Filter & Search</h6>
+    <form method="get" class="row g-3">
+        <div class="col-md-4">
+            <input type="text" name="search" class="form-control" placeholder="Search by order ID, customer name, email..." 
+                   value="{{ request.GET.search|default:'' }}">
+        </div>
+        <div class="col-md-3">
+            <select name="status" class="form-select">
+                <option value="">All Status</option>
+                <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="processing" {% if request.GET.status == 'processing' %}selected{% endif %}>Processing</option>
+                <option value="shipped" {% if request.GET.status == 'shipped' %}selected{% endif %}>Shipped</option>
+                <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Completed</option>
+                <option value="cancelled" {% if request.GET.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+            </select>
+        </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-list"></i> Order List ({{ orders|length }})</h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Email</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td><strong>{{ order.order_id }}</strong></td>
+                    <td>{{ order.full_name }}</td>
+                    <td>{{ order.email }}</td>
+                    <td>${{ order.total_price }}</td>
+                    <td>
+                        {% if order.status == 'pending' %}
+                            <span class="badge bg-warning">Pending</span>
+                        {% elif order.status == 'processing' %}
+                            <span class="badge bg-info">Processing</span>
+                        {% elif order.status == 'shipped' %}
+                            <span class="badge bg-primary">Shipped</span>
+                        {% else %}
+                            <span class="badge bg-success">Completed</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ order.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        <a href="{% url 'admin_panel:orders_detail' order.order_id %}" class="btn btn-sm btn-info">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-4">
+                        <p class="text-muted">No orders found</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Agents - ElegantShop{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/ai_agents.css' %}">
+
+<section class="agents-page" id="agentsPageRoot" data-chat-endpoint="{% url 'store:ai_agent_chat' %}" data-default-agent="{{ default_agent_id }}">
+  <div class="agents-grid-overlay"></div>
+  <div class="container agents-shell">
+    <header class="agents-hero">
+      <span class="agents-badge">AI AGENTS LAB</span>
+      <h1>Intelligent Agents Built for Your Store</h1>
+      <p>Pick a specialized agent and get instant product guidance, style planning, support answers, and marketing copy.</p>
+    </header>
+
+    <div class="agents-layout">
+      <aside class="agents-catalog" aria-label="Agent Selection">
+        {% for agent in agents %}
+          <button
+            type="button"
+            class="agent-card {% if forloop.first %}is-active{% endif %}"
+            data-agent-id="{{ agent.id }}"
+            data-agent-name="{{ agent.name }}"
+            data-agent-tagline="{{ agent.tagline }}"
+            style="--agent-accent: {{ agent.accent }};"
+          >
+            <div class="agent-icon-wrap">
+              <i class="fas {{ agent.emoji }}"></i>
+            </div>
+            <div class="agent-copy">
+              <h3>{{ agent.name }}</h3>
+              <p class="agent-tagline">{{ agent.tagline }}</p>
+              <p class="agent-description">{{ agent.description }}</p>
+            </div>
+          </button>
+        {% endfor %}
+      </aside>
+
+      <section class="agent-chat">
+        <div class="chat-head">
+          <div class="chat-head-copy">
+            <p class="chat-kicker">ACTIVE AGENT</p>
+            <h2 id="activeAgentName">{{ agents.0.name }}</h2>
+            <p id="activeAgentTagline">{{ agents.0.tagline }}</p>
+          </div>
+          <span class="chat-status"><span class="status-dot"></span>Live</span>
+        </div>
+
+        <div class="chat-feed" id="agentMessageFeed" aria-live="polite">
+          <article class="message message-assistant">
+            <div class="message-body">
+              <p>Tell me your goal and I will help immediately. You can ask for recommendations, style ideas, support flows, or copy drafts.</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="quick-prompts" id="agentPromptChips"></div>
+
+        <form id="agentChatForm" class="chat-input-row" autocomplete="off">
+          {% csrf_token %}
+          <label for="agentMessageInput" class="sr-only">Message</label>
+          <input type="text" id="agentMessageInput" name="message" placeholder="Type your request..." maxlength="1200" required>
+          <button type="submit" id="agentSendBtn">
+            <i class="fas fa-paper-plane"></i>
+            <span>Send</span>
+          </button>
+        </form>
+      </section>
+    </div>
+
+    <section class="agents-reco">
+      <div class="agents-reco-head">
+        <h2>Featured Products For Agent Testing</h2>
+        <p>Try asking agents about any product below to see contextual responses.</p>
+      </div>
+      <div class="agents-reco-grid">
+        {% for product in featured_products %}
+          <article class="agents-reco-card">
+            <a href="{% url 'store:product_detail' product.id %}" class="agents-reco-media">
+              {% if product.main_image %}
+                <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+              {% else %}
+                <div class="agents-reco-placeholder"><i class="fas fa-box-open"></i></div>
+              {% endif %}
+            </a>
+            <div class="agents-reco-content">
+              <p class="agents-reco-category">{{ product.get_category_display }}</p>
+              <h3><a href="{% url 'store:product_detail' product.id %}">{{ product.name }}</a></h3>
+              <div class="agents-reco-price">
+                <strong>${{ product.current_price }}</strong>
+                {% if product.discount_price %}<span>${{ product.price }}</span>{% endif %}
+              </div>
+            </div>
+          </article>
+        {% empty %}
+          <p class="agents-empty">No active products available yet.</p>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+</section>
+
+{{ agent_prompts|json_script:"agentPromptsData" }}
+<script src="{% static 'js/ai_agents.js' %}"></script>
+{% endblock %}

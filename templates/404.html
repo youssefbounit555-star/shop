@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found - 404{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <div class="error-content">
+        <div class="error-code">404</div>
+        <h1 class="error-title">Page Not Found</h1>
+        <p class="error-message">Sorry, the page you're looking for doesn't exist.</p>
+        
+        <div class="error-illustration">
+            <i class="fas fa-search" style="font-size: 100px; color: #ccc; margin: 20px 0;"></i>
+        </div>
+        
+        <div class="error-actions">
+            <a href="{% url 'store:home' %}" class="btn btn-primary">
+                <i class="fas fa-home"></i> Go to Home
+            </a>
+            <a href="{% url 'store:store' %}" class="btn btn-secondary">
+                <i class="fas fa-shopping-bag"></i> Browse Products
+            </a>
+        </div>
+
+        <!-- Available Pages Section -->
+        <div class="available-pages">
+            <h3><i class="fas fa-sitemap"></i> Available Pages</h3>
+            
+            <div class="pages-grid">
+                <!-- Manage/Admin Panel Pages -->
+                <div class="pages-section">
+                    <h4><i class="fas fa-cogs"></i> Admin Panel (Manage)</h4>
+                    <ul>
+                        <li><a href="{% url 'admin_panel:admin_dashboard' %}">Dashboard</a></li>
+                        <li><a href="{% url 'admin_panel:products_list' %}">Products List</a></li>
+                        <li><a href="{% url 'admin_panel:products_create' %}">Add Product</a></li>
+                        <li><a href="{% url 'admin_panel:products_export' %}">Export Products</a></li>
+                        <li><a href="{% url 'admin_panel:orders_list' %}">Orders List</a></li>
+                        <li><a href="{% url 'admin_panel:orders_export' %}">Export Orders</a></li>
+                        <li><a href="{% url 'admin_panel:customers_list' %}">Customers</a></li>
+                        <li><a href="{% url 'admin_panel:chat_list' %}">Chat</a></li>
+                        <li><a href="{% url 'admin_panel:settings' %}">Settings</a></li>
+                        <li><a href="{% url 'admin_panel:analytics_dashboard' %}">Analytics</a></li>
+                    </ul>
+                </div>
+
+                <!-- Dashboard Pages -->
+                <div class="pages-section">
+                    <h4><i class="fas fa-chart-line"></i> Dashboard</h4>
+                    <ul>
+                        <li><a href="{% url 'dashboard:index' %}">Dashboard Home</a></li>
+                        <li><a href="{% url 'dashboard:goals' %}">My Goals</a></li>
+                        <li><a href="{% url 'dashboard:add_goal' %}">Add Goal</a></li>
+                        <li><a href="{% url 'dashboard:chat' %}">Messages</a></li>
+                        <li><a href="{% url 'dashboard:orders' %}">My Orders</a></li>
+                        <li><a href="{% url 'dashboard:profile' %}">Profile</a></li>
+                    </ul>
+                </div>
+
+                <!-- Store Pages -->
+                <div class="pages-section">
+                    <h4><i class="fas fa-store"></i> Store</h4>
+                    <ul>
+                        <li><a href="{% url 'store:home' %}">Home</a></li>
+                        <li><a href="{% url 'store:store' %}">Products</a></li>
+                        <li><a href="{% url 'store:about' %}">About Us</a></li>
+                        <li><a href="{% url 'store:contact' %}">Contact</a></li>
+                        <li><a href="{% url 'store:faq' %}">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="error-footer">
+            <p>If you think this is a mistake, please <a href="{% url 'store:contact' %}">contact us</a></p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .error-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: auto;
+        padding: 40px 20px;
+    }
+    
+    .error-content {
+        text-align: center;
+        max-width: 1000px;
+        width: 100%;
+    }
+    
+    .error-code {
+        font-size: 120px;
+        font-weight: bold;
+        color: #e74c3c;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .error-title {
+        font-size: 32px;
+        color: #333;
+        margin-bottom: 10px;
+    }
+    
+    .error-message {
+        font-size: 18px;
+        color: #666;
+        margin-bottom: 30px;
+    }
+    
+    .error-illustration {
+        margin: 30px 0;
+    }
+    
+    .error-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin: 30px 0;
+    }
+
+    .available-pages {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 30px;
+        margin: 30px 0;
+        text-align: left;
+    }
+
+    .available-pages h3 {
+        text-align: center;
+        margin-bottom: 25px;
+        font-size: 22px;
+        color: #333;
+    }
+
+    .pages-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .pages-section {
+        background: white;
+        padding: 20px;
+        border-radius: 6px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .pages-section h4 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #3498db;
+    }
+
+    .pages-section ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .pages-section li {
+        margin: 8px 0;
+    }
+
+    .pages-section a {
+        color: #3498db;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+        transition: all 0.3s ease;
+    }
+
+    .pages-section a:before {
+        content: "→";
+        margin-right: 8px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .pages-section a:hover {
+        color: #2980b9;
+        padding-left: 8px;
+    }
+
+    .pages-section a:hover:before {
+        opacity: 1;
+    }
+    
+    .error-footer {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        color: #999;
+    }
+    
+    .error-footer a {
+        color: #3498db;
+        text-decoration: none;
+    }
+    
+    .error-footer a:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+        .error-code {
+            font-size: 60px;
+        }
+
+        .error-title {
+            font-size: 24px;
+        }
+
+        .pages-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}

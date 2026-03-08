@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}PayPal Checkout - {{ order.order_id }}{% endblock %}
+
+{% block content %}
+<style>
+  .pp-checkout-wrap {
+    max-width: 860px;
+    margin: 120px auto 60px;
+    padding: 0 16px;
+  }
+  .pp-checkout-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    box-shadow: 0 14px 40px rgba(15, 23, 42, 0.08);
+    overflow: hidden;
+  }
+  .pp-checkout-head {
+    padding: 22px 24px;
+    border-bottom: 1px solid #eef2f7;
+    background: linear-gradient(120deg, #f8fafc, #eef6ff);
+  }
+  .pp-checkout-head h1 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #0f172a;
+  }
+  .pp-checkout-body {
+    padding: 22px 24px;
+  }
+  .pp-order-meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .pp-meta-box {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 10px 12px;
+    background: #f8fafc;
+  }
+  .pp-meta-label {
+    display: block;
+    color: #64748b;
+    font-size: 0.82rem;
+    margin-bottom: 4px;
+  }
+  .pp-meta-value {
+    color: #0f172a;
+    font-weight: 600;
+  }
+  .pp-items {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  .pp-items th,
+  .pp-items td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #eef2f7;
+    text-align: left;
+  }
+  .pp-items th {
+    color: #64748b;
+    font-size: 0.84rem;
+    font-weight: 700;
+  }
+  .pp-total {
+    text-align: right;
+    font-size: 1.1rem;
+    color: #0f172a;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .pp-note {
+    font-size: 0.9rem;
+    color: #475569;
+    margin-bottom: 16px;
+  }
+  .pp-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .pp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 0;
+    border-radius: 10px;
+    padding: 11px 16px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .pp-btn-paypal {
+    background: linear-gradient(135deg, #0070ba, #003087);
+    color: #fff;
+  }
+  .pp-btn-secondary {
+    background: #e2e8f0;
+    color: #1e293b;
+  }
+  @media (max-width: 640px) {
+    .pp-order-meta {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="pp-checkout-wrap">
+  <div class="pp-checkout-card">
+    <div class="pp-checkout-head">
+      <h1>PayPal Checkout</h1>
+    </div>
+    <div class="pp-checkout-body">
+      <div class="pp-order-meta">
+        <div class="pp-meta-box">
+          <span class="pp-meta-label">Order</span>
+          <span class="pp-meta-value">{{ order.order_id }}</span>
+        </div>
+        <div class="pp-meta-box">
+          <span class="pp-meta-label">Payment Method</span>
+          <span class="pp-meta-value">{{ order.get_payment_method_display }}</span>
+        </div>
+      </div>
+
+      <table class="pp-items">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in order.items.all %}
+          <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.price }} {{ currency_label }}</td>
+            <td>{{ item.subtotal }} {{ currency_label }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="pp-total">Total: {{ order.total_price }} {{ currency_label }}</div>
+      {% if paypal_charge.converted %}
+      <p class="pp-note">
+        PayPal charge amount:
+        <strong>{{ paypal_charge.paypal_amount }} {{ paypal_charge.paypal_currency }}</strong>
+        (converted from {{ paypal_charge.store_amount }} {{ paypal_charge.store_currency }} at rate {{ paypal_charge.conversion_rate }}).
+      </p>
+      {% else %}
+      <p class="pp-note">
+        PayPal charge amount:
+        <strong>{{ paypal_charge.paypal_amount }} {{ paypal_charge.paypal_currency }}</strong>.
+      </p>
+      {% endif %}
+      <p class="pp-note">Press the PayPal button below to continue to secure PayPal checkout.</p>
+
+      <div class="pp-actions">
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" class="pp-btn pp-btn-paypal">
+            Continue with PayPal
+          </button>
+        </form>
+        <a href="{% url 'store:orders' %}" class="pp-btn pp-btn-secondary">Back to Orders</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

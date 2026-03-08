@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Wishlist - ElegantShop{% endblock %}
+
+{% block content %}
+<section class="sw-page">
+  <div class="container sw-container">
+    <div class="sw-head">
+      <div>
+        <h1>My Wishlist</h1>
+        <p>Products you saved for later.</p>
+      </div>
+      {% if wishlist_products %}
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="clear">
+        <button type="submit" class="sw-btn sw-btn-ghost">Clear wishlist</button>
+      </form>
+      {% endif %}
+    </div>
+
+    {% if wishlist_products %}
+      <div class="sw-grid">
+        {% for product in wishlist_products %}
+        <article class="sw-card">
+          <a href="{% url 'store:product_detail' product.pk %}" class="sw-media">
+            {% if product.main_image %}
+              <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+            {% else %}
+              <div class="sw-placeholder"><i class="fas fa-image"></i></div>
+            {% endif %}
+          </a>
+
+          <div class="sw-content">
+            <h3><a href="{% url 'store:product_detail' product.pk %}">{{ product.name }}</a></h3>
+            <p>{{ product.short_description|truncatewords:14 }}</p>
+            <div class="sw-meta">
+              <strong>{{ product.current_price }} {{ currency_label }}</strong>
+              {% if product.in_stock %}
+                <span class="sw-stock is-in">In stock</span>
+              {% else %}
+                <span class="sw-stock is-out">Out of stock</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="sw-actions">
+            <form method="post">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="move_to_cart">
+              <input type="hidden" name="product_id" value="{{ product.pk }}">
+              <button type="submit" class="sw-btn sw-btn-primary" {% if not product.in_stock %}disabled{% endif %}>Move to cart</button>
+            </form>
+
+            <form method="post">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="remove">
+              <input type="hidden" name="product_id" value="{{ product.pk }}">
+              <button type="submit" class="sw-btn sw-btn-danger">Remove</button>
+            </form>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="sw-empty">
+        <i class="fas fa-heart"></i>
+        <h2>Your wishlist is empty</h2>
+        <p>Add products from any product detail page.</p>
+        <a href="{% url 'store:store' %}" class="sw-btn sw-btn-primary">Browse products</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  .sw-page { padding: 120px 0 60px; background: #f6f9fc; min-height: 100vh; }
+  .sw-container { display: grid; gap: 16px; }
+  .sw-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .sw-head h1 { margin: 0; font-size: 2rem; }
+  .sw-head p { margin: 6px 0 0; color: #60748a; }
+  .sw-grid { display: grid; gap: 12px; }
+  .sw-card { background: #fff; border: 1px solid #dde7f2; border-radius: 14px; padding: 12px; display: grid; grid-template-columns: 120px 1fr auto; gap: 14px; align-items: center; }
+  .sw-media img { width: 120px; height: 96px; border-radius: 10px; object-fit: cover; }
+  .sw-placeholder { width: 120px; height: 96px; border-radius: 10px; display: grid; place-items: center; background: #edf3f9; color: #8ea2b7; }
+  .sw-content h3 { margin: 0; font-size: 1rem; }
+  .sw-content h3 a { color: #16324f; text-decoration: none; }
+  .sw-content p { margin: 6px 0; color: #60748a; font-size: 0.9rem; }
+  .sw-meta { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .sw-meta strong { color: #16324f; }
+  .sw-stock { border-radius: 999px; padding: 3px 10px; font-size: 0.74rem; font-weight: 700; }
+  .sw-stock.is-in { background: #e6f8ef; color: #0f7a58; }
+  .sw-stock.is-out { background: #fdeaea; color: #b93838; }
+  .sw-actions { display: grid; gap: 8px; }
+  .sw-btn { border: 1px solid transparent; border-radius: 9px; padding: 8px 12px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; min-width: 124px; }
+  .sw-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+  .sw-btn-primary { background: linear-gradient(135deg, #1d4ed8, #0f766e); color: #fff; }
+  .sw-btn-ghost { background: #fff; border-color: #ccd9e8; color: #314e6a; }
+  .sw-btn-danger { background: #fff1f1; border-color: #f4c6c6; color: #b93838; }
+  .sw-empty { background: #fff; border: 1px dashed #cad8e7; border-radius: 14px; text-align: center; padding: 40px 16px; }
+  .sw-empty i { font-size: 2rem; color: #8ea2b7; }
+  @media (max-width: 760px) {
+    .sw-page { padding-top: 98px; }
+    .sw-card { grid-template-columns: 1fr; }
+    .sw-media img, .sw-placeholder { width: 100%; height: 180px; }
+    .sw-actions { grid-template-columns: 1fr; }
+  }
+</style>
+{% endblock %}

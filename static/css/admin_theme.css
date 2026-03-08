@@ -1,0 +1,98 @@
+:root {
+    --admin-font-display: "Bricolage Grotesque", sans-serif;
+    --admin-font-body: "Manrope", sans-serif;
+}
+
+body {
+    font-family: var(--admin-font-body) !important;
+    background: radial-gradient(circle at 5% -10%, rgba(29, 78, 216, 0.16), transparent 35%),
+        radial-gradient(circle at 100% 100%, rgba(15, 118, 110, 0.16), transparent 30%),
+        linear-gradient(180deg, #f8fbff 0%, #f2f6fc 100%) !important;
+}
+
+body *:not(i):not(.fa):not(.fas):not(.far):not(.fab):not([class*="fa-"]) {
+    font-family: var(--admin-font-body) !important;
+}
+
+h1, h2, h3, h4, h5, h6,
+.page-header h1,
+.card-header h5 {
+    font-family: var(--admin-font-display) !important;
+    letter-spacing: -0.02em;
+}
+
+.sidebar {
+    background: linear-gradient(180deg, #1e3a8a 0%, #0f766e 100%) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.main-content {
+    padding: 34px !important;
+}
+
+.page-header {
+    border: 1px solid #dbeafe !important;
+    border-radius: 16px !important;
+    background: linear-gradient(90deg, #ffffff 0%, #f8fbff 100%) !important;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.06) !important;
+}
+
+.card {
+    border-radius: 16px !important;
+    border: 1px solid #dbeafe !important;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08) !important;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #1d4ed8 0%, #0f766e 100%) !important;
+}
+
+.stat-card {
+    border-radius: 16px !important;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.table thead th {
+    background: #0f172a !important;
+    color: #f8fafc !important;
+    font-size: 12px !important;
+}
+
+.table tbody td {
+    font-size: 14px;
+}
+
+.table tbody tr:hover {
+    background: #f8fbff !important;
+}
+
+.btn {
+    border-radius: 10px !important;
+    text-transform: none !important;
+    font-weight: 700 !important;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #1d4ed8, #0f766e) !important;
+}
+
+.btn-secondary {
+    background: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+.form-control,
+.form-select {
+    border-radius: 10px !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #1d4ed8 !important;
+    box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12) !important;
+}
+
+.badge {
+    border-radius: 999px !important;
+}

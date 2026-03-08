@@ -1,0 +1,753 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI Components - ElegantShop</title>
+    <link rel="stylesheet" href="{% static "css/main.css" %}">
+    <link rel="stylesheet" href="{% static "css/components.css" %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- =====================================================
+         GUEST USER HEADER
+         ===================================================== -->
+    <header class="header-guest">
+        <div class="container">
+            <div class="header-wrapper">
+                <div class="logo">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>ElegantShop</span>
+                </div>
+
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="store.html">Shop</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="header-guest-actions">
+                    <button class="btn btn-secondary btn-small">
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    </button>
+                    <button class="btn btn-primary btn-small">
+                        <i class="fas fa-user-plus"></i> Sign Up
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== LOGGED IN USER HEADER ===== -->
+    <header class="header-user" style="margin-top: 70px;">
+        <div class="container">
+            <div class="header-wrapper">
+                <div class="logo">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>ElegantShop</span>
+                </div>
+
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="store.html">Shop</a></li>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="header-user-actions">
+                    <button class="icon-btn"  id="notificationBtn">
+                        <span class="notification-badge">3</span>
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <button class="icon-btn" id="cartBtn2">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="notification-badge">5</span>
+                    </button>
+                    <div class="user-profile-dropdown">
+                        <button class="user-profile-btn">
+                            <img src="https://via.placeholder.com/40" alt="User" class="avatar">
+                            <span class="user-name">Ahmad Khan</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="#"><i class="fas fa-user"></i> My Account</a>
+                            <a href="#"><i class="fas fa-shopping-bag"></i> My Orders</a>
+                            <a href="#"><i class="fas fa-heart"></i> Wishlist</a>
+                            <a href="#"><i class="fas fa-cog"></i> Settings</a>
+                            <hr>
+                            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== ADMIN SIDEBAR ===== -->
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="sidebar-brand">
+                <i class="fas fa-shield-alt"></i>
+                <span>Admin Panel</span>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <h4 class="nav-section-title">Dashboard</h4>
+                    <a href="#" class="nav-link active">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Analytics</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <h4 class="nav-section-title">Management</h4>
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-cubes"></i>
+                        <span>Products</span>
+                        <span class="nav-badge">12</span>
+                    </a>
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-list"></i>
+                        <span>Orders</span>
+                        <span class="nav-badge">5</span>
+                    </a>
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Users</span>
+                    </a>
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-tags"></i>
+                        <span>Categories</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <h4 class="nav-section-title">Content</h4>
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Pages</span>
+                    </a>
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-image"></i>
+                        <span>Images</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <h4 class="nav-section-title">Settings</h4>
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-envelope"></i>
+                        <span>Messages</span>
+                        <span class="nav-badge unread">3</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="admin-logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </aside>
+
+        <main class="admin-main">
+            <!-- =========== BUTTONS SECTION =========== -->
+            <section class="components-section">
+                <h2>Buttons</h2>
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h3>Primary Buttons</h3>
+                        <div class="component-demo">
+                            <button class="btn btn-primary">Primary Button</button>
+                            <button class="btn btn-secondary">Secondary Button</button>
+                            <button class="btn btn-outline">Outlined Button</button>
+                            <button class="btn btn-danger">Danger Button</button>
+                            <button class="btn btn-success">Success Button</button>
+                        </div>
+                    </div>
+
+                    <div class="component-card">
+                        <h3>Button Sizes</h3>
+                        <div class="component-demo">
+                            <button class="btn btn-primary btn-small">Small</button>
+                            <button class="btn btn-primary">Normal</button>
+                            <button class="btn btn-primary btn-large">Large</button>
+                        </div>
+                    </div>
+
+                    <div class="component-card">
+                        <h3>Disabled & Loading</h3>
+                        <div class="component-demo">
+                            <button class="btn btn-primary" disabled>Disabled</button>
+                            <button class="btn btn-primary is-loading">
+                                <span class="spinner-sm"></span> Loading
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="component-card">
+                        <h3>Button with Icons</h3>
+                        <div class="component-demo">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                            <button class="btn btn-success">
+                                <i class="fas fa-check"></i> Confirm
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="component-card">
+                        <h3>Icon Buttons</h3>
+                        <div class="component-demo">
+                            <button class="icon-btn-primary">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="icon-btn-secondary">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="icon-btn-danger">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =========== ALERTS SECTION =========== -->
+            <section class="components-section">
+                <h2>Alerts</h2>
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h3>Alert Types</h3>
+                        <div class="component-demo">
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Data saved successfully!</span>
+                                <button class="alert-close">&times;</button>
+                            </div>
+                            <div class="alert alert-error">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span>An error occurred during processing</span>
+                                <button class="alert-close">&times;</button>
+                            </div>
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>Warning: This action may affect your data</span>
+                                <button class="alert-close">&times;</button>
+                            </div>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Info: System updated successfully</span>
+                                <button class="alert-close">&times;</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="component-card">
+                        <h3>Simple Alerts</h3>
+                        <div class="component-demo">
+                            <div class="alert alert-success simple">
+                                <span>Success operation ✓</span>
+                                <button class="alert-close">&times;</button>
+                            </div>
+                            <div class="alert alert-error simple">
+                                <span>Processing error ✗</span>
+                                <button class="alert-close">&times;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =========== FORMS SECTION =========== -->
+            <section class="components-section">
+                <h2>Forms</h2>
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h3>Input Fields</h3>
+                        <div class="component-demo">
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" placeholder="Enter your email" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" placeholder="Enter password" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Disabled Field</label>
+                                <input type="text" placeholder="Disabled field" class="form-control" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="component-card">
+                        <h3>Select & Textarea</h3>
+                        <div class="component-demo">
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select class="form-control">
+                                    <option>Choose category</option>
+                                    <option>Electronics</option>
+                                    <option>Fashion</option>
+                                    <option>Books</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Comment</label>
+                                <textarea class="form-control" rows="3" placeholder="Enter your comment"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="component-card">
+                        <h3>Checkboxes & Radios</h3>
+                        <div class="component-demo">
+                            <div class="form-group">
+                                <label class="checkbox">
+                                    <input type="checkbox">
+                                    <span>I agree to the terms</span>
+                                </label>
+                                <label class="checkbox">
+                                    <input type="checkbox" checked>
+                                    <span>Remember my login</span>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="radio">
+                                    <input type="radio" name="option">
+                                    <span>Option One</span>
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" name="option" checked>
+                                    <span>Option Two</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="component-card">
+                        <h3>Login Form</h3>
+                        <form class="component-demo login-form">
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" class="form-control" placeholder="Enter username">
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" class="form-control" placeholder="Enter email">
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" class="form-control" placeholder="Enter password">
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Sign In</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =========== LOADING STATES SECTION =========== -->
+            <section class="components-section">
+                <h2>Loading States</h2>
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h3>Spinners</h3>
+                        <div class="component-demo loading-demo">
+                            <div class="spinner"></div>
+                            <div class="spinner-sm"></div>
+                            <div class="spinner-lg"></div>
+                        </div>
+                    </div>
+
+                    <div class="component-card">
+                        <h3>Progress Bar</h3>
+                        <div class="component-demo">
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: 30%;"></div>
+                            </div>
+                            <p style="margin-top: 10px; font-size: 0.9rem;">30%</p>
+
+                            <div class="progress-bar-container" style="margin-top: 15px;">
+                                <div class="progress-bar progress-bar-success" style="width: 100%;"></div>
+                            </div>
+                            <p style="margin-top: 10px; font-size: 0.9rem;">100% Complete</p>
+                        </div>
+                    </div>
+
+                    <div class="component-card">
+                        <h3>Skeleton Loading</h3>
+                        <div class="component-demo">
+                            <div class="skeleton skeleton-text"></div>
+                            <div class="skeleton skeleton-text" style="margin-top: 10px;"></div>
+                            <div class="skeleton skeleton-avatar" style="margin-top: 10px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="component-card">
+                        <h3>Loading Card</h3>
+                        <div class="component-demo">
+                            <div class="card-skeleton">
+                                <div class="skeleton-image"></div>
+                                <div class="skeleton-content">
+                                    <div class="skeleton skeleton-text"></div>
+                                    <div class="skeleton skeleton-text"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =========== CARDS SECTION =========== -->
+            <section class="components-section">
+                <h2>Cards</h2>
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h3>Simple Card</h3>
+                        <div class="component-demo">
+                            <div class="simple-card">
+                                <h4>Card Title</h4>
+                                <p>This is a simple card with basic information</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="component-card">
+                        <h3>Product Card</h3>
+                        <div class="component-demo">
+                            <div class="product-card-demo">
+                                <div class="card-image"></div>
+                                <div class="card-body">
+                                    <h4>Featured Product</h4>
+                                    <p class="card-price">$99.99</p>
+                                    <button class="btn btn-primary" style="width: 100%; margin-top: 10px;">Add to Cart</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="component-card">
+                        <h3>Card with Badge</h3>
+                        <div class="component-demo">
+                            <div class="card-with-badge">
+                                <div class="badge badge-success">New</div>
+                                <h4>Card with Badge</h4>
+                                <p>Card content with a badge in the corner</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="component-card">
+                        <h3>Stats Card</h3>
+                        <div class="component-demo">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-number">1,234</div>
+                                    <div class="stat-label">Orders</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="component-card">
+                        <h3>User Card</h3>
+                        <div class="component-demo">
+                            <div class="user-card">
+                                <img src="https://via.placeholder.com/100" alt="User" class="user-avatar">
+                                <h4>Muhammad Ahmed</h4>
+                                <p class="user-role">New Member</p>
+                                <p class="user-date">Joined March 15, 2026</p>
+                                <button class="btn btn-small btn-outline" style="width: 100%; margin-top: 10px;">View Profile</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =========== BADGES SECTION =========== -->
+            <section class="components-section">
+                <h2>Badges & Tags</h2>
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h3>Badge Types</h3>
+                        <div class="component-demo">
+                            <span class="badge badge-primary">Primary</span>
+                            <span class="badge badge-success">Success</span>
+                            <span class="badge badge-error">Error</span>
+                            <span class="badge badge-warning">Warning</span>
+                            <span class="badge badge-info">Info</span>
+                        </div>
+                    </div>
+
+                    <div class="component-card">
+                        <h3>Badge Styles</h3>
+                        <div class="component-demo">
+                            <span class="badge badge-pill badge-primary">New</span>
+                            <span class="badge badge-outline badge-primary">Outlined</span>
+                            <span class="badge badge-lg badge-success">Popular</span>
+                        </div>
+                    </div>
+
+                    <div class="component-card">
+                        <h3>Tags</h3>
+                        <div class="component-demo">
+                            <span class="tag">Electronics</span>
+                            <span class="tag tag-filled">Fashion</span>
+                            <span class="tag tag-error">Archived</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =========== PAGINATION SECTION =========== -->
+            <section class="components-section">
+                <h2>Pagination</h2>
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h3>Page Numbers</h3>
+                        <div class="component-demo">
+                            <div class="pagination">
+                                <button class="pagination-btn prev">Previous</button>
+                                <button class="pagination-btn">1</button>
+                                <button class="pagination-btn active">2</button>
+                                <button class="pagination-btn">3</button>
+                                <button class="pagination-btn">4</button>
+                                <button class="pagination-btn next">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =========== MODALS SECTION =========== -->
+            <section class="components-section">
+                <h2>Modals</h2>
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h3>Confirmation Modal</h3>
+                        <div class="component-demo">
+                            <button class="btn btn-primary" id="confirmModalBtn">Open Confirmation</button>
+                        </div>
+                    </div>
+
+                    <div class="component-card">
+                        <h3>Info Modal</h3>
+                        <div class="component-demo">
+                            <button class="btn btn-secondary" id="infoModalBtn">Open Info Modal</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =========== TOOLTIPS SECTION =========== -->
+            <section class="components-section">
+                <h2>Tooltips</h2>
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h3>Tooltip Positions</h3>
+                        <div class="component-demo">
+                            <button class="btn btn-primary" title="This is a tooltip" data-tooltip="top">Top Tooltip</button>
+                            <button class="btn btn-primary" title="This is a tooltip" data-tooltip="bottom">Bottom Tooltip</button>
+                            <button class="btn btn-primary" title="This is a tooltip" data-tooltip="right">Right Tooltip</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =========== TOGGLES SECTION =========== -->
+            <section class="components-section">
+                <h2>Toggles & Switches</h2>
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h3>Toggle Switches</h3>
+                        <div class="component-demo">
+                            <label class="toggle">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <p style="margin-top: 10px;">Enable Notifications</p>
+
+                            <label class="toggle" style="margin-top: 15px;">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <p style="margin-top: 10px;">Dark Mode</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =========== BREADCRUMB SECTION =========== -->
+            <section class="components-section">
+                <h2>Breadcrumb</h2>
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h3>Navigation Path</h3>
+                        <div class="component-demo">
+                            <div class="breadcrumb">
+                                <a href="#">Home</a>
+                                <i class="fas fa-chevron-left"></i>
+                                <a href="#">Products</a>
+                                <i class="fas fa-chevron-left"></i>
+                                <span>Electronics</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =========== TABLES SECTION =========== -->
+            <section class="components-section">
+                <h2>Data Tables</h2>
+                <div class="component-card full-width">
+                    <h3>Sample Table</h3>
+                    <div class="component-demo">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>#10001</td>
+                                    <td>Muhammad Ahmed</td>
+                                    <td>$250.00</td>
+                                    <td><span class="badge badge-success">Completed</span></td>
+                                    <td>15/03/2026</td>
+                                    <td>
+                                        <button class="icon-btn-sm"><i class="fas fa-edit"></i></button>
+                                        <button class="icon-btn-sm"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#10002</td>
+                                    <td>Fatima Hassan</td>
+                                    <td>$180.50</td>
+                                    <td><span class="badge badge-warning">Pending</span></td>
+                                    <td>14/03/2026</td>
+                                    <td>
+                                        <button class="icon-btn-sm"><i class="fas fa-edit"></i></button>
+                                        <button class="icon-btn-sm"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>#10003</td>
+                                    <td>Ali Salem</td>
+                                    <td>$320.75</td>
+                                    <td><span class="badge badge-info">Shipping</span></td>
+                                    <td>13/03/2026</td>
+                                    <td>
+                                        <button class="icon-btn-sm"><i class="fas fa-edit"></i></button>
+                                        <button class="icon-btn-sm"><i class="fas fa-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- =========== NOTIFICATIONS SECTION =========== -->
+            <section class="components-section">
+                <h2>Notifications</h2>
+                <div class="component-grid">
+                    <div class="component-card">
+                        <h3>Notification List</h3>
+                        <div class="component-demo">
+                            <div class="notification-item unread">
+                                <div class="notification-avatar">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <div class="notification-title">New Order</div>
+                                    <div class="notification-message">You received a new order #10025</div>
+                                    <div class="notification-time">1 minute ago</div>
+                                </div>
+                                <button class="notification-close">&times;</button>
+                            </div>
+
+                            <div class="notification-item">
+                                <div class="notification-avatar" style="background: #e8f5e9;">
+                                    <i class="fas fa-check" style="color: #4caf50;"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <div class="notification-title">Success</div>
+                                    <div class="notification-message">Products updated successfully</div>
+                                    <div class="notification-time">1 hour ago</div>
+                                </div>
+                                <button class="notification-close">&times;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ===== MODALS ===== -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirm Delete</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this item? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="confirmCancel">Cancel</button>
+                <button class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="infoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Information</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>This is an information modal window with general message for the user.</p>
+                <p>You can add any content here as needed.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="infoClose">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/components.js"></script>
+</body>
+</html>

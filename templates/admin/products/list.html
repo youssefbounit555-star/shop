@@ -1,0 +1,236 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Products Management - Admin{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>
+        <i class="fas fa-shopping-bag"></i>
+        Products Management
+    </h1>
+    <div class="actions">
+        <a href="{% url 'admin_panel:products_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add Product
+        </a>
+        <a href="{% url 'admin_panel:products_export' %}" class="btn btn-secondary">
+            <i class="fas fa-download"></i> Export
+        </a>
+    </div>
+</div>
+
+<!-- Filter Panel -->
+<div class="filter-panel">
+    <h6><i class="fas fa-filter"></i> Filter & Search</h6>
+    <form method="get" class="row g-3">
+        <div class="col-md-4">
+            <input type="text" name="search" class="form-control" placeholder="Search by name, SKU, description..." 
+                   value="{{ request.GET.search|default:'' }}">
+        </div>
+        <div class="col-md-3">
+            <select name="category" class="form-select">
+                <option value="">All Categories</option>
+                {% for value, label in filter_form.category.field.choices %}
+                    <option value="{{ value }}" {% if request.GET.category == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="status" class="form-select">
+                <option value="">All Status</option>
+                <option value="active" {% if request.GET.status == 'active' %}selected{% endif %}>Active</option>
+                <option value="draft" {% if request.GET.status == 'draft' %}selected{% endif %}>Draft</option>
+                <option value="archived" {% if request.GET.status == 'archived' %}selected{% endif %}>Archived</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="featured" class="form-select">
+                <option value="">All Products</option>
+                <option value="true" {% if request.GET.featured == 'true' %}selected{% endif %}>Featured Only</option>
+                <option value="false" {% if request.GET.featured == 'false' %}selected{% endif %}>Not Featured</option>
+            </select>
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Products Table -->
+<div class="card">
+    <div class="card-header">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h5 class="mb-0">
+                <i class="fas fa-list"></i>
+                Products ({{ page_obj.paginator.count }})
+            </h5>
+            <span class="badge badge-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        </div>
+    </div>
+    
+    {% if products %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>SKU</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Featured</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>
+                        <strong>{{ product.name }}</strong>
+                        {% if product.featured %}
+                            <i class="fas fa-star" style="color: #ffd700;"></i>
+                        {% endif %}
+                    </td>
+                    <td><code>{{ product.sku }}</code></td>
+                    <td>
+                        <span class="badge badge-info">{{ product.category }}</span>
+                    </td>
+                    <td>
+                        <strong>${{ product.price|floatformat:2 }}</strong>
+                        {% if product.discount_price %}
+                            <br><small class="text-success">${{ product.discount_price|floatformat:2 }}</small>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if product.stock_quantity > 10 %}
+                            <span class="badge badge-success">{{ product.stock_quantity }}</span>
+                        {% elif product.stock_quantity > 0 %}
+                            <span class="badge badge-warning">{{ product.stock_quantity }}</span>
+                        {% else %}
+                            <span class="badge badge-danger">Out</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if product.featured %}
+                            <span class="badge badge-success">Yes</span>
+                        {% else %}
+                            <span class="badge badge-secondary">No</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if product.is_active %}
+                            <span class="badge badge-info">Active</span>
+                        {% else %}
+                            <span class="badge badge-secondary">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <small>{{ product.created_at|date:"M d, Y" }}</small>
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a href="{% url 'admin_panel:products_detail' product.id %}" class="btn btn-info" title="View">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{% url 'admin_panel:products_update' product.id %}" class="btn btn-warning" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'admin_panel:products_delete' product.id %}" class="btn btn-danger" title="Delete" onclick="return confirm('Are you sure?');">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div style="padding: 20px 25px; border-top: 1px solid var(--border-color);">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mb-0">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1&{% include 'admin/products/_query_params.html' %}">
+                        <i class="fas fa-step-backward"></i> First
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}&{% include 'admin/products/_query_params.html' %}">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li class="page-item active">
+                        <a class="page-link" href="#">{{ num }}</a>
+                    </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}&{% include 'admin/products/_query_params.html' %}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}&{% include 'admin/products/_query_params.html' %}">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&{% include 'admin/products/_query_params.html' %}">
+                        Last <i class="fas fa-step-forward"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-inbox"></i>
+        <h3>No Products Found</h3>
+        <p>Get started by <a href="{% url 'admin_panel:products_create' %}" style="color: var(--primary); text-decoration: none; font-weight: 600;">creating your first product</a>.</p>
+    </div>
+    {% endif %}
+</div>
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1">First</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        </li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+        </li>
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endblock %}

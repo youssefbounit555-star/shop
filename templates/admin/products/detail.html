@@ -1,0 +1,159 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ product.name }} - Admin{% endblock %}
+
+{% block content %}
+<div class="top-bar">
+    <h1><i class="fas fa-box"></i> {{ product.name }}</h1>
+    <div>
+        <a href="{% url 'admin_panel:products_update' product.id %}" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Edit
+        </a>
+        <a href="{% url 'admin_panel:products_delete' product.id %}" class="btn btn-danger">
+            <i class="fas fa-trash"></i> Delete
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Product Details</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">SKU</dt>
+                    <dd class="col-sm-9"><code>{{ product.sku }}</code></dd>
+
+                    
+                    <dt class="col-sm-3">Image</dt>
+                    <dd class="col-sm-9">
+                        {% if product.main_image %}
+                            <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="img-thumbnail" style="max-width: 100px;">
+                        {% else %}
+                            <span class="text-muted">No image available</span>
+                        {% endif %}
+                    </dd>
+
+                    <dt class="col-sm-3">Name</dt>
+                    <dd class="col-sm-9">{{ product.name }}</dd>
+
+                    <dt class="col-sm-3">Price</dt>
+                    <dd class="col-sm-9">${{ product.price }}</dd>
+
+                    <dt class="col-sm-3">Discount</dt>
+                    <dd class="col-sm-9">
+                        {% if product.discount_price is not None %}
+                            <span class="text-success">${{ product.discount_price }}</span>
+                            {% if product.discount_note %}<br><small class="text-muted">{{ product.discount_note }}</small>{% endif %}
+                        {% elif product.discount_note %}
+                            <small class="text-muted">{{ product.discount_note }}</small>
+                        {% else %}
+                            <span class="text-muted">No discount</span>
+                        {% endif %}
+                    </dd>
+
+                    <dt class="col-sm-3">Stock</dt>
+                    <dd class="col-sm-9">
+                        {% if product.stock_quantity > 0 %}
+                            <span class="badge bg-success">{{ product.stock_quantity }} units</span>
+                        {% else %}
+                            <span class="badge bg-danger">Out of Stock</span>
+                        {% endif %}
+                    </dd>
+
+                    <dt class="col-sm-3">Status</dt>
+                    <dd class="col-sm-9">
+                        {% if product.is_active %}
+                            <span class="badge bg-info">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </dd>
+
+                    <dt class="col-sm-3">Featured</dt>
+                    <dd class="col-sm-9">
+                        {% if product.featured %}
+                            <i class="fas fa-check text-success"></i> Yes
+                        {% else %}
+                            <i class="fas fa-times text-danger"></i> No
+                        {% endif %}
+                    </dd>
+
+                    <dt class="col-sm-3">Payment Type</dt>
+                    <dd class="col-sm-9">
+                        <span class="badge {% if product.payment_mode == 'online' %}bg-primary{% else %}bg-warning text-dark{% endif %}">
+                            {{ product.get_payment_mode_display }}
+                        </span>
+                    </dd>
+
+                    <dt class="col-sm-3">Payment Methods</dt>
+                    <dd class="col-sm-9">{{ product.payment_methods_display }}</dd>
+
+                    <dt class="col-sm-3">Created</dt>
+                    <dd class="col-sm-9">{{ product.created_at|date:"M d, Y H:i" }}</dd>
+
+                    <dt class="col-sm-3">Updated</dt>
+                    <dd class="col-sm-9">{{ product.updated_at|date:"M d, Y H:i" }}</dd>
+
+                    <dt class="col-sm-3">Video</dt>
+                    <dd class="col-sm-9">
+                        {% if product.product_video %}
+                            <video controls preload="metadata" style="max-width:320px;width:100%;border-radius:10px;border:1px solid #e5e7eb;">
+                                <source src="{{ product.product_video.url }}">
+                            </video>
+                        {% else %}
+                            <span class="text-muted">No video attached</span>
+                        {% endif %}
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Sales Info</h5>
+            </div>
+            <div class="card-body">
+                <div class="stat-card">
+                    <p>Total Sold</p>
+                    <h4>{{ total_sold }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if order_items %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-shopping-cart"></i> Recent Orders ({{ order_items|length }})</h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order_items %}
+                <tr>
+                    <td><a href="{% url 'admin_panel:orders_detail' item.order.order_id %}">{{ item.order.order_id }}</a></td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ item.subtotal }}</td>
+                    <td>{{ item.order.created_at|date:"M d, Y" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

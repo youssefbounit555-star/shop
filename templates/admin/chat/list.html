@@ -1,0 +1,54 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Live Conversations - Admin{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="fas fa-comments"></i> Live Conversations</h1>
+    <div class="actions">
+        <span class="badge bg-danger" style="font-size:.85rem;">Unread: {{ total_unread }}</span>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body" style="padding: 1.2rem;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;">
+            {% for conversation in conversations %}
+                <article style="border:1px solid #e2e8f0;border-radius:16px;padding:14px;background:#fff;box-shadow:0 8px 22px rgba(15,23,42,.06);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+                        <div>
+                            <h3 style="margin:0;font-size:1rem;font-weight:700;">
+                                {{ conversation.user.get_full_name|default:conversation.user.username }}
+                            </h3>
+                            <p style="margin:2px 0 0;color:#64748b;font-size:.85rem;">
+                                {% if conversation.admin %}Managed by {{ conversation.admin.username }}{% else %}Unassigned{% endif %}
+                            </p>
+                        </div>
+                        {% if conversation.unread_count > 0 %}
+                            <span class="badge bg-danger">{{ conversation.unread_count }} new</span>
+                        {% else %}
+                            <span class="badge bg-secondary">0 new</span>
+                        {% endif %}
+                    </div>
+
+                    <div style="margin-top:10px;color:#475569;font-size:.85rem;">
+                        <strong>Status:</strong> {{ conversation.get_status_display }} |
+                        <strong>Priority:</strong> {{ conversation.get_priority_display }}
+                    </div>
+                    <div style="margin-top:4px;color:#64748b;font-size:.82rem;">
+                        Updated {{ conversation.updated_at|date:"M d, H:i" }}
+                    </div>
+
+                    <a href="{% url 'admin_panel:chat_detail' conversation.user.id %}"
+                       class="btn btn-primary btn-sm"
+                       style="margin-top:12px;border-radius:10px;">
+                        <i class="fas fa-bolt"></i> Open Live Chat
+                    </a>
+                </article>
+            {% empty %}
+                <p class="text-muted mb-0">No conversations yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

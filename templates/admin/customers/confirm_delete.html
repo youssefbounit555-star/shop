@@ -1,0 +1,47 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Delete Customer - Admin{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-7">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Confirm Customer Delete</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-3">This action cannot be undone.</p>
+
+                <div class="alert alert-warning">
+                    <strong>{{ customer_info.full_name }}</strong>
+                    {% if customer_info.email %}
+                        <div class="mt-1">{{ customer_info.email }}</div>
+                    {% endif %}
+                </div>
+
+                <ul class="mb-4">
+                    {% if customer_info.has_account %}
+                    <li>The registered customer account will be deleted.</li>
+                    <li>Related profile, dashboard data, and support chat data linked to this user will also be removed.</li>
+                    {% endif %}
+                    {% if has_orders %}
+                    <li>{{ stats.total_orders }} related order{{ stats.total_orders|pluralize }} will be permanently deleted.</li>
+                    {% else %}
+                    <li>No order records were found for this customer.</li>
+                    {% endif %}
+                </ul>
+
+                <form method="post" class="d-flex gap-2 justify-content-center">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Yes, Delete
+                    </button>
+                    <a href="{% url 'admin_panel:customers_detail' email %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

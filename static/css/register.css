@@ -1,0 +1,255 @@
+.register-page {
+    padding: 54px 0 72px;
+}
+
+.register-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.register-showcase {
+    border: 1px solid #dbeafe;
+    border-radius: 20px;
+    background:
+        radial-gradient(circle at 10% 10%, rgba(29, 78, 216, 0.14), transparent 35%),
+        radial-gradient(circle at 92% 92%, rgba(15, 118, 110, 0.14), transparent 30%),
+        #ffffff;
+    padding: 24px;
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.07);
+}
+
+.register-kicker {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    color: #0f766e;
+}
+
+.register-showcase h1 {
+    margin: 10px 0 12px;
+    font-size: clamp(2rem, 3.6vw, 2.8rem);
+    line-height: 1.1;
+}
+
+.register-copy {
+    margin: 0;
+    color: #475569;
+    line-height: 1.7;
+}
+
+.register-showcase-grid {
+    margin-top: 20px;
+    display: grid;
+    gap: 12px;
+}
+
+.register-showcase-grid article {
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    background: #fff;
+    padding: 14px;
+}
+
+.register-showcase-grid i {
+    color: #1d4ed8;
+    font-size: 18px;
+}
+
+.register-showcase-grid h3 {
+    margin: 10px 0 6px;
+    font-size: 1.1rem;
+}
+
+.register-showcase-grid p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.register-card-wrap {
+    position: relative;
+}
+
+.register-card {
+    border: 1px solid #dbeafe;
+    border-radius: 20px;
+    background: #fff;
+    padding: 24px;
+    box-shadow: 0 16px 34px rgba(15, 23, 42, 0.08);
+}
+
+.register-header h2 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.register-header p {
+    margin: 8px 0 0;
+    color: #64748b;
+}
+
+.register-alert {
+    margin-top: 14px;
+    margin-bottom: 14px;
+}
+
+.register-errors-box {
+    border: 1px solid #fecaca;
+    background: #fef2f2;
+    color: #991b1b;
+    border-radius: 12px;
+    padding: 11px 13px;
+    margin-bottom: 12px;
+}
+
+.register-errors-box p {
+    margin: 0;
+    color: inherit;
+    font-size: 14px;
+}
+
+.register-form {
+    margin-top: 10px;
+}
+
+.register-field {
+    margin-bottom: 12px;
+}
+
+.register-form .form-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 6px;
+}
+
+.register-form .form-label span {
+    color: #dc2626;
+}
+
+.register-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.register-help {
+    display: block;
+    margin-top: 7px;
+    font-size: 12px;
+    color: #64748b;
+}
+
+.register-help ul {
+    margin: 0;
+    padding-left: 16px;
+}
+
+.register-field-errors {
+    margin-top: 6px;
+}
+
+.register-field-errors p {
+    margin: 0;
+    color: #b91c1c;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.register-submit {
+    margin-top: 6px;
+    width: 100%;
+    justify-content: center;
+    padding: 13px 16px !important;
+}
+
+.register-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 18px 0 14px;
+}
+
+.register-divider::before,
+.register-divider::after {
+    content: "";
+    height: 1px;
+    background: #e2e8f0;
+    flex: 1;
+}
+
+.register-divider span {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 700;
+}
+
+.register-social {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.register-social-btn {
+    text-decoration: none;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: #fff;
+    color: #0f172a;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 700;
+    padding: 11px 12px;
+    transition: 0.2s ease;
+}
+
+.register-social-btn:hover {
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+}
+
+.register-social-btn.is-google i {
+    color: #ea4335;
+}
+
+.register-social-btn.is-facebook i {
+    color: #1877f2;
+}
+
+.register-login-link {
+    margin: 16px 0 0;
+    text-align: center;
+    color: #64748b;
+}
+
+.register-login-link a {
+    font-weight: 800;
+    text-decoration: none;
+}
+
+@media (max-width: 1060px) {
+    .register-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .register-showcase {
+        order: 2;
+    }
+}
+
+@media (max-width: 680px) {
+    .register-grid-2,
+    .register-social {
+        grid-template-columns: 1fr;
+    }
+
+    .register-card,
+    .register-showcase {
+        padding: 18px;
+    }
+}

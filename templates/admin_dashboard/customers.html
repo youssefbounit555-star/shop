@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+  <h1 class="fw-bold mb-4" style="color:#425ed8;">Customers</h1>
+  <div class="card p-4 shadow-sm border-0">
+    <h5 class="fw-bold mb-3">All Customers</h5>
+    <table class="table align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Avatar</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Orders</th>
+          <th>Joined</th>
+          <th>Contact</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for customer in customers %}
+        <tr>
+          <td><img src="{{ customer.profile.avatar.url }}" style="width:50px;height:50px;object-fit:cover;border-radius:50%;"></td>
+          <td>{{ customer.get_full_name }}</td>
+          <td>{{ customer.email }}</td>
+          <td>{{ customer.profile.phone }}</td>
+          <td>{{ customer.orders.count }}</td>
+          <td>{{ customer.date_joined|date:'Y-m-d' }}</td>
+          <td><a href="mailto:{{ customer.email }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-envelope"></i></a> <a href="https://wa.me/{{ customer.profile.whatsapp }}" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i></a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="text-center text-muted">No customers found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

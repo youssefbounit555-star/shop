@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+  <h1 class="fw-bold mb-4" style="color:#425ed8;">Product Management</h1>
+  <!-- Add product form, product table, filters, and actions here -->
+  <div class="card p-4 mb-4 shadow-sm border-0">
+    <h5 class="fw-bold mb-3">Add / Edit Product</h5>
+    {# Use Django form here #}
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-gradient-primary">Save Product</button>
+    </form>
+  </div>
+  <div class="card p-4 shadow-sm border-0">
+    <h5 class="fw-bold mb-3">All Products</h5>
+    <table class="table align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Price</th>
+          <th>Stock</th>
+          <th>Status</th>
+          <th>Featured</th>
+          <th>Trending</th>
+          <th>Priority</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in products %}
+        <tr>
+          <td><img src="{{ product.main_image.url }}" style="width:60px;height:60px;object-fit:cover;border-radius:12px;"></td>
+          <td>{{ product.name }}</td>
+          <td>{{ product.get_category_display }}</td>
+          <td>${{ product.price }}</td>
+          <td>{{ product.stock_quantity }}</td>
+          <td><span class="badge bg-{% if product.is_active %}success{% else %}secondary{% endif %}">{{ product.get_status_display }}</span></td>
+          <td>{% if product.featured %}<i class="fas fa-star text-warning"></i>{% endif %}</td>
+          <td>{% if product.trending %}<i class="fas fa-fire text-danger"></i>{% endif %}</td>
+          <td>{{ product.featured_order }}</td>
+          <td>
+            <a href="#" class="btn btn-sm btn-outline-primary">Edit</a>
+            <a href="#" class="btn btn-sm btn-outline-danger">Delete</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="10" class="text-center text-muted">No products found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

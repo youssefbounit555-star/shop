@@ -1,0 +1,233 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}My Orders - Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .orders-toolbar {
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+        padding: 1rem;
+        display: grid;
+        grid-template-columns: 2fr 1fr auto auto;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .orders-table-card {
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .orders-table-wrap {
+        overflow-x: auto;
+    }
+
+    .orders-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .orders-table th,
+    .orders-table td {
+        padding: 0.95rem 0.85rem;
+        border-bottom: 1px solid var(--border-color);
+        text-align: left;
+        vertical-align: middle;
+        white-space: nowrap;
+        font-size: 0.9rem;
+    }
+
+    .orders-table thead th {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--text-secondary);
+        background: var(--bg-secondary);
+    }
+
+    .orders-table tbody tr:hover {
+        background: var(--bg-secondary);
+    }
+
+    .order-id-link {
+        color: var(--primary);
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 0.28rem 0.65rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+
+    .status-pending { background: rgba(245, 158, 11, 0.16); color: #9a6700; }
+    .status-processing { background: rgba(59, 130, 246, 0.16); color: #0f60c6; }
+    .status-shipped { background: rgba(37, 99, 235, 0.16); color: #244c9c; }
+    .status-completed { background: rgba(16, 185, 129, 0.16); color: #0c7f59; }
+    .status-cancelled,
+    .status-refunded { background: rgba(239, 68, 68, 0.16); color: #b53333; }
+
+    .pay-completed { background: rgba(16, 185, 129, 0.16); color: #0c7f59; }
+    .pay-pending { background: rgba(245, 158, 11, 0.16); color: #9a6700; }
+    .pay-failed { background: rgba(239, 68, 68, 0.16); color: #b53333; }
+
+    .pagination-wrap {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .page-meta {
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+        padding: 0 0.5rem;
+    }
+
+    .empty-orders {
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+        padding: 2.4rem 1.2rem;
+        text-align: center;
+    }
+
+    .empty-orders i {
+        font-size: 2.2rem;
+        color: var(--text-tertiary);
+    }
+
+    .empty-orders h3 {
+        margin: 0.85rem 0 0.35rem;
+        color: var(--text-primary);
+        font-size: 1.1rem;
+    }
+
+    .empty-orders p {
+        color: var(--text-secondary);
+        margin: 0 0 1rem;
+    }
+
+    @media (max-width: 980px) {
+        .orders-toolbar {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header slide-in-down">
+    <div>
+        <h1 class="page-title">My Orders</h1>
+        <p class="page-subtitle">Search and filter all your purchases</p>
+    </div>
+</div>
+
+<form method="get" class="orders-toolbar slide-in-down">
+    <input
+        type="text"
+        class="form-control"
+        name="search"
+        value="{{ search_query }}"
+        placeholder="Search by order ID or product name"
+    >
+
+    <select name="status" class="form-select">
+        <option value="">All statuses</option>
+        {% for value, label in status_choices %}
+        <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit" class="btn btn-primary">
+        <i class="fas fa-filter"></i>
+        <span>Apply</span>
+    </button>
+
+    <a href="{% url 'dashboard:orders' %}" class="btn btn-secondary">
+        <i class="fas fa-rotate-left"></i>
+        <span>Reset</span>
+    </a>
+</form>
+
+{% if orders %}
+<div class="orders-table-card slide-in-up">
+    <div class="orders-table-wrap">
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Items</th>
+                    <th>Payment Method</th>
+                    <th>Payment Status</th>
+                    <th>Total</th>
+                    <th>Order Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>
+                        <a class="order-id-link" href="?search={{ order.order_id }}">{{ order.order_id }}</a>
+                    </td>
+                    <td>{{ order.created_at|date:"M d, Y" }}</td>
+                    <td>{{ order.item_count }}</td>
+                    <td>{{ order.get_payment_method_display }}</td>
+                    <td>
+                        <span class="status-badge pay-{{ order.payment_status }}">
+                            {{ order.get_payment_status_display }}
+                        </span>
+                    </td>
+                    <td>{{ currency_label }} {{ order.total_price|floatformat:2 }}</td>
+                    <td>
+                        <span class="status-badge status-{{ order.status }}">
+                            {{ order.get_status_display|truncatechars:28 }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% if orders.has_other_pages %}
+<div class="pagination-wrap">
+    {% if orders.has_previous %}
+        <a href="?page=1{% if search_query %}&search={{ search_query|urlencode }}{% endif %}{% if status_filter %}&status={{ status_filter|urlencode }}{% endif %}" class="btn btn-secondary">First</a>
+        <a href="?page={{ orders.previous_page_number }}{% if search_query %}&search={{ search_query|urlencode }}{% endif %}{% if status_filter %}&status={{ status_filter|urlencode }}{% endif %}" class="btn btn-secondary">Prev</a>
+    {% endif %}
+
+    <span class="page-meta">Page {{ orders.number }} of {{ orders.paginator.num_pages }}</span>
+
+    {% if orders.has_next %}
+        <a href="?page={{ orders.next_page_number }}{% if search_query %}&search={{ search_query|urlencode }}{% endif %}{% if status_filter %}&status={{ status_filter|urlencode }}{% endif %}" class="btn btn-secondary">Next</a>
+        <a href="?page={{ orders.paginator.num_pages }}{% if search_query %}&search={{ search_query|urlencode }}{% endif %}{% if status_filter %}&status={{ status_filter|urlencode }}{% endif %}" class="btn btn-secondary">Last</a>
+    {% endif %}
+</div>
+{% endif %}
+
+{% else %}
+<div class="empty-orders slide-in-up">
+    <i class="fas fa-shopping-bag"></i>
+    <h3>No matching orders</h3>
+    <p>Try changing your filters or place your first order.</p>
+    <a href="{% url 'store:store' %}" class="btn btn-primary">Go to store</a>
+</div>
+{% endif %}
+{% endblock %}

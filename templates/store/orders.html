@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}حجوزاتي{% endblock %}
+{% block content %}
+<div class="container" style="margin-top:40px;">
+    <h2 style="margin-bottom:30px;">جميع الحجوزات الخاصة بك</h2>
+    {% if orders %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>رقم الطلب</th>
+                    <th>المنتج</th>
+                    <th>الكمية</th>
+                    <th>طريقة الدفع</th>
+                    <th>الحالة</th>
+                    <th>تاريخ الحجز</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    {% for item in order.items.all %}
+                    <tr>
+                        <td>{{ order.order_id }}</td>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ order.get_payment_method_display }}</td>
+                        <td>{{ order.status }}</td>
+                        <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-info">لا يوجد حجوزات بعد.</div>
+    {% endif %}
+</div>
+{% endblock %}

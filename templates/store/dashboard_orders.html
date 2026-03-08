@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="fw-bold mb-4" style="color:#425ed8;">My Orders</h2>
+  <div class="table-responsive rounded-4 shadow-sm bg-white p-4">
+    <table class="table align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Image</th>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Contact Support</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+          <tr>
+            <td><img src="{{ order.product.main_image.url }}" style="width:60px;height:60px;object-fit:cover;border-radius:12px;"></td>
+            <td>{{ order.product.name }}</td>
+            <td>${{ order.product.current_price }}</td>
+            <td>{{ order.quantity }}</td>
+            <td><span class="badge bg-{% if order.status == 'pending' %}warning{% elif order.status == 'completed' %}success{% else %}secondary{% endif %}">{{ order.status|title }}</span></td>
+            <td>{{ order.created_at|date:'Y-m-d H:i' }}</td>
+            <td><a href="{% url 'store:chat' %}?order={{ order.id }}" class="btn btn-outline-primary btn-sm"><i class="fas fa-headset"></i> Support</a></td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="7" class="text-center text-muted">No orders yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

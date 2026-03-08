@@ -1,0 +1,640 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Store - ElegantShop{% endblock title %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/store.css' %}">
+
+<!-- Page Hero -->
+<section class="store-hero">
+    <div class="container">
+        <h1>Our Store</h1>
+        <p>Discover our complete collection of premium products</p>
+    </div>
+</section>
+
+<!-- Main Store Section -->
+<section class="store-section">
+    <div class="container">
+        <div class="store-wrapper">
+            <!-- Sidebar Filters -->
+            <aside class="filters-sidebar">
+                <form method="get" class="filters-form">
+                    <!-- Search -->
+                    <div class="filter-group">
+                        <h4>Search</h4>
+                        <input type="text" name="search" placeholder="Search products..." value="{{ search_query }}" class="form-control">
+                    </div>
+
+                    <!-- Category Filter -->
+                    <div class="filter-group">
+                        <h4>Category</h4>
+                        <div class="filter-options">
+                            <label class="filter-checkbox">
+                                <input type="radio" name="category" value="all" 
+                                       {% if selected_category == 'all' %}checked{% endif %}>
+                                <span>All Products</span>
+                            </label>
+                            {% for value, label in categories %}
+                                <label class="filter-checkbox">
+                                    <input type="radio" name="category" value="{{ value }}" 
+                                           {% if selected_category == value %}checked{% endif %}>
+                                    <span>{{ label }}</span>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Price Filter -->
+                    <div class="filter-group">
+                        <h4>Price Range</h4>
+                        <div class="price-inputs">
+                            <input type="number" name="min_price" placeholder="Min Price" 
+                                   value="{{ min_price }}" class="form-control">
+                            <input type="number" name="max_price" placeholder="Max Price" 
+                                   value="{{ max_price }}" class="form-control">
+                        </div>
+                    </div>
+
+                    <!-- Availability Filter -->
+                    <div class="filter-group">
+                        <h4>Availability</h4>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" name="in_stock" value="true" 
+                                   {% if in_stock_only %}checked{% endif %}>
+                            <span>In Stock Only</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" name="featured" value="true" 
+                                   {% if featured_only %}checked{% endif %}>
+                            <span>Featured Only</span>
+                        </label>
+                    </div>
+
+                    <!-- Sorting -->
+                    <div class="filter-group">
+                        <h4>Sort By</h4>
+                        <select name="sort" class="form-control">
+                            <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest</option>
+                            <option value="featured" {% if sort_by == 'featured' %}selected{% endif %}>Featured</option>
+                            <option value="price_low" {% if sort_by == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                            <option value="price_high" {% if sort_by == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem;">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                    <a href="{% url 'store:store' %}" class="btn btn-secondary" style="width: 100%; margin-top: 0.75rem; display: block; text-align: center;">
+                        Clear All
+                    </a>
+                </form>
+            </aside>
+
+            <!-- Products Section -->
+            <div class="products-section">
+                <!-- Top Bar -->
+                <div class="store-top-bar">
+                    <div class="results-info">
+                        <span>Showing {{ products|length }} of {{ total_products }} products</span>
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                {% if products %}
+                    <div class="products-grid store-grid">
+                        {% for product in products %}
+                            <div class="product-card">
+                                <div class="product-image">
+                                    {% if product.main_image %}
+                                        <img src="{{ product.main_image.url }}" alt="{{ product.name }}" style="width: 100%; height: 250px; object-fit: cover;">
+                                    {% else %}
+                                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 100%; height: 250px;"></div>
+                                    {% endif %}
+                                    
+                                    <!-- Badges -->
+                                    
+                                    {% if product.discount_percentage > 0 %}
+                                        <div class="product-badge sale">-{{ product.discount_percentage|floatformat:0 }}%</div>
+                                    {% endif %}
+                                    {% if not product.in_stock %}
+                                        <div class="product-badge out-of-stock">Out of Stock</div>
+                                    {% endif %}
+                                    
+                                    <!-- Actions -->
+                                    <div class="product-actions">
+                                        <button class="icon-btn-sm" title="Add to Wishlist"><i class="far fa-heart"></i></button>
+                                        <a href="{% url 'store:product_detail' product.id %}" class="btn-add-cart" title="View Details">
+                                            <i class="fas fa-shopping-bag"></i>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="product-info">
+                                    <h3 class="product-name">{{ product.name }}</h3>
+                                    {% if product.featured %}
+                                        <div style="font-weight: bold;" class="product-description">Featured</div>
+                                    {% endif %}
+                                    <p class="product-description">{{ product.short_description|truncatewords:8 }}</p>
+                                    <p class="product-category">{{ product.get_category_display }}</p>
+                                    
+                                    <div class="product-footer">
+                                        <div class="product-price">
+                                            {% if product.discount_price %}
+                                                <span class="original-price">${{ product.price }}</span>
+                                                <span class="sale-price">${{ product.discount_price }}</span>
+                                            {% else %}
+                                                <span class="sale-price">${{ product.price }}</span>
+                                            {% endif %}
+                                        </div>
+                                        {% if product.in_stock %}
+                                            <a href="{% url 'store:product_detail' product.id %}" class="btn-add-cart" title="View Details">
+                                                <i class="fas fa-shopping-bag"></i>
+                                            </a>
+                                        {% else %}
+                                            <button class="btn-add-cart" disabled style="opacity: 0.5; cursor: not-allowed;">
+                                                <i class="fas fa-ban"></i>
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Pagination -->
+                    {% if is_paginated %}
+                        <div class="pagination">
+                            {% if page_obj.has_previous %}
+                                <a href="?page=1" class="btn btn-secondary">First</a>
+                                <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-secondary">Previous</a>
+                            {% endif %}
+
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if page_obj.number == num %}
+                                    <span class="btn btn-primary" style="pointer-events: none;">{{ num }}</span>
+                                {% else %}
+                                    <a href="?page={{ num }}" class="btn btn-secondary">{{ num }}</a>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <a href="?page={{ page_obj.next_page_number }}" class="btn btn-secondary">Next</a>
+                                <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-secondary">Last</a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="no-products">
+                        <i class="fas fa-inbox" style="font-size: 100px; color: #ccc; margin: 30px 0;"></i>
+                        <h3>No products found</h3>
+                        <p>Try adjusting your filters or search terms</p>
+                        <a href="{% url 'store:store' %}" class="btn btn-primary">Clear Filters</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .store-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 60px 20px;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .store-hero h1 {
+        font-size: 48px;
+        margin-bottom: 10px;
+    }
+
+    .store-hero p {
+        font-size: 18px;
+        opacity: 0.9;
+    }
+
+    .store-wrapper {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 30px;
+    }
+
+    .filters-sidebar {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        height: fit-content;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        position: sticky;
+        top: 20px;
+    }
+
+    .filters-form {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .filter-group h4 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    .filter-options {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .filter-checkbox {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        gap: 10px;
+    }
+
+    .filter-checkbox input {
+        cursor: pointer;
+        width: 18px;
+        height: 18px;
+    }
+
+    .filter-checkbox span {
+        color: #666;
+        font-size: 14px;
+        user-select: none;
+    }
+
+    .filter-checkbox:hover span {
+        color: #667eea;
+    }
+
+    .price-inputs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .products-section {
+        flex: 1;
+    }
+
+    .store-top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #eee;
+    }
+
+    .results-info {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+
+    .product-card {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .product-image {
+        position: relative;
+        overflow: hidden;
+        height: 250px;
+        background: #f5f5f5;
+    }
+
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s;
+    }
+
+    .product-card:hover .product-image img {
+        transform: scale(1.05);
+    }
+
+    .product-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: #e74c3c;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .product-badge.featured {
+        background: #3498db;
+    }
+
+    .product-badge.sale {
+        background: #e67e22;
+    }
+
+    .product-badge.out-of-stock {
+        background: #7f8c8d;
+    }
+
+    .product-actions {
+        position: absolute;
+        bottom: 12px;
+        right: 12px;
+        display: flex;
+        gap: 8px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .product-card:hover .product-actions {
+        opacity: 1;
+    }
+
+    .icon-btn-sm {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: white;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #667eea;
+        font-size: 16px;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+
+    .icon-btn-sm:hover {
+        background: #667eea;
+        color: white;
+        transform: scale(1.1);
+    }
+
+    .product-info {
+        padding: 15px;
+    }
+
+    .product-name {
+        font-size: 15px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+        line-height: 1.3;
+        min-height: 36px;
+    }
+
+    .product-description {
+        font-size: 12px;
+        color: #999;
+        margin-bottom: 8px;
+        line-height: 1.4;
+    }
+
+    .product-category {
+        font-size: 12px;
+        color: #667eea;
+        font-weight: 500;
+        margin-bottom: 12px;
+    }
+
+    .product-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .product-price {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .original-price {
+        font-size: 13px;
+        color: #bbb;
+        text-decoration: line-through;
+    }
+
+    .sale-price {
+        font-size: 16px;
+        font-weight: 700;
+        color: #667eea;
+    }
+
+    .btn-add-cart {
+        width: 40px;
+        height: 40px;
+        border-radius: 6px;
+        background: #667eea;
+        color: white;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+
+    .btn-add-cart:hover:not([disabled]) {
+        background: #764ba2;
+        transform: scale(1.05);
+    }
+
+    .no-products {
+        text-align: center;
+        padding: 60px 20px;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 40px;
+        flex-wrap: wrap;
+    }
+
+    .pagination .btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        cursor: pointer;
+        border: 1px solid #ddd;
+    }
+
+    @media (max-width: 1024px) {
+        .store-wrapper {
+            grid-template-columns: 1fr;
+        }
+
+        .filters-sidebar {
+            position: relative;
+            top: 0;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .store-hero h1 {
+            font-size: 32px;
+        }
+
+        .products-grid {
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+        }
+
+        .product-image {
+            height: 180px;
+        }
+
+        .store-top-bar {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+    }
+</style>
+                                 
+
+<!-- Pagination -->
+<div class="pagination">
+    <button class="pagination-btn active">1</button>
+    <button class="pagination-btn">2</button>
+    <button class="pagination-btn">3</button>
+    <button class="pagination-btn">4</button>
+    <button class="pagination-btn next">Next <i class="fas fa-chevron-right"></i></button>
+</div>
+                
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>About ElegantShop</h4>
+                    <p>We provide premium quality products for modern living with exceptional customer service.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="store.html">Shop</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Customer Service</h4>
+                    <ul>
+                        <li><a href="#">Shipping Info</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="#">Track Order</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <p><strong>Email:</strong> info@elegantshop.com</p>
+                    <p><strong>Phone:</strong> +1 (555) 123-4567</p>
+                    <p><strong>Address:</strong> 123 Shopping Street, Commerce City, CC 12345</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ElegantShop. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div class="modal" id="cartModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Shopping Cart</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="empty-cart-msg">Your cart is empty</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="userModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Account</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="auth-buttons">
+                    <button class="btn btn-primary" style="width: 100%;">Sign In</button>
+                    <button class="btn btn-secondary" style="width: 100%;">Create Account</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Alert -->
+    <div class="alert alert-success" id="successAlert">
+        <i class="fas fa-check-circle"></i>
+        <span>Product added to cart successfully!</span>
+    </div>
+
+    <script src="{% static "js/main.js" %}"></script>
+</body>
+</html>
+{% endblock content %}

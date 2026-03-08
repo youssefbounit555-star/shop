@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Discounts - ElegantShop{% endblock %}
+
+{% block content %}
+<section class="ds-page">
+    <div class="container">
+        <header class="ds-hero">
+            <p class="ds-kicker">SPECIAL OFFERS</p>
+            <h1>Discounted Products</h1>
+            <p>{{ total_discounted_products }} product{{ total_discounted_products|pluralize }} currently available with special pricing or promo labels.</p>
+        </header>
+
+        {% if products %}
+        <div class="ds-grid">
+            {% for product in products %}
+            <article class="ds-card">
+                <a href="{% url 'store:product_detail' product.pk %}" class="ds-media">
+                    {% if product.main_image %}
+                        <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <div class="ds-placeholder"><i class="fas fa-image"></i></div>
+                    {% endif %}
+
+                    {% if product.discount_percentage > 0 %}
+                    <span class="ds-badge">-{{ product.discount_percentage|floatformat:0 }}%</span>
+                    {% elif product.discount_price is not None %}
+                    <span class="ds-badge">Special Price</span>
+                    {% endif %}
+                </a>
+
+                <div class="ds-content">
+                    <p class="ds-category">{{ product.get_category_display }}</p>
+                    <h3><a href="{% url 'store:product_detail' product.pk %}">{{ product.name }}</a></h3>
+                    <p class="ds-desc">{{ product.short_description|truncatewords:14 }}</p>
+
+                    <div class="ds-price-row">
+                        <strong>{{ product.current_price|floatformat:2 }} {{ currency_label }}</strong>
+                        {% if product.discount_price is not None %}
+                        <span>{{ product.price|floatformat:2 }} {{ currency_label }}</span>
+                        {% endif %}
+                    </div>
+
+                    {% if product.discount_note %}
+                    <p class="ds-note">{{ product.discount_note }}</p>
+                    {% endif %}
+
+                    <a href="{% url 'store:product_detail' product.pk %}" class="ds-btn">View Product</a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        {% if is_paginated %}
+        <nav class="ds-pagination" aria-label="Discounts pagination">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+            <span>Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next</a>
+            {% endif %}
+        </nav>
+        {% endif %}
+        {% else %}
+        <div class="ds-empty">
+            <i class="fas fa-tags"></i>
+            <h2>No active discounts right now</h2>
+            <p>Check back later or browse all products.</p>
+            <a href="{% url 'store:store' %}" class="ds-btn">Open Store</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+.ds-page { padding: 118px 0 60px; background: linear-gradient(180deg, #f5f9ff 0%, #ffffff 45%); min-height: 100vh; }
+.ds-hero { margin-bottom: 22px; }
+.ds-kicker { margin: 0; color: #2563eb; font-size: 0.78rem; letter-spacing: 0.09em; font-weight: 800; }
+.ds-hero h1 { margin: 8px 0 6px; font-size: clamp(1.8rem, 3.5vw, 2.4rem); }
+.ds-hero p { margin: 0; color: #60748a; }
+.ds-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.ds-card { background: #fff; border: 1px solid #dce8f5; border-radius: 16px; overflow: hidden; box-shadow: 0 14px 32px rgba(20, 36, 61, 0.08); }
+.ds-media { display: block; position: relative; height: 210px; background: #ecf4fd; }
+.ds-media img { width: 100%; height: 100%; object-fit: cover; }
+.ds-placeholder { width: 100%; height: 100%; display: grid; place-items: center; color: #8ba2ba; font-size: 1.2rem; }
+.ds-badge { position: absolute; top: 10px; right: 10px; padding: 5px 10px; border-radius: 999px; background: #f97316; color: #fff; font-size: 0.72rem; font-weight: 700; }
+.ds-content { padding: 12px; display: grid; gap: 9px; }
+.ds-category { margin: 0; color: #64748b; font-size: 0.8rem; font-weight: 700; }
+.ds-content h3 { margin: 0; font-size: 1rem; }
+.ds-content h3 a { color: #10263f; text-decoration: none; }
+.ds-desc { margin: 0; font-size: 0.86rem; color: #60748a; }
+.ds-price-row { display: flex; gap: 8px; align-items: center; }
+.ds-price-row strong { color: #0f172a; font-size: 1rem; }
+.ds-price-row span { color: #94a3b8; text-decoration: line-through; font-size: 0.86rem; }
+.ds-note { margin: 0; color: #0f766e; background: #ecfdf5; border: 1px solid #c8f0df; border-radius: 10px; padding: 7px 9px; font-size: 0.82rem; font-weight: 700; }
+.ds-btn { display: inline-flex; justify-content: center; align-items: center; border-radius: 10px; border: 1px solid #bfd6f1; color: #1d4ed8; text-decoration: none; font-weight: 700; padding: 8px 11px; background: #f0f7ff; }
+.ds-btn:hover { color: #163ea9; }
+.ds-empty { border: 1px dashed #c8d8ea; border-radius: 14px; padding: 44px 16px; text-align: center; background: #fff; }
+.ds-empty i { font-size: 1.7rem; color: #8ba2ba; }
+.ds-pagination { margin-top: 18px; display: flex; justify-content: center; gap: 12px; align-items: center; }
+.ds-pagination a { text-decoration: none; color: #1d4ed8; font-weight: 700; }
+.ds-pagination span { color: #60748a; font-size: 0.9rem; }
+@media (max-width: 1020px) { .ds-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 760px) {
+    .ds-page { padding-top: 96px; }
+    .ds-grid { grid-template-columns: 1fr; }
+    .ds-media { height: 230px; }
+}
+</style>
+{% endblock %}

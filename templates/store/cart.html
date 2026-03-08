@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Cart - ElegantShop{% endblock %}
+
+{% block content %}
+<section class="sc-page">
+  <div class="container sc-container">
+    <div class="sc-head">
+      <div>
+        <h1>My Cart</h1>
+        <p>Review your selected products and update quantities.</p>
+      </div>
+      {% if cart_items %}
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="clear">
+        <button type="submit" class="sc-btn sc-btn-ghost">Clear cart</button>
+      </form>
+      {% endif %}
+    </div>
+
+    {% if cart_items %}
+      <div class="sc-grid">
+        <div class="sc-list">
+          {% if cod_items %}
+          <section class="sc-section">
+            <div class="sc-section-head">
+              <h2>Cash on Delivery (COD)</h2>
+              <span class="sc-pill sc-pill-cod">{{ cod_items|length }} products • {{ cod_units }} qty</span>
+            </div>
+            {% for item in cod_items %}
+            <article class="sc-card">
+              <div class="sc-media">
+                {% if item.product.main_image %}
+                  <img src="{{ item.product.main_image.url }}" alt="{{ item.product.name }}">
+                {% else %}
+                  <div class="sc-placeholder"><i class="fas fa-image"></i></div>
+                {% endif %}
+              </div>
+
+              <div class="sc-body">
+                <h3><a href="{% url 'store:product_detail' item.product.pk %}">{{ item.product.name }}</a></h3>
+                <p>{{ item.product.current_price }} {{ currency_label }} each</p>
+                <span class="sc-mode sc-mode-cod">{{ item.payment_mode_label }}</span>
+
+                <div class="sc-actions">
+                  <form method="post" class="sc-qty-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="update">
+                    <input type="hidden" name="product_id" value="{{ item.product.pk }}">
+                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock_quantity|default:1 }}">
+                    <button type="submit" class="sc-btn sc-btn-primary">Update</button>
+                  </form>
+
+                  <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="remove">
+                    <input type="hidden" name="product_id" value="{{ item.product.pk }}">
+                    <button type="submit" class="sc-btn sc-btn-danger">Remove</button>
+                  </form>
+                </div>
+              </div>
+
+              <div class="sc-line-total">
+                {{ item.line_total|floatformat:2 }} {{ currency_label }}
+              </div>
+            </article>
+            {% endfor %}
+          </section>
+          {% endif %}
+
+          {% if online_items %}
+          <section class="sc-section">
+            <div class="sc-section-head">
+              <h2>Online Payment</h2>
+              <span class="sc-pill sc-pill-online">{{ online_items|length }} products • {{ online_units }} qty</span>
+            </div>
+            {% for item in online_items %}
+            <article class="sc-card">
+              <div class="sc-media">
+                {% if item.product.main_image %}
+                  <img src="{{ item.product.main_image.url }}" alt="{{ item.product.name }}">
+                {% else %}
+                  <div class="sc-placeholder"><i class="fas fa-image"></i></div>
+                {% endif %}
+              </div>
+
+              <div class="sc-body">
+                <h3><a href="{% url 'store:product_detail' item.product.pk %}">{{ item.product.name }}</a></h3>
+                <p>{{ item.product.current_price }} {{ currency_label }} each</p>
+                <span class="sc-mode sc-mode-online">{{ item.payment_mode_label }}</span>
+
+                <div class="sc-actions">
+                  <form method="post" class="sc-qty-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="update">
+                    <input type="hidden" name="product_id" value="{{ item.product.pk }}">
+                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock_quantity|default:1 }}">
+                    <button type="submit" class="sc-btn sc-btn-primary">Update</button>
+                  </form>
+
+                  <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="remove">
+                    <input type="hidden" name="product_id" value="{{ item.product.pk }}">
+                    <button type="submit" class="sc-btn sc-btn-danger">Remove</button>
+                  </form>
+                </div>
+              </div>
+
+              <div class="sc-line-total">
+                {{ item.line_total|floatformat:2 }} {{ currency_label }}
+              </div>
+            </article>
+            {% endfor %}
+          </section>
+          {% endif %}
+
+          {% if cod_items and online_items %}
+          <div class="sc-mix-note">
+            <i class="fas fa-circle-info"></i>
+            <span>Your cart has COD and Online products. Complete each product from its detail page with the correct payment flow.</span>
+          </div>
+          {% endif %}
+        </div>
+
+        <aside class="sc-summary">
+          <h2>Summary</h2>
+          <div class="sc-summary-row">
+            <span>Items</span>
+            <strong>{{ cart_items|length }} products</strong>
+          </div>
+          <div class="sc-summary-row">
+            <span>COD subtotal</span>
+            <strong>{{ cod_total|floatformat:2 }} {{ currency_label }}</strong>
+          </div>
+          <div class="sc-summary-row">
+            <span>Online subtotal</span>
+            <strong>{{ online_total|floatformat:2 }} {{ currency_label }}</strong>
+          </div>
+          <div class="sc-summary-row sc-summary-total">
+            <span>Total</span>
+            <strong>{{ cart_total|floatformat:2 }} {{ currency_label }}</strong>
+          </div>
+          <p class="sc-note">Continue from the product page to select payment method and shipping details.</p>
+          <a href="{% url 'store:store' %}" class="sc-btn sc-btn-primary sc-full">Continue Shopping</a>
+        </aside>
+      </div>
+    {% else %}
+      <div class="sc-empty">
+        <i class="fas fa-cart-shopping"></i>
+        <h2>Your cart is empty</h2>
+        <p>Add products from the product detail page.</p>
+        <a href="{% url 'store:store' %}" class="sc-btn sc-btn-primary">Browse products</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  .sc-page { padding: 120px 0 60px; background: #f6f9fc; min-height: 100vh; }
+  .sc-container { display: grid; gap: 16px; }
+  .sc-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .sc-head h1 { margin: 0; font-size: 2rem; }
+  .sc-head p { margin: 6px 0 0; color: #60748a; }
+  .sc-grid { display: grid; grid-template-columns: 1fr 320px; gap: 16px; }
+  .sc-list { display: grid; gap: 12px; }
+  .sc-section { display: grid; gap: 10px; }
+  .sc-section-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 4px 2px; }
+  .sc-section-head h2 { margin: 0; font-size: 1.08rem; color: #16324f; }
+  .sc-pill { border-radius: 999px; font-size: 0.72rem; padding: 4px 10px; font-weight: 700; white-space: nowrap; }
+  .sc-pill-cod { background: #ecfdf5; color: #0f7a58; border: 1px solid #b9e8d6; }
+  .sc-pill-online { background: #eff6ff; color: #1d4ed8; border: 1px solid #b8d0fb; }
+  .sc-card { background: #fff; border: 1px solid #dde7f2; border-radius: 14px; display: grid; grid-template-columns: 120px 1fr auto; gap: 14px; padding: 12px; align-items: center; }
+  .sc-media img { width: 120px; height: 96px; border-radius: 10px; object-fit: cover; }
+  .sc-placeholder { width: 120px; height: 96px; border-radius: 10px; display: grid; place-items: center; background: #edf3f9; color: #8ea2b7; }
+  .sc-body h3 { margin: 0; font-size: 1rem; }
+  .sc-body h3 a { color: #16324f; text-decoration: none; }
+  .sc-body p { margin: 6px 0; color: #60748a; font-size: 0.9rem; }
+  .sc-mode { display: inline-flex; align-items: center; border-radius: 999px; padding: 3px 9px; font-size: 0.72rem; font-weight: 700; margin-bottom: 7px; }
+  .sc-mode-cod { background: #ecfdf5; color: #0f7a58; border: 1px solid #b9e8d6; }
+  .sc-mode-online { background: #eff6ff; color: #1d4ed8; border: 1px solid #b8d0fb; }
+  .sc-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .sc-qty-form { display: flex; gap: 8px; align-items: center; }
+  .sc-qty-form input { width: 78px; border: 1px solid #ccd9e8; border-radius: 8px; padding: 7px; }
+  .sc-line-total { font-size: 0.98rem; font-weight: 800; color: #16324f; white-space: nowrap; }
+  .sc-mix-note { border: 1px solid #dbeafe; background: #f0f7ff; border-radius: 12px; padding: 10px 12px; color: #2a4f7a; font-size: 0.84rem; font-weight: 600; display: inline-flex; gap: 8px; align-items: center; }
+  .sc-summary { background: #fff; border: 1px solid #dde7f2; border-radius: 14px; padding: 14px; height: fit-content; }
+  .sc-summary h2 { margin: 0 0 14px; font-size: 1.15rem; }
+  .sc-summary-row { display: flex; justify-content: space-between; color: #60748a; padding: 6px 0; }
+  .sc-summary-total { border-top: 1px solid #e7eef6; margin-top: 8px; padding-top: 10px; color: #16324f; }
+  .sc-note { color: #60748a; font-size: 0.86rem; margin: 14px 0; }
+  .sc-btn { border: 1px solid transparent; border-radius: 9px; padding: 8px 12px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+  .sc-btn-primary { background: linear-gradient(135deg, #1d4ed8, #0f766e); color: #fff; }
+  .sc-btn-ghost { background: #fff; border-color: #ccd9e8; color: #314e6a; }
+  .sc-btn-danger { background: #fff1f1; border-color: #f4c6c6; color: #b93838; }
+  .sc-full { width: 100%; }
+  .sc-empty { background: #fff; border: 1px dashed #cad8e7; border-radius: 14px; text-align: center; padding: 40px 16px; }
+  .sc-empty i { font-size: 2rem; color: #8ea2b7; }
+  @media (max-width: 980px) {
+    .sc-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 760px) {
+    .sc-page { padding-top: 98px; }
+    .sc-card { grid-template-columns: 1fr; }
+    .sc-media img, .sc-placeholder { width: 100%; height: 180px; }
+  }
+</style>
+{% endblock %}

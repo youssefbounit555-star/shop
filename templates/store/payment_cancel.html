@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Payment Canceled - ElegantShop{% endblock %}
+
+{% block content %}
+<section style="padding: 130px 16px 70px;">
+  <div style="max-width: 760px; margin: 0 auto; background: #fff; border: 1px solid #e2e8f0; border-radius: 18px; box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08); overflow: hidden;">
+    <div style="padding: 22px 24px; border-bottom: 1px solid #eef2f7; background: linear-gradient(120deg, #fff8f1, #fef2f2);">
+      <h1 style="margin: 0; font-size: 1.5rem; color: #7f1d1d;">
+        <i class="fas fa-circle-xmark"></i>
+        Payment Canceled
+      </h1>
+    </div>
+    <div style="padding: 22px 24px;">
+      <p style="margin: 0 0 12px; color: #334155; font-size: 1rem; font-weight: 600;">
+        {{ cancel_message }}
+      </p>
+
+      <div style="margin-bottom: 16px; border: 1px solid #e2e8f0; border-radius: 12px; background: #f8fafc; padding: 12px;">
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;">
+          <div>
+            <small style="color: #64748b;">Order</small>
+            <div style="color: #0f172a; font-weight: 700;">{{ order.order_id }}</div>
+          </div>
+          <div>
+            <small style="color: #64748b;">Payment Method</small>
+            <div style="color: #0f172a; font-weight: 700;">
+              {% if provider == 'paypal' %}
+                PayPal
+              {% elif provider == 'stripe' %}
+                Stripe
+              {% else %}
+                {{ order.get_payment_method_display }}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p style="margin: 0 0 16px; color: #475569;">
+        Payment was not completed. You can retry directly from the product page.
+      </p>
+
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <a href="{{ retry_url }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:10px;background:#0f766e;color:#fff;font-weight:700;text-decoration:none;">
+          <i class="fas fa-rotate-right"></i>
+          Retry Payment
+        </a>
+        <a href="{% url 'store:store' %}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:10px;background:#e2e8f0;color:#1e293b;font-weight:700;text-decoration:none;">
+          <i class="fas fa-store"></i>
+          Continue Shopping
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

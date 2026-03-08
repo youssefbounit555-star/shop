@@ -1,0 +1,91 @@
+:root {
+    --dash-font-display: "Bricolage Grotesque", sans-serif;
+    --dash-font-body: "Manrope", sans-serif;
+}
+
+body {
+    font-family: var(--dash-font-body) !important;
+    background: radial-gradient(circle at 12% -5%, rgba(29, 78, 216, 0.12), transparent 35%),
+        radial-gradient(circle at 90% 110%, rgba(15, 118, 110, 0.12), transparent 34%),
+        linear-gradient(180deg, #f8fbff 0%, #f1f5f9 100%) !important;
+}
+
+body *:not(i):not(.fa):not(.fas):not(.far):not(.fab):not([class*="fa-"]) {
+    font-family: var(--dash-font-body) !important;
+}
+
+h1, h2, h3, h4, h5, h6,
+.page-title,
+.logo span {
+    font-family: var(--dash-font-display) !important;
+    letter-spacing: -0.02em;
+}
+
+.dashboard-header {
+    border-bottom: 1px solid #dbeafe !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06) !important;
+}
+
+.dashboard-sidebar {
+    border-right: 1px solid #dbeafe !important;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%) !important;
+}
+
+.nav-link {
+    border-radius: 10px;
+    margin: 6px 10px !important;
+    padding: 12px 14px !important;
+}
+
+.nav-link.active {
+    background: linear-gradient(90deg, rgba(29, 78, 216, 0.12), rgba(15, 118, 110, 0.08)) !important;
+}
+
+.dashboard-main {
+    padding: 32px !important;
+}
+
+.dashboard-card,
+.card {
+    border-radius: 16px !important;
+    border: 1px solid #dbeafe !important;
+    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08) !important;
+}
+
+.dashboard-card:hover,
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.btn {
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #1d4ed8, #0f766e) !important;
+}
+
+.btn-secondary {
+    border: 1px solid #cbd5e1 !important;
+    background: #fff !important;
+}
+
+.form-control,
+.form-select {
+    border-radius: 10px !important;
+    border: 1px solid #cbd5e1 !important;
+    background: #fff !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #1d4ed8 !important;
+    box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12) !important;
+}
+
+.alert {
+    border-radius: 12px !important;
+    border: 1px solid #dbeafe !important;
+}

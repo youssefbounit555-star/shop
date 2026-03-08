@@ -1,0 +1,985 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ product.name }} - ElegantShop{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
+{% if not product.is_digital %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endif %}
+
+<section class="pd-page">
+  <div class="pd-orb pd-orb-one"></div>
+  <div class="pd-orb pd-orb-two"></div>
+  <div class="container pd-container">
+    <nav class="pd-breadcrumb" aria-label="Breadcrumb">
+      <a href="{% url 'store:home' %}">Home</a>
+      <i class="fas fa-chevron-right" aria-hidden="true"></i>
+      <a href="{% url 'store:store' %}">Shop</a>
+      <i class="fas fa-chevron-right" aria-hidden="true"></i>
+      <span>{{ product.name }}</span>
+    </nav>
+
+    {% if messages %}
+      <div class="pd-alert-stack">
+        {% for message in messages %}
+          <div class="pd-alert pd-alert-{{ message.tags|default:'info' }}">
+            {{ message|safe }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="pd-highlight-strip">
+      <div class="pd-highlight-item">
+        <i class="fas fa-shield-halved"></i>
+        <span>Secure checkout</span>
+      </div>
+      {% if free_shipping_threshold and free_shipping_threshold > 0 %}
+        <div class="pd-highlight-item">
+          <i class="fas fa-truck-fast"></i>
+          <span>Free shipping above {{ free_shipping_threshold }} {{ currency_label }}</span>
+        </div>
+      {% endif %}
+      <div class="pd-highlight-item">
+        <i class="fas fa-headset"></i>
+        <span>Support within 24h</span>
+      </div>
+    </div>
+
+    <div class="pd-shell">
+      <section class="pd-gallery">
+        <div class="pd-main-media">
+          {% if product.discount_percentage > 0 %}
+            <span class="pd-pill pd-pill-discount">-{{ product.discount_percentage|floatformat:0 }}%</span>
+          {% endif %}
+          {% if product.low_stock %}
+            <span class="pd-pill pd-pill-alert">Low Stock</span>
+          {% endif %}
+
+          {% if product.main_image or product_images %}
+            <button class="pd-zoom-btn" type="button" id="pdZoomTrigger" aria-label="Open image viewer">
+              <i class="fas fa-up-right-and-down-left-from-center"></i>
+            </button>
+          {% endif %}
+
+          {% if product.main_image %}
+            <img
+              id="pdMainImage"
+              src="{{ product.main_image.url }}"
+              alt="{{ product.name }}"
+              class="pd-main-image"
+            >
+          {% elif product_images %}
+            <img
+              id="pdMainImage"
+              src="{{ product_images.0.image.url }}"
+              alt="{{ product_images.0.alt_text|default:product.name }}"
+              class="pd-main-image"
+            >
+          {% else %}
+            <div class="pd-main-placeholder">
+              <i class="fas fa-image"></i>
+              <span>No image available</span>
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="pd-thumbs">
+          {% if product.main_image %}
+            <button
+              class="pd-thumb is-active"
+              type="button"
+              data-image="{{ product.main_image.url }}"
+              data-image-alt="{{ product.name }}"
+              aria-label="Show image 1"
+            >
+              <img src="{{ product.main_image.url }}" alt="{{ product.name }} main image">
+            </button>
+          {% endif %}
+          {% for image in product_images %}
+            <button
+              class="pd-thumb {% if not product.main_image and forloop.first %}is-active{% endif %}"
+              type="button"
+              data-image="{{ image.image.url }}"
+              data-image-alt="{{ image.alt_text|default:product.name }}"
+              aria-label="Show image {% if product.main_image %}{{ forloop.counter|add:1 }}{% else %}{{ forloop.counter }}{% endif %}"
+            >
+              <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.name }}">
+            </button>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="pd-summary">
+        <div class="pd-meta">
+          <span class="pd-chip">{{ product.get_category_display }}</span>
+          {% if product.brand %}
+            <span class="pd-chip pd-chip-soft">{{ product.brand }}</span>
+          {% endif %}
+          {% if product.featured %}
+            <span class="pd-chip pd-chip-featured">Featured</span>
+          {% endif %}
+        </div>
+
+        <h1 class="pd-title">{{ product.name }}</h1>
+        <p class="pd-short">{{ product.short_description|default:"Premium quality product selected for your lifestyle." }}</p>
+
+        <div class="pd-pricing">
+          <span class="pd-price">{{ product.current_price }} {{ currency_label }}</span>
+          {% if product.discount_price is not None %}
+            <span class="pd-price-old">{{ product.price }} {{ currency_label }}</span>
+            <span class="pd-save">Save {{ product.discount_percentage|floatformat:0 }}%</span>
+          {% endif %}
+        </div>
+        {% if product.discount_note %}
+          <p class="pd-discount-note">{{ product.discount_note }}</p>
+        {% endif %}
+
+        <div class="pd-stockline">
+          {% if product.in_stock %}
+            <span class="pd-status pd-status-in"><i class="fas fa-circle-check"></i> In stock ({{ product.stock_quantity }})</span>
+          {% else %}
+            <span class="pd-status pd-status-out"><i class="fas fa-circle-xmark"></i> Out of stock</span>
+          {% endif %}
+          {% if product.sku %}
+            <span class="pd-sku">SKU: {{ product.sku }}</span>
+          {% endif %}
+        </div>
+
+        {% if product.in_stock %}
+          <div class="pd-stock-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ stock_meter }}">
+            <div class="pd-stock-meter-head">
+              <span>Stock level</span>
+              <strong>{% if product.low_stock %}Only {{ product.stock_quantity }} left{% else %}Ready to ship{% endif %}</strong>
+            </div>
+            <div class="pd-stock-meter-track">
+              <span style="width: {{ stock_meter }}%"></span>
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="pd-payment-panel">
+          <div class="pd-payment-head">
+            <span class="pd-payment-kicker">Payment</span>
+            <strong>{{ product.get_payment_mode_display }}</strong>
+          </div>
+          {% if product.requires_online_payment %}
+            <p class="pd-payment-copy">This product is paid from the website using the enabled gateways below.</p>
+            <div class="pd-payment-tags">
+              {% for method in product.allowed_payment_methods %}
+                <span class="pd-payment-tag">
+                  {% if method.0 == 'stripe' %}
+                    <i class="fas fa-credit-card"></i>
+                  {% else %}
+                    <i class="fab fa-paypal"></i>
+                  {% endif %}
+                  {{ method.1 }}
+                </span>
+              {% empty %}
+                <span class="pd-payment-tag pd-payment-tag-warning">
+                  <i class="fas fa-triangle-exclamation"></i>
+                  No online payment method configured
+                </span>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="pd-payment-copy">This product is configured for payment on delivery.</p>
+            <div class="pd-payment-tags">
+              <span class="pd-payment-tag pd-payment-tag-cod">
+                <i class="fas fa-money-bill-wave"></i>
+                Cash on Delivery (COD)
+              </span>
+            </div>
+          {% endif %}
+        </div>
+
+        <form
+          method="post"
+          class="pd-buybox"
+          id="pdBuyForm"
+          data-unit-price="{{ product.current_price|floatformat:2 }}"
+          data-currency="{{ currency_label }}"
+          data-requires-shipping="{% if not product.is_digital %}1{% else %}0{% endif %}"
+        >
+          {% csrf_token %}
+          <div class="pd-quick-actions pd-buybox-quick">
+            <button
+              type="submit"
+              name="action"
+              value="add_to_cart"
+              formnovalidate
+              class="pd-action-btn pd-action-btn-cart"
+              {% if not product.in_stock %}disabled{% endif %}
+            >
+              <i class="fas fa-cart-plus"></i>
+              <span>
+                Add to Cart
+                {% if cart_quantity > 0 %}({{ cart_quantity }}){% endif %}
+              </span>
+            </button>
+
+            <button
+              type="submit"
+              name="action"
+              value="add_to_wishlist"
+              formnovalidate
+              class="pd-action-btn pd-action-btn-wishlist {% if in_wishlist %}is-active{% endif %}"
+            >
+              <i class="{% if in_wishlist %}fas{% else %}far{% endif %} fa-heart"></i>
+              <span>{% if in_wishlist %}In Wishlist{% else %}Add to Wishlist{% endif %}</span>
+            </button>
+
+            <button
+              type="submit"
+              name="action"
+              value="add_to_goal"
+              formnovalidate
+              class="pd-action-btn pd-action-btn-goal"
+            >
+              <i class="fas fa-bullseye"></i>
+              <span>Add as Goal</span>
+            </button>
+          </div>
+
+          <div class="pd-quantity-wrap pd-buybox-quantity">
+            <label for="quantity">Quantity</label>
+            <div class="pd-quantity-control">
+              <button type="button" class="pd-qty-btn" data-qty-step="-1" aria-label="Decrease quantity">
+                <i class="fas fa-minus"></i>
+              </button>
+              <input
+                type="number"
+                name="quantity"
+                id="quantity"
+                value="1"
+                min="1"
+                max="{{ product.stock_quantity|default:1 }}"
+                {% if not product.in_stock %}disabled{% endif %}
+              >
+              <button type="button" class="pd-qty-btn" data-qty-step="1" aria-label="Increase quantity">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+
+          {% if not product.is_digital %}
+            <div class="pd-shipping-wrap pd-buybox-shipping">
+              <div class="pd-shipping-head">
+                <label>Delivery Information</label>
+                <span class="pd-shipping-required">Required for non-digital products</span>
+              </div>
+
+              <div class="pd-shipping-grid">
+                <div class="pd-shipping-field">
+                  <label for="customer_phone">Phone Number</label>
+                  <input type="text" id="customer_phone" name="customer_phone" placeholder="+212..." required>
+                </div>
+                <div class="pd-shipping-field">
+                  <label for="shipping_country">Country</label>
+                  <input type="text" id="shipping_country" name="shipping_country" placeholder="Country" required>
+                </div>
+                <div class="pd-shipping-field">
+                  <label for="shipping_city">City</label>
+                  <input type="text" id="shipping_city" name="shipping_city" placeholder="City" required>
+                </div>
+                <div class="pd-shipping-field pd-shipping-field-wide">
+                  <label for="shipping_address">Detailed Address</label>
+                  <input type="text" id="shipping_address" name="shipping_address" placeholder="Street, building, floor..." required>
+                </div>
+              </div>
+
+              <div class="pd-map-panel">
+                <div class="pd-map-panel-head">
+                  <strong>Exact Delivery Location</strong>
+                  <button type="button" class="pd-map-locate-btn" id="pdLocateMe">
+                    <i class="fas fa-location-crosshairs"></i>
+                    Use my current location
+                  </button>
+                </div>
+                <div id="pdLocationMap" class="pd-location-map"></div>
+                <p class="pd-map-status" id="pdLocationStatus">
+                  Click on the map to set your exact location.
+                </p>
+                <input type="hidden" name="shipping_latitude" id="shipping_latitude">
+                <input type="hidden" name="shipping_longitude" id="shipping_longitude">
+              </div>
+            </div>
+          {% endif %}
+
+          <div class="pd-payment-choice-wrap pd-buybox-payment">
+            <div class="pd-payment-choice-head">
+              <label id="pdPaymentMethodLabel">Payment Method</label>
+              <span class="pd-payment-secure">
+                <i class="fas fa-lock"></i>
+                Secure checkout
+              </span>
+            </div>
+            {% if product.requires_online_payment %}
+              <p class="pd-payment-hint">Choose your method, then press the button to continue to secure payment.</p>
+              <div class="pd-payment-options" role="radiogroup" aria-labelledby="pdPaymentMethodLabel">
+                {% for method in product.allowed_payment_methods %}
+                  <label
+                    class="pd-payment-option {% if forloop.first %}is-selected{% endif %}"
+                    data-method="{{ method.0 }}"
+                    data-method-label="{{ method.1 }}"
+                  >
+                    <input
+                      type="radio"
+                      name="payment_method"
+                      value="{{ method.0 }}"
+                      {% if forloop.first %}checked{% endif %}
+                      {% if not product.in_stock %}disabled{% endif %}
+                    >
+                    <span class="pd-payment-option-icon">
+                      {% if method.0 == 'stripe' %}
+                        <i class="fas fa-credit-card"></i>
+                      {% elif method.0 == 'paypal' %}
+                        <i class="fab fa-paypal"></i>
+                      {% else %}
+                        <i class="fas fa-wallet"></i>
+                      {% endif %}
+                    </span>
+                    <span class="pd-payment-option-body">
+                      <strong>{{ method.1 }}</strong>
+                      <small>
+                        {% if method.0 == 'stripe' %}
+                          Card checkout powered by Stripe.
+                        {% elif method.0 == 'paypal' %}
+                          Pay via PayPal account or card.
+                        {% else %}
+                          Secure checkout with this provider.
+                        {% endif %}
+                      </small>
+                    </span>
+                    <span class="pd-payment-option-check" aria-hidden="true">
+                      <i class="fas fa-circle-check"></i>
+                    </span>
+                  </label>
+                {% empty %}
+                  {% if product.current_price <= 0 %}
+                    <div class="pd-payment-warning">
+                      <i class="fas fa-circle-info"></i>
+                      This is a free test product. You can place the order without a payment gateway.
+                    </div>
+                  {% else %}
+                    <div class="pd-payment-warning">
+                      <i class="fas fa-triangle-exclamation"></i>
+                      Online payment is required, but no gateway is enabled for this product.
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+              {% if product.allowed_payment_methods %}
+                <div class="pd-selected-payment-note" id="pdSelectedPaymentNote" aria-live="polite">
+                  <i class="fas fa-shield-halved"></i>
+                  <span id="pdSelectedPaymentText">Selected: {{ product.allowed_payment_methods.0.1 }}</span>
+                </div>
+              {% endif %}
+            {% else %}
+              <input type="hidden" name="payment_method" value="cash_on_delivery">
+              <div class="pd-payment-static">
+                <i class="fas fa-money-bill-wave"></i>
+                Cash on Delivery (COD)
+              </div>
+              <div class="pd-selected-payment-note" aria-live="polite">
+                <i class="fas fa-box-open"></i>
+                <span>Selected: Cash on Delivery (COD)</span>
+              </div>
+            {% endif %}
+          </div>
+
+          <button
+            type="submit"
+            class="pd-buy-btn pd-buybox-action"
+            id="pdBuyButton"
+            name="action"
+            value="buy_now"
+            {% if not product.in_stock or product.requires_online_payment and not product.allowed_payment_methods and product.current_price > 0 %}disabled{% endif %}
+          >
+            <i class="fas fa-bag-shopping"></i>
+            <span id="pdBuyButtonLabel">
+              {% if product.in_stock %}
+                {% if product.current_price <= 0 %}Place Free Test Order{% elif product.requires_online_payment %}Pay From Site{% else %}Reserve Now{% endif %}
+              {% else %}
+                Unavailable
+              {% endif %}
+            </span>
+          </button>
+
+          <p class="pd-line-total pd-buybox-total">Estimated total: <strong id="pdEstimatedTotal">{{ product.current_price }} {{ currency_label }}</strong></p>
+        </form>
+
+        <div class="pd-contact-row">
+          
+          {% with whatsapp_text="Hello, I am interested in "|add:product.name %}
+            {% if whatsapp_number %}
+              <a href="https://wa.me/{{ whatsapp_number }}?text={{ whatsapp_text|urlencode }}" target="_blank" rel="noopener noreferrer" class="pd-contact-btn pd-contact-whatsapp">
+                <i class="fab fa-whatsapp"></i>
+                WhatsApp
+              </a>
+            {% else %}
+              <a href="{% url 'store:chat' %}" class="pd-contact-btn pd-contact-whatsapp">
+                <i class="fas fa-comments"></i>
+                Live Chat
+              </a>
+            {% endif %}
+          {% endwith %}
+        </div>
+
+        <div class="pd-trust-grid">
+          <div class="pd-trust-item">
+            <i class="fas fa-shield-halved"></i>
+            <span>Secure Checkout</span>
+          </div>
+          <div class="pd-trust-item">
+            <i class="fas fa-headset"></i>
+            <span>Fast Support</span>
+          </div>
+          <div class="pd-trust-item">
+            <i class="fas fa-rotate-left"></i>
+            <span>Easy Returns</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="pd-info-grid">
+      <article class="pd-panel">
+        <h2>Description</h2>
+        <div class="pd-description">
+          {% if product.description %}
+            {{ product.description|safe }}
+          {% elif product.short_description %}
+            <p>{{ product.short_description }}</p>
+          {% else %}
+            <p>No detailed description is available for this product yet.</p>
+          {% endif %}
+        </div>
+        {% if product.product_video %}
+          <div class="pd-video-wrap">
+            <h3>Product Video</h3>
+            <video controls preload="metadata" class="pd-product-video">
+              <source src="{{ product.product_video.url }}">
+              Your browser does not support HTML5 video.
+            </video>
+          </div>
+        {% endif %}
+      </article>
+
+      <aside class="pd-panel pd-facts">
+        <h2>Product Facts</h2>
+        <ul class="pd-facts-list">
+          <li><span>Category</span><strong>{{ product.get_category_display }}</strong></li>
+          {% if product.brand %}<li><span>Brand</span><strong>{{ product.brand }}</strong></li>{% endif %}
+          {% if product.weight %}<li><span>Weight</span><strong>{{ product.weight }} kg</strong></li>{% endif %}
+          {% if product.sku %}<li><span>SKU</span><strong>{{ product.sku }}</strong></li>{% endif %}
+          <li><span>Availability</span><strong>{% if product.in_stock %}In Stock{% else %}Out of Stock{% endif %}</strong></li>
+        </ul>
+      </aside>
+    </div>
+
+    {% if related_products %}
+      <section class="pd-related">
+        <div class="pd-related-head">
+          <h2>You Might Also Like</h2>
+          <a href="{% url 'store:store' %}">View all products</a>
+        </div>
+        <div class="pd-related-grid">
+          {% for related in related_products %}
+            <article class="pd-related-card">
+              <a href="{% url 'store:product_detail' related.id %}" class="pd-related-image-wrap">
+                {% if related.main_image %}
+                  <img src="{{ related.main_image.url }}" alt="{{ related.name }}" class="pd-related-image">
+                {% else %}
+                  <div class="pd-related-placeholder"><i class="fas fa-box-open"></i></div>
+                {% endif %}
+                {% if related.discount_percentage > 0 %}
+                  <span class="pd-related-badge">-{{ related.discount_percentage|floatformat:0 }}%</span>
+                {% endif %}
+              </a>
+              <div class="pd-related-content">
+                <p class="pd-related-category">{{ related.get_category_display }}</p>
+                <h3><a href="{% url 'store:product_detail' related.id %}">{{ related.name }}</a></h3>
+                <div class="pd-related-pricing">
+                  <span class="pd-related-price">{{ related.current_price }} {{ currency_label }}</span>
+                  {% if related.discount_price is not None %}
+                    <span class="pd-related-old">{{ related.price }} {{ currency_label }}</span>
+                  {% endif %}
+                </div>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
+  </div>
+</section>
+
+<div class="pd-mobile-buybar">
+  <div class="pd-mobile-buy-meta">
+    <small>Total</small>
+    <strong id="pdMobileTotal">{{ product.current_price }} {{ currency_label }}</strong>
+  </div>
+  <button
+    type="button"
+    class="pd-mobile-buy-btn"
+    id="pdMobileBuyBtn"
+    {% if not product.in_stock or product.requires_online_payment and not product.allowed_payment_methods and product.current_price > 0 %}disabled{% endif %}
+  >
+    <span id="pdMobileBuyLabel">
+      {% if product.in_stock %}
+        {% if product.current_price <= 0 %}Free order{% elif product.requires_online_payment %}Pay now{% else %}Reserve{% endif %}
+      {% else %}
+        Unavailable
+      {% endif %}
+    </span>
+  </button>
+</div>
+
+<div class="pd-lightbox" id="pdLightbox" hidden>
+  <button type="button" class="pd-lightbox-close" id="pdLightboxClose" aria-label="Close image viewer">
+    <i class="fas fa-xmark"></i>
+  </button>
+  <button type="button" class="pd-lightbox-nav pd-lightbox-prev" id="pdLightboxPrev" aria-label="Previous image">
+    <i class="fas fa-chevron-left"></i>
+  </button>
+  <img id="pdLightboxImage" src="" alt="{{ product.name }}">
+  <button type="button" class="pd-lightbox-nav pd-lightbox-next" id="pdLightboxNext" aria-label="Next image">
+    <i class="fas fa-chevron-right"></i>
+  </button>
+  <p class="pd-lightbox-caption" id="pdLightboxCaption">{{ product.name }}</p>
+</div>
+
+<a href="{% url 'store:chat' %}" class="pd-chat-float" aria-label="Open chat">
+  <i class="fas fa-comments"></i>
+</a>
+
+{% if not product.is_digital %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% endif %}
+
+<script>
+  (function () {
+    const mainImage = document.getElementById('pdMainImage');
+    const thumbs = Array.from(document.querySelectorAll('.pd-thumb'));
+    const quantityInput = document.getElementById('quantity');
+    const quantityButtons = document.querySelectorAll('[data-qty-step]');
+    const buyForm = document.getElementById('pdBuyForm');
+    const estimatedTotal = document.getElementById('pdEstimatedTotal');
+    const mobileTotal = document.getElementById('pdMobileTotal');
+    const mobileBuyBtn = document.getElementById('pdMobileBuyBtn');
+    const buyButton = document.getElementById('pdBuyButton');
+    const buyButtonLabel = document.getElementById('pdBuyButtonLabel');
+    const mobileBuyLabel = document.getElementById('pdMobileBuyLabel');
+    const selectedPaymentText = document.getElementById('pdSelectedPaymentText');
+    const paymentOptions = Array.from(document.querySelectorAll('.pd-payment-option'));
+    const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
+    const defaultFormTarget = buyForm ? buyForm.getAttribute('target') || '' : '';
+    const requiresShipping = buyForm ? buyForm.getAttribute('data-requires-shipping') === '1' : false;
+    const customerPhoneInput = document.getElementById('customer_phone');
+    const shippingCountryInput = document.getElementById('shipping_country');
+    const shippingCityInput = document.getElementById('shipping_city');
+    const shippingAddressInput = document.getElementById('shipping_address');
+    const shippingLatInput = document.getElementById('shipping_latitude');
+    const shippingLngInput = document.getElementById('shipping_longitude');
+    const locateMeButton = document.getElementById('pdLocateMe');
+    const locationStatus = document.getElementById('pdLocationStatus');
+    const locationMapElement = document.getElementById('pdLocationMap');
+
+    const zoomTrigger = document.getElementById('pdZoomTrigger');
+    const lightbox = document.getElementById('pdLightbox');
+    const lightboxImage = document.getElementById('pdLightboxImage');
+    const lightboxCaption = document.getElementById('pdLightboxCaption');
+    const lightboxClose = document.getElementById('pdLightboxClose');
+    const lightboxPrev = document.getElementById('pdLightboxPrev');
+    const lightboxNext = document.getElementById('pdLightboxNext');
+
+    const currency = buyForm ? buyForm.getAttribute('data-currency') || '' : '';
+    const unitPrice = buyForm ? Number(buyForm.getAttribute('data-unit-price')) : 0;
+    const isFreeOrder = unitPrice <= 0;
+
+    const images = thumbs
+      .map((thumb) => {
+        const imageUrl = thumb.getAttribute('data-image');
+        const imageAlt = thumb.getAttribute('data-image-alt') || '';
+        return imageUrl ? { url: imageUrl, alt: imageAlt } : null;
+      })
+      .filter(Boolean);
+
+    let activeIndex = thumbs.findIndex((thumb) => thumb.classList.contains('is-active'));
+    if (activeIndex < 0) {
+      activeIndex = 0;
+    }
+
+    const formatMoney = (value) => {
+      if (!Number.isFinite(value)) {
+        return '';
+      }
+      return new Intl.NumberFormat(undefined, {
+        minimumFractionDigits: value % 1 === 0 ? 0 : 2,
+        maximumFractionDigits: 2
+      }).format(value);
+    };
+
+    const clampQuantity = () => {
+      if (!quantityInput) {
+        return 1;
+      }
+      const min = Number(quantityInput.min) || 1;
+      const max = Number(quantityInput.max) || 999;
+      const current = Number(quantityInput.value) || min;
+      const next = Math.max(min, Math.min(max, current));
+      quantityInput.value = next;
+      return next;
+    };
+
+    const updateTotals = () => {
+      const qty = clampQuantity();
+      const total = unitPrice * qty;
+      const formatted = `${formatMoney(total)} ${currency}`.trim();
+
+      if (estimatedTotal) {
+        estimatedTotal.textContent = formatted;
+      }
+      if (mobileTotal) {
+        mobileTotal.textContent = formatted;
+      }
+    };
+
+    const setActiveThumb = (index) => {
+      if (!thumbs.length || !mainImage || !images.length) {
+        return;
+      }
+
+      activeIndex = (index + images.length) % images.length;
+      const nextImage = images[activeIndex];
+
+      mainImage.src = nextImage.url;
+      mainImage.alt = nextImage.alt || mainImage.alt;
+
+      thumbs.forEach((thumb, thumbIndex) => {
+        thumb.classList.toggle('is-active', thumbIndex === activeIndex);
+      });
+
+      if (lightboxImage && lightbox) {
+        lightboxImage.src = nextImage.url;
+        lightboxImage.alt = nextImage.alt || mainImage.alt;
+        if (lightboxCaption) {
+          lightboxCaption.textContent = nextImage.alt || '{{ product.name|escapejs }}';
+        }
+      }
+    };
+
+    thumbs.forEach((thumb, index) => {
+      thumb.addEventListener('click', () => setActiveThumb(index));
+    });
+
+    quantityButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        if (!quantityInput || quantityInput.disabled) {
+          return;
+        }
+
+        const step = Number(button.getAttribute('data-qty-step'));
+        quantityInput.value = (Number(quantityInput.value) || 1) + step;
+        clampQuantity();
+        updateTotals();
+      });
+    });
+
+    if (quantityInput) {
+      quantityInput.addEventListener('input', updateTotals);
+      quantityInput.addEventListener('change', updateTotals);
+    }
+
+    const refreshPaymentState = () => {
+      paymentOptions.forEach((option) => {
+        const radio = option.querySelector('input[type="radio"]');
+        option.classList.toggle('is-selected', Boolean(radio && radio.checked));
+      });
+      updateSelectedPaymentState();
+    };
+
+    const getSelectedPaymentData = () => {
+      const checked = Array.from(paymentRadios).find((radio) => radio.checked);
+      if (checked) {
+        const option = checked.closest('.pd-payment-option');
+        const label = option ? option.getAttribute('data-method-label') || checked.value : checked.value;
+        return { value: checked.value, label };
+      }
+
+      if (!buyForm) {
+        return null;
+      }
+
+      const hiddenMethod = buyForm.querySelector('input[type="hidden"][name="payment_method"]');
+      if (hiddenMethod) {
+        return { value: hiddenMethod.value, label: 'Cash on Delivery (COD)' };
+      }
+      return null;
+    };
+
+    const updateSelectedPaymentState = () => {
+      const selectedPayment = getSelectedPaymentData();
+      if (!selectedPayment) {
+        return;
+      }
+
+      if (selectedPaymentText) {
+        selectedPaymentText.textContent = `Selected: ${selectedPayment.label}`;
+      }
+
+      if (buyButton && buyButton.disabled) {
+        return;
+      }
+
+      if (isFreeOrder) {
+        if (buyButtonLabel) {
+          buyButtonLabel.textContent = 'Place Free Test Order';
+        }
+        if (mobileBuyLabel && mobileBuyBtn && !mobileBuyBtn.disabled) {
+          mobileBuyLabel.textContent = 'Free order';
+        }
+        return;
+      }
+
+      const desktopLabels = {
+        stripe: 'Pay with Stripe',
+        paypal: 'Pay with PayPal',
+        cash_on_delivery: 'Reserve Now'
+      };
+      const mobileLabels = {
+        stripe: 'Stripe',
+        paypal: 'PayPal',
+        cash_on_delivery: 'Reserve'
+      };
+
+      if (buyButtonLabel) {
+        buyButtonLabel.textContent = desktopLabels[selectedPayment.value] || 'Continue';
+      }
+      if (mobileBuyLabel && mobileBuyBtn && !mobileBuyBtn.disabled) {
+        mobileBuyLabel.textContent = mobileLabels[selectedPayment.value] || 'Continue';
+      }
+    };
+
+    const updateLocationStatus = (text, isError) => {
+      if (!locationStatus) {
+        return;
+      }
+      locationStatus.textContent = text;
+      locationStatus.classList.toggle('is-error', Boolean(isError));
+      locationStatus.classList.toggle('is-success', !isError);
+    };
+
+    let shippingMap = null;
+    let shippingMarker = null;
+
+    const setShippingLocation = (lat, lng, shouldCenter) => {
+      if (!shippingLatInput || !shippingLngInput) {
+        return;
+      }
+
+      shippingLatInput.value = Number(lat).toFixed(7);
+      shippingLngInput.value = Number(lng).toFixed(7);
+      updateLocationStatus(`Location set: ${shippingLatInput.value}, ${shippingLngInput.value}`, false);
+
+      if (shippingMap && window.L) {
+        const point = [lat, lng];
+        if (!shippingMarker) {
+          shippingMarker = window.L.marker(point).addTo(shippingMap);
+        } else {
+          shippingMarker.setLatLng(point);
+        }
+        if (shouldCenter) {
+          shippingMap.setView(point, Math.max(shippingMap.getZoom(), 15));
+        }
+      }
+    };
+
+    if (requiresShipping && locationMapElement) {
+      if (typeof window.L === 'undefined') {
+        updateLocationStatus('Map failed to load. Please refresh the page and try again.', true);
+      } else {
+        shippingMap = window.L.map(locationMapElement).setView([33.5731, -7.5898], 6);
+        window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(shippingMap);
+
+        shippingMap.on('click', (event) => {
+          setShippingLocation(event.latlng.lat, event.latlng.lng, false);
+        });
+
+        window.setTimeout(() => {
+          shippingMap.invalidateSize();
+        }, 100);
+      }
+    }
+
+    if (locateMeButton) {
+      locateMeButton.addEventListener('click', () => {
+        if (!navigator.geolocation) {
+          updateLocationStatus('Geolocation is not supported by your browser.', true);
+          return;
+        }
+
+        updateLocationStatus('Detecting your current location...', false);
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setShippingLocation(position.coords.latitude, position.coords.longitude, true);
+          },
+          () => {
+            updateLocationStatus('Unable to detect your location. Choose it manually on the map.', true);
+          },
+          { enableHighAccuracy: true, timeout: 10000 }
+        );
+      });
+    }
+
+    const resetFormTarget = () => {
+      if (!buyForm) {
+        return;
+      }
+      if (defaultFormTarget) {
+        buyForm.setAttribute('target', defaultFormTarget);
+      } else {
+        buyForm.removeAttribute('target');
+      }
+    };
+
+    if (buyForm) {
+      buyForm.addEventListener('submit', (event) => {
+        const submitter = event.submitter;
+        const submittedAction = (submitter && submitter.value ? submitter.value : 'buy_now').toLowerCase();
+        if (submittedAction !== 'buy_now') {
+          resetFormTarget();
+          return;
+        }
+
+        if (requiresShipping) {
+          const missingMainFields = [customerPhoneInput, shippingCountryInput, shippingCityInput, shippingAddressInput]
+            .some((input) => !input || !input.value.trim());
+
+          if (missingMainFields) {
+            event.preventDefault();
+            updateLocationStatus('Fill all shipping fields before payment.', true);
+            return;
+          }
+
+          if (!shippingLatInput || !shippingLngInput || !shippingLatInput.value || !shippingLngInput.value) {
+            event.preventDefault();
+            updateLocationStatus('Please select your exact location from the map.', true);
+            return;
+          }
+        }
+
+        const selectedPayment = getSelectedPaymentData();
+        if (!selectedPayment || selectedPayment.value !== 'paypal') {
+          resetFormTarget();
+          return;
+        }
+
+        const popupName = 'paypalCheckoutWindow';
+        const popupFeatures = 'width=520,height=760,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,status=yes';
+        const popup = window.open('', popupName, popupFeatures);
+
+        if (!popup) {
+          resetFormTarget();
+          return;
+        }
+
+        buyForm.setAttribute('target', popupName);
+        popup.focus();
+        window.setTimeout(() => {
+          resetFormTarget();
+        }, 250);
+      });
+    }
+
+    paymentRadios.forEach((radio) => {
+      radio.addEventListener('change', refreshPaymentState);
+    });
+
+    const openLightbox = () => {
+      if (!lightbox || !lightboxImage || !images.length) {
+        return;
+      }
+      lightbox.removeAttribute('hidden');
+      setActiveThumb(activeIndex);
+      document.body.classList.add('pd-lightbox-open');
+    };
+
+    const closeLightbox = () => {
+      if (!lightbox) {
+        return;
+      }
+      lightbox.setAttribute('hidden', '');
+      document.body.classList.remove('pd-lightbox-open');
+    };
+
+    if (zoomTrigger) {
+      zoomTrigger.addEventListener('click', openLightbox);
+    }
+
+    if (mainImage) {
+      mainImage.addEventListener('dblclick', openLightbox);
+    }
+
+    if (lightboxClose) {
+      lightboxClose.addEventListener('click', closeLightbox);
+    }
+
+    if (lightboxPrev) {
+      lightboxPrev.addEventListener('click', () => setActiveThumb(activeIndex - 1));
+    }
+
+    if (lightboxNext) {
+      lightboxNext.addEventListener('click', () => setActiveThumb(activeIndex + 1));
+    }
+
+    if (lightbox) {
+      lightbox.addEventListener('click', (event) => {
+        if (event.target === lightbox) {
+          closeLightbox();
+        }
+      });
+    }
+
+    document.addEventListener('keydown', (event) => {
+      if (!lightbox || lightbox.hasAttribute('hidden')) {
+        return;
+      }
+
+      if (event.key === 'Escape') {
+        closeLightbox();
+      } else if (event.key === 'ArrowLeft') {
+        setActiveThumb(activeIndex - 1);
+      } else if (event.key === 'ArrowRight') {
+        setActiveThumb(activeIndex + 1);
+      }
+    });
+
+    if (mobileBuyBtn && buyForm) {
+      mobileBuyBtn.addEventListener('click', () => {
+        if (mobileBuyBtn.disabled) {
+          return;
+        }
+        if (buyForm.requestSubmit) {
+          if (buyButton) {
+            buyForm.requestSubmit(buyButton);
+          } else {
+            buyForm.requestSubmit();
+          }
+        } else {
+          buyForm.submit();
+        }
+      });
+    }
+
+    refreshPaymentState();
+    updateTotals();
+  })();
+</script>
+{% endblock %}

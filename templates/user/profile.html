@@ -1,0 +1,337 @@
+{% extends 'base.html' %}
+{% load static socialaccount %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<section class="profile-shell">
+    <div class="container">
+        <div class="profile-hero">
+            <p class="hero-kicker">Account Center</p>
+            <h1>{{ profile.user.get_full_name|default:profile.user.username }}</h1>
+            <p class="hero-text">Manage your account details, security options, and connected sign-in providers.</p>
+        </div>
+
+        <div class="row g-4 align-items-stretch">
+            <div class="col-lg-4">
+                <article class="profile-card identity-card">
+                    <div class="identity-avatar-wrap">
+                        <img
+                            src="{% if profile.avatar %}{{ profile.avatar.url }}{% else %}{% static 'images/default-avatar.svg' %}{% endif %}"
+                            alt="{{ profile.user.username }}"
+                            class="identity-avatar"
+                        >
+                    </div>
+                    <h2>{{ profile.user.get_full_name|default:profile.user.username }}</h2>
+                    <p class="identity-handle">@{{ profile.user.username }}</p>
+                    <p class="identity-email">{{ profile.user.email|default:"No email added" }}</p>
+
+                    <div class="identity-meta">
+                        <div>
+                            <span>Member since</span>
+                            <strong>{{ profile.user.date_joined|date:"M d, Y" }}</strong>
+                        </div>
+                        <div>
+                            <span>Last update</span>
+                            <strong>{{ profile.updated_at|date:"M d, Y" }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="identity-actions">
+                        <a href="{% url 'dashboard:profile' %}" class="btn btn-dark w-100">
+                            <i class="fas fa-pen"></i> Edit Profile
+                        </a>
+                        <a href="{% url 'user:logout' %}" class="btn btn-outline-danger w-100">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </article>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="profile-grid">
+                    <article class="profile-card detail-card">
+                        <h3><i class="fas fa-id-card"></i> Personal Information</h3>
+                        <div class="detail-list">
+                            <div class="detail-item">
+                                <span>First name</span>
+                                <strong>{{ profile.user.first_name|default:"Not set" }}</strong>
+                            </div>
+                            <div class="detail-item">
+                                <span>Last name</span>
+                                <strong>{{ profile.user.last_name|default:"Not set" }}</strong>
+                            </div>
+                            <div class="detail-item">
+                                <span>Email</span>
+                                <strong>{{ profile.user.email|default:"Not set" }}</strong>
+                            </div>
+                            <div class="detail-item">
+                                <span>Country</span>
+                                <strong>{{ profile.country.name|default:"Not set" }}</strong>
+                            </div>
+                            <div class="detail-item">
+                                <span>City</span>
+                                <strong>{{ profile.city|default:"Not set" }}</strong>
+                            </div>
+                            <div class="detail-item">
+                                <span>Main interest</span>
+                                <strong>{{ profile.interesting|default:"Not set" }}</strong>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="profile-card detail-card">
+                        <h3><i class="fas fa-shield-alt"></i> Security & Access</h3>
+                        <div class="action-stack">
+                            <a href="{% url 'user:password_reset' %}" class="btn btn-outline-dark">
+                                <i class="fas fa-key"></i> Change Password
+                            </a>
+                            <a href="{% url 'dashboard:orders' %}" class="btn btn-outline-dark">
+                                <i class="fas fa-shopping-bag"></i> View Orders
+                            </a>
+                        </div>
+                    </article>
+
+                    <article class="profile-card detail-card">
+                        <h3><i class="fas fa-link"></i> Social Sign-In</h3>
+                        <p class="section-note">Use Google or Facebook for faster sign-in.</p>
+                        <div class="social-buttons">
+                            <a href="{% provider_login_url 'google' process='connect' %}" class="social-btn is-google">
+                                <i class="fab fa-google"></i> Connect Google
+                            </a>
+                            <a href="{% provider_login_url 'facebook' process='connect' %}" class="social-btn is-facebook">
+                                <i class="fab fa-facebook-f"></i> Connect Facebook
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .profile-shell {
+        background:
+            radial-gradient(circle at 0% 0%, rgba(255, 214, 153, 0.3), transparent 40%),
+            radial-gradient(circle at 100% 0%, rgba(119, 177, 255, 0.22), transparent 45%),
+            #f7f8fc;
+        min-height: calc(100vh - 110px);
+        padding: 140px 0 70px;
+    }
+
+    .profile-hero {
+        margin-bottom: 24px;
+    }
+
+    .profile-hero h1 {
+        font-family: "Bricolage Grotesque", sans-serif;
+        font-weight: 700;
+        color: #0f1737;
+        margin-bottom: 8px;
+    }
+
+    .hero-kicker {
+        font-family: "Manrope", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 12px;
+        color: #667199;
+        margin-bottom: 10px;
+    }
+
+    .hero-text {
+        color: #4f597f;
+        margin: 0;
+        max-width: 620px;
+    }
+
+    .profile-card {
+        background: #ffffff;
+        border: 1px solid #e3e8f5;
+        border-radius: 20px;
+        box-shadow: 0 20px 45px rgba(23, 31, 61, 0.08);
+        padding: 24px;
+        height: 100%;
+    }
+
+    .identity-card {
+        position: sticky;
+        top: 110px;
+    }
+
+    .identity-avatar-wrap {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 16px;
+    }
+
+    .identity-avatar {
+        width: 132px;
+        height: 132px;
+        border-radius: 50%;
+        border: 5px solid #f0f3ff;
+        object-fit: cover;
+        background: #eef2ff;
+    }
+
+    .identity-card h2 {
+        font-family: "Bricolage Grotesque", sans-serif;
+        font-size: 1.45rem;
+        color: #12183c;
+        margin-bottom: 4px;
+        text-align: center;
+    }
+
+    .identity-handle {
+        color: #60709b;
+        text-align: center;
+        margin-bottom: 4px;
+    }
+
+    .identity-email {
+        color: #32406a;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 18px;
+    }
+
+    .identity-meta {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .identity-meta div {
+        background: #f7f9ff;
+        border: 1px solid #e2e9ff;
+        border-radius: 12px;
+        padding: 12px 14px;
+    }
+
+    .identity-meta span {
+        display: block;
+        color: #6d7ca9;
+        font-size: 12px;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .identity-meta strong {
+        color: #1a2349;
+    }
+
+    .identity-actions {
+        display: grid;
+        gap: 10px;
+    }
+
+    .profile-grid {
+        display: grid;
+        gap: 18px;
+    }
+
+    .detail-card h3 {
+        font-family: "Bricolage Grotesque", sans-serif;
+        color: #141b3d;
+        font-size: 1.2rem;
+        margin-bottom: 16px;
+    }
+
+    .detail-card h3 i {
+        margin-right: 6px;
+    }
+
+    .detail-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .detail-item {
+        background: #f8faff;
+        border: 1px solid #e5ebff;
+        border-radius: 12px;
+        padding: 12px;
+    }
+
+    .detail-item span {
+        display: block;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #6d7ca9;
+        margin-bottom: 5px;
+    }
+
+    .detail-item strong {
+        color: #1c2345;
+    }
+
+    .action-stack {
+        display: grid;
+        gap: 10px;
+    }
+
+    .section-note {
+        color: #5e6d98;
+        margin-bottom: 12px;
+    }
+
+    .social-buttons {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .social-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: 1px solid #dce3fb;
+        border-radius: 12px;
+        padding: 11px 10px;
+        text-decoration: none;
+        font-weight: 700;
+        color: #1b2752;
+        background: #fff;
+        transition: all 0.2s ease;
+    }
+
+    .social-btn.is-google:hover {
+        border-color: #ea4335;
+        color: #b93a2f;
+        box-shadow: 0 8px 20px rgba(234, 67, 53, 0.2);
+    }
+
+    .social-btn.is-facebook:hover {
+        border-color: #1877f2;
+        color: #0b56b9;
+        box-shadow: 0 8px 20px rgba(24, 119, 242, 0.2);
+    }
+
+    @media (max-width: 991px) {
+        .profile-shell {
+            padding-top: 120px;
+        }
+
+        .identity-card {
+            position: static;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .detail-list,
+        .social-buttons {
+            grid-template-columns: 1fr;
+        }
+
+        .profile-card {
+            border-radius: 16px;
+        }
+    }
+</style>
+{% endblock %}

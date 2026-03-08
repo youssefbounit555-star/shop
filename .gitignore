@@ -1,0 +1,12 @@
+/.zencoder
+/.zenflow
+
+# Local environment files
+.env
+**/.env
+*.env
+db.sqlite3
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]

@@ -1,0 +1,83 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Delete Goal - Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .confirmation-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 400px;
+    }
+
+    .confirmation-modal {
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        padding: 3rem;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: var(--shadow-lg);
+        animation: slideInUp 0.5s ease-out;
+    }
+
+    .confirmation-icon {
+        width: 60px;
+        height: 60px;
+        background: rgba(239, 68, 68, 0.15);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2rem;
+        color: var(--danger);
+    }
+
+    .confirmation-modal h2 {
+        color: var(--text-primary);
+        margin: 0 0 0.5rem 0;
+        font-size: 1.5rem;
+    }
+
+    .confirmation-modal p {
+        color: var(--text-secondary);
+        margin: 0 0 2rem 0;
+        font-size: 0.95rem;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .button-group .btn {
+        flex: 1;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="confirmation-container">
+    <div class="confirmation-modal">
+        <div class="confirmation-icon">
+            <i class="fas fa-exclamation"></i>
+        </div>
+        
+        <h2>Delete Goal?</h2>
+        <p>Are you sure you want to delete "<strong>{{ goal.title }}</strong>"? This action cannot be undone.</p>
+
+        <form method="post" style="display: flex; gap: 1rem;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger" style="flex: 1;">
+                <i class="fas fa-check"></i> Delete
+            </button>
+            <a href="{% url 'dashboard:goals' %}" class="btn btn-secondary" style="flex: 1;">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </form>
+    </div>
+</div>
+{% endblock %}

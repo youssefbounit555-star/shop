@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5" style="max-width:900px;">
+  <h1 class="fw-bold mb-4" style="color:#425ed8;">Customer Chat</h1>
+  <div class="card p-4 shadow-sm border-0 mb-4" style="min-height:320px;max-height:420px;overflow-y:auto;">
+    {% for msg in messages %}
+      <div class="d-flex mb-3 {% if msg.sender.is_superuser %}justify-content-end{% endif %}">
+        <div class="chat-bubble p-3 rounded-3 {% if msg.sender.is_superuser %}bg-primary text-white{% else %}bg-light text-dark{% endif %}" style="max-width:70%;">
+          <div class="mb-1 small text-muted">{{ msg.sender.username }} <span class="ms-2">{{ msg.timestamp|date:'H:i' }}</span></div>
+          <div>{{ msg.text }}</div>
+        </div>
+        {% if not msg.read and not msg.sender.is_superuser %}
+          <span class="badge bg-danger ms-2">New</span>
+        {% endif %}
+      </div>
+    {% empty %}
+      <div class="text-center text-muted">No messages yet.</div>
+    {% endfor %}
+  </div>
+  <form method="post" class="d-flex gap-2">
+    {% csrf_token %}
+    <input type="text" name="text" class="form-control rounded-3" placeholder="Type your message..." required>
+    <button type="submit" class="btn btn-gradient-primary px-4"><i class="fas fa-paper-plane"></i></button>
+  </form>
+</div>
+<style>
+.chat-bubble { animation: fadeIn .3s; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(20px);} to { opacity:1; transform:none;}}
+</style>
+{% endblock %}

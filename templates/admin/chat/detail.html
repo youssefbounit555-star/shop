@@ -1,0 +1,91 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}Live Chat with {{ other_user.username }}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/realtime_chat.css' %}">
+
+<div class="page-header">
+    <h1><i class="fas fa-comments"></i> {{ other_user.get_full_name|default:other_user.username }}</h1>
+    <div class="actions">
+        <a href="{% url 'admin_panel:chat_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    </div>
+</div>
+
+<section class="support-chat-page" style="min-height: auto; padding-top: .2rem;">
+    <div
+        id="supportChatApp"
+        class="support-chat-shell"
+        data-send-url="{% url 'chat:send_message' %}"
+        data-load-url="{% url 'chat:load_messages' %}"
+        data-typing-update-url="{% url 'chat:update_typing' %}"
+        data-typing-get-url="{% url 'chat:get_typing' %}"
+        data-conversation-id="{{ conversation.id }}"
+        data-current-user-id="{{ request.user.id }}"
+        data-is-admin="true"
+        data-poll-ms="900"
+    >
+        <aside class="support-chat-panel support-chat-sidebar">
+            <span class="support-chat-badge"><i class="fas fa-signal"></i> Realtime</span>
+            <h2 class="support-chat-title">Manager Console</h2>
+            <p class="support-chat-subtitle">Instant support thread with customer media and voice notes.</p>
+            <div class="support-chat-stats">
+                <div><strong>Conversation:</strong> #{{ conversation.id }}</div>
+                <div><strong>Status:</strong> {{ conversation.get_status_display }}</div>
+                <div><strong>Priority:</strong> {{ conversation.get_priority_display }}</div>
+            </div>
+        </aside>
+
+        <main class="support-chat-panel support-chat-main" style="min-height: 68vh;">
+            <header class="support-chat-header">
+                <div class="support-chat-user">
+                    <span class="support-chat-avatar">{{ other_user.username|slice:":1"|upper }}</span>
+                    <div>
+                        <h3>{{ other_user.get_full_name|default:other_user.username }}</h3>
+                        <p>Customer</p>
+                    </div>
+                </div>
+            </header>
+
+            <div class="support-chat-feed" id="supportChatFeed" aria-live="polite"></div>
+
+            <form class="support-composer" id="supportChatForm" enctype="multipart/form-data" autocomplete="off">
+                {% csrf_token %}
+                <textarea id="supportChatText" class="support-input" rows="2" placeholder="Reply instantly..."></textarea>
+                <div class="support-tools">
+                    <div class="support-tool-group">
+                        <label class="support-btn ghost" for="supportChatFile">
+                            <i class="fas fa-photo-film"></i> Media
+                        </label>
+                        <input id="supportChatFile" type="file" accept="image/*,video/*" hidden>
+                        <button type="button" class="support-btn ghost" id="supportChatRecord">
+                            <i class="fas fa-microphone"></i> Voice
+                        </button>
+                        <button type="button" class="support-btn ghost" id="supportChatClearAudio" hidden>
+                            <i class="fas fa-xmark"></i> Remove Voice
+                        </button>
+                    </div>
+                    <button type="submit" class="support-btn primary" id="supportChatSend">
+                        <i class="fas fa-paper-plane"></i> Send
+                    </button>
+                </div>
+                <div class="support-attachment" id="supportChatAttachmentPreview"></div>
+                <div class="support-audio-preview" id="supportChatAudioPreview" hidden>
+                    <strong>Voice preview:</strong>
+                    <audio controls id="supportChatAudioPlayer"></audio>
+                </div>
+                <div class="support-typing" id="supportChatTyping"></div>
+            </form>
+        </main>
+    </div>
+</section>
+
+{{ initial_messages|json_script:"supportChatInitialMessages" }}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/realtime_chat.js' %}"></script>
+{% endblock %}

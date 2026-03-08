@@ -1,0 +1,239 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Customers - Admin{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>
+        <i class="fas fa-users"></i>
+        Customers
+    </h1>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3 col-sm-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <p class="text-muted mb-1">Visible Customers</p>
+                <h3 class="mb-0">{{ total_customers }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <p class="text-muted mb-1">Logged In</p>
+                <h3 class="mb-0">{{ logged_in_customers }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <p class="text-muted mb-1">With Orders</p>
+                <h3 class="mb-0">{{ customers_with_orders }}</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <p class="text-muted mb-1">Guests</p>
+                <h3 class="mb-0">{{ guest_customers }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="filter-panel">
+    <h6><i class="fas fa-filter"></i> Filter & Search</h6>
+    <form method="get" class="row g-3">
+        <div class="col-md-4">
+            <input
+                type="text"
+                name="search"
+                class="form-control"
+                placeholder="Search by name, email, username, or phone..."
+                value="{{ request.GET.search|default:'' }}"
+            >
+        </div>
+        <div class="col-md-2">
+            <select name="login_status" class="form-select">
+                <option value="">Any Login</option>
+                <option value="yes" {% if request.GET.login_status == 'yes' %}selected{% endif %}>Logged In</option>
+                <option value="no" {% if request.GET.login_status == 'no' %}selected{% endif %}>Never Logged In</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="order_status" class="form-select">
+                <option value="">Any Order Status</option>
+                <option value="yes" {% if request.GET.order_status == 'yes' %}selected{% endif %}>Has Orders</option>
+                <option value="no" {% if request.GET.order_status == 'no' %}selected{% endif %}>No Orders</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="account_type" class="form-select">
+                <option value="">Any Account Type</option>
+                <option value="registered" {% if request.GET.account_type == 'registered' %}selected{% endif %}>Registered</option>
+                <option value="guest" {% if request.GET.account_type == 'guest' %}selected{% endif %}>Guest</option>
+            </select>
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        <div class="col-md-1">
+            <a href="{% url 'admin_panel:customers_list' %}" class="btn btn-secondary w-100">
+                <i class="fas fa-rotate-left"></i>
+            </a>
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h5 class="mb-0">
+                <i class="fas fa-list"></i>
+                Customer List ({{ total_customers }})
+            </h5>
+            {% if is_paginated %}
+                <span class="badge badge-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if customers %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Customer</th>
+                    <th>Account</th>
+                    <th>Login Status</th>
+                    <th>Last Login</th>
+                    <th>Orders</th>
+                    <th>Total Spent</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in customers %}
+                <tr>
+                    <td>
+                        <strong>{{ customer.full_name }}</strong>
+                        {% if customer.username %}
+                            <br><small class="text-muted">@{{ customer.username }}</small>
+                        {% endif %}
+                        {% if customer.email %}
+                            <br><small class="text-muted">{{ customer.email }}</small>
+                        {% endif %}
+                        {% if customer.phone %}
+                            <br><small class="text-muted">{{ customer.phone }}</small>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if customer.is_registered %}
+                            <span class="badge bg-primary">Registered</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Guest</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if customer.has_logged_in %}
+                            <span class="badge bg-success">Logged In</span>
+                        {% else %}
+                            <span class="badge bg-light text-dark">No Login Yet</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if customer.last_login %}
+                            {{ customer.last_login|date:"M d, Y H:i" }}
+                        {% else %}
+                            <span class="text-muted">Never</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if customer.has_orders %}
+                            <span class="badge bg-warning text-dark">{{ customer.total_orders }} order{{ customer.total_orders|pluralize }}</span>
+                        {% else %}
+                            <span class="badge bg-light text-dark">No Orders</span>
+                        {% endif %}
+                    </td>
+                    <td>${{ customer.total_spent|floatformat:2 }}</td>
+                    <td>
+                        {% if customer.email %}
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a href="{% url 'admin_panel:customers_detail' customer.email %}" class="btn btn-info">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{% url 'admin_panel:customers_delete' customer.email %}" class="btn btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        {% else %}
+                            <span class="badge bg-secondary">No Email</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if is_paginated %}
+    <div style="padding: 20px 25px; border-top: 1px solid var(--border-color);">
+        <nav aria-label="Customer pagination">
+            <ul class="pagination justify-content-center mb-0">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1&{% include 'admin/customers/_query_params.html' %}">
+                        <i class="fas fa-step-backward"></i> First
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}&{% include 'admin/customers/_query_params.html' %}">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li class="page-item active">
+                        <a class="page-link" href="#">{{ num }}</a>
+                    </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}&{% include 'admin/customers/_query_params.html' %}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}&{% include 'admin/customers/_query_params.html' %}">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&{% include 'admin/customers/_query_params.html' %}">
+                        Last <i class="fas fa-step-forward"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-user-slash"></i>
+        <h3>No Customers Found</h3>
+        <p>No customers match the current filters.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

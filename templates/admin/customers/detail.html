@@ -1,0 +1,187 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Customer {{ email }} - Admin{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>
+        <i class="fas fa-user"></i>
+        {{ customer_info.full_name }}
+    </h1>
+    <div class="actions">
+        <a href="{% url 'admin_panel:customers_delete' email %}" class="btn btn-danger">
+            <i class="fas fa-trash"></i> Delete
+        </a>
+        <a href="{% url 'admin_panel:customers_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4 col-sm-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <p class="text-muted mb-1">Account Type</p>
+                {% if customer_info.has_account %}
+                    <h5 class="mb-0"><span class="badge bg-primary">Registered</span></h5>
+                {% else %}
+                    <h5 class="mb-0"><span class="badge bg-secondary">Guest</span></h5>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <p class="text-muted mb-1">Login Status</p>
+                {% if customer_info.last_login %}
+                    <h5 class="mb-0"><span class="badge bg-success">Logged In</span></h5>
+                {% else %}
+                    <h5 class="mb-0"><span class="badge bg-light text-dark">No Login Yet</span></h5>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <p class="text-muted mb-1">Orders</p>
+                {% if has_orders %}
+                    <h5 class="mb-0"><span class="badge bg-warning text-dark">{{ stats.total_orders }} order{{ stats.total_orders|pluralize }}</span></h5>
+                {% else %}
+                    <h5 class="mb-0"><span class="badge bg-light text-dark">No Orders Yet</span></h5>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Customer Information</h5>
+            </div>
+            <div class="card-body">
+                <dl>
+                    <dt>Name</dt>
+                    <dd>{{ customer_info.full_name }}</dd>
+
+                    <dt>Email</dt>
+                    <dd>{{ customer_info.email|default:"-" }}</dd>
+
+                    <dt>Username</dt>
+                    <dd>{{ customer_info.username|default:"-" }}</dd>
+
+                    <dt>Phone</dt>
+                    <dd>{{ customer_info.phone|default:"-" }}</dd>
+
+                    <dt>Address</dt>
+                    <dd>{{ customer_info.address|default:"-" }}</dd>
+
+                    <dt>City</dt>
+                    <dd>{{ customer_info.city|default:"-" }}</dd>
+
+                    <dt>Country</dt>
+                    <dd>{{ customer_info.country|default:"-" }}</dd>
+
+                    <dt>Joined</dt>
+                    <dd>
+                        {% if customer_info.date_joined %}
+                            {{ customer_info.date_joined|date:"M d, Y H:i" }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </dd>
+
+                    <dt>Last Login</dt>
+                    <dd>
+                        {% if customer_info.last_login %}
+                            {{ customer_info.last_login|date:"M d, Y H:i" }}
+                        {% else %}
+                            Never
+                        {% endif %}
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="stat-card">
+                    <p>Total Orders</p>
+                    <h4>{{ stats.total_orders }}</h4>
+                </div>
+                <div class="stat-card">
+                    <p>Total Spent</p>
+                    <h4>${{ stats.total_spent|floatformat:2 }}</h4>
+                </div>
+                <div class="stat-card">
+                    <p>Average Order</p>
+                    <h4>${{ stats.avg_order_value|floatformat:2 }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-history"></i> Order History</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td>{{ order.order_id }}</td>
+                            <td>${{ order.total_price|floatformat:2 }}</td>
+                            <td>
+                                {% if order.status == 'pending' %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% elif order.status == 'processing' %}
+                                    <span class="badge bg-info">Processing</span>
+                                {% elif order.status == 'shipped' %}
+                                    <span class="badge bg-primary">Shipped</span>
+                                {% elif order.status == 'cancelled' %}
+                                    <span class="badge bg-danger">Cancelled</span>
+                                {% elif order.status == 'refunded' %}
+                                    <span class="badge bg-secondary">Refunded</span>
+                                {% else %}
+                                    <span class="badge bg-success">Completed</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ order.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <a href="{% url 'admin_panel:orders_detail' order.order_id %}" class="btn btn-sm btn-outline-primary">
+                                    View
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4">
+                                <p class="text-muted mb-0">No orders found for this customer.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

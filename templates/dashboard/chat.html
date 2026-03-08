@@ -1,0 +1,149 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Chat - Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .chat-container {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: 1.5rem;
+        height: calc(100vh - 200px);
+        margin-top: 2rem;
+    }
+
+    .conversations-panel {
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        overflow-y: auto;
+    }
+
+    .conversation-item {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-color);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .conversation-item:hover {
+        background: var(--bg-secondary);
+    }
+
+    .conversation-item.active {
+        background: linear-gradient(90deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%);
+        border-left: 3px solid var(--primary);
+    }
+
+    .chat-panel {
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .messages-area {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1.5rem;
+    }
+
+    .message {
+        margin-bottom: 1rem;
+        animation: slideInUp 0.3s ease-out;
+    }
+
+    .message-bubble {
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        max-width: 70%;
+        word-wrap: break-word;
+    }
+
+    .message.sent .message-bubble {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        color: white;
+        margin-left: auto;
+    }
+
+    .message.received .message-bubble {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+    }
+
+    .message-input {
+        padding: 1rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: var(--text-secondary);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header slide-in-down">
+    <h1 class="page-title">Messages</h1>
+    <p class="page-subtitle">Chat with other users</p>
+</div>
+
+{% if conversations %}
+    <div class="chat-container">
+        <!-- Conversations List -->
+        <div class="conversations-panel">
+            {% for conv in conversations %}
+                <div class="conversation-item {% if request.GET.user_id == conv.user.id %}active{% endif %}" 
+                     onclick="window.location.href='?user_id={{ conv.user.id }}'">
+                    <div style="font-weight: 600; color: var(--text-primary);">{{ conv.user.first_name }}</div>
+                    <small style="color: var(--text-secondary);">{{ conv.last_message|truncatewords:5 }}</small>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Chat Panel -->
+        <div class="chat-panel">
+            <div class="messages-area">
+                {% if messages %}
+                    {% for msg in messages %}
+                        <div class="message {% if msg.sender == user %}sent{% else %}received{% endif %}">
+                            <div class="message-bubble">{{ msg.content }}</div>
+                            <small style="color: var(--text-secondary); padding: 0.25rem 0.75rem;">
+                                {{ msg.created_at|date:"g:i A" }}
+                            </small>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <form method="post" class="message-input" style="display: flex; gap: 1rem;">
+                {% csrf_token %}
+                <textarea name="content" class="form-control" placeholder="Type your message..." 
+                          style="flex: 1; resize: none; height: 50px;"></textarea>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-send"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+{% else %}
+    <div class="empty-state dashboard-card">
+        <i class="fas fa-inbox"></i>
+        <h3 style="color: var(--text-primary); margin: 1rem 0;">No Conversations Yet</h3>
+        <p>Start a conversation with other users</p>
+    </div>
+{% endif %}
+
+<style>
+    @media (max-width: 768px) {
+        .chat-container {
+            grid-template-columns: 1fr;
+            height: auto;
+        }
+    }
+</style>
+{% endblock %}

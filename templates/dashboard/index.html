@@ -1,0 +1,337 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}My Dashboard - ElegantShop{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard_index.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dash-home">
+    <section class="dash-hero">
+        <div>
+            <p class="dash-kicker">Personal dashboard</p>
+            <h1 class="dash-title">Welcome, {{ user.get_full_name|default:user.username }}</h1>
+            <p class="dash-subtitle">
+                Customer since {{ customer_since|date:"F Y" }}. Track your orders, goals, and messages in one place.
+            </p>
+        </div>
+        <div class="dash-hero-actions">
+            <a href="{% url 'dashboard:orders' %}" class="dash-btn dash-btn-primary">
+                <i class="fas fa-shopping-bag"></i>
+                <span>My Orders</span>
+            </a>
+            <a href="{% url 'dashboard:goals' %}" class="dash-btn dash-btn-soft">
+                <i class="fas fa-list-check"></i>
+                <span>My Goals</span>
+            </a>
+            <a href="{% url 'dashboard:chat' %}" class="dash-btn dash-btn-soft">
+                <i class="fas fa-comments"></i>
+                <span>Messages</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="dash-metrics">
+        <article class="dash-card metric-card">
+            <div class="metric-head">
+                <span>Total Orders</span>
+                <i class="fas fa-box-open"></i>
+            </div>
+            <p class="metric-value">{{ total_orders }}</p>
+            <p class="metric-note">{{ orders_last_30_days }} in the last 30 days</p>
+        </article>
+
+        <article class="dash-card metric-card">
+            <div class="metric-head">
+                <span>Paid Orders</span>
+                <i class="fas fa-circle-check"></i>
+            </div>
+            <p class="metric-value">{{ paid_orders_count }}</p>
+            <p class="metric-note">{{ completed_orders_count }} delivered</p>
+        </article>
+
+        <article class="dash-card metric-card">
+            <div class="metric-head">
+                <span>Total Spent</span>
+                <i class="fas fa-wallet"></i>
+            </div>
+            <p class="metric-value">{{ currency_label }} {{ total_spent|floatformat:2 }}</p>
+            <p class="metric-note">Completed payments only</p>
+        </article>
+
+        <article class="dash-card metric-card">
+            <div class="metric-head">
+                <span>Unread Messages</span>
+                <i class="fas fa-envelope-open-text"></i>
+            </div>
+            <p class="metric-value">{{ unread_messages }}</p>
+            <p class="metric-note">{{ total_messages }} total message{{ total_messages|pluralize }}</p>
+        </article>
+
+        <article class="dash-card metric-card">
+            <div class="metric-head">
+                <span>Goal Progress</span>
+                <i class="fas fa-bullseye"></i>
+            </div>
+            <p class="metric-value">{{ goal_completion_percentage|floatformat:0 }}%</p>
+            <p class="metric-note">{{ completed_goals }}/{{ total_goals }} completed</p>
+        </article>
+    </section>
+
+    <section class="dash-insights">
+        <article class="dash-card status-card">
+            <div class="card-header-row">
+                <h2>Order Pipeline</h2>
+                <a href="{% url 'dashboard:orders' %}">Open orders</a>
+            </div>
+
+            <div class="status-row">
+                <div class="status-text">
+                    <span>Pending</span>
+                    <strong>{{ pending_orders_count }}</strong>
+                </div>
+                <div class="status-track">
+                    <span style="width: {{ pending_orders_pct|floatformat:0 }}%;"></span>
+                </div>
+            </div>
+
+            <div class="status-row">
+                <div class="status-text">
+                    <span>Processing</span>
+                    <strong>{{ processing_orders_count }}</strong>
+                </div>
+                <div class="status-track">
+                    <span style="width: {{ processing_orders_pct|floatformat:0 }}%;"></span>
+                </div>
+            </div>
+
+            <div class="status-row">
+                <div class="status-text">
+                    <span>Completed</span>
+                    <strong>{{ completed_orders_count }}</strong>
+                </div>
+                <div class="status-track">
+                    <span style="width: {{ completed_orders_pct|floatformat:0 }}%;"></span>
+                </div>
+            </div>
+
+            <div class="status-row">
+                <div class="status-text">
+                    <span>Cancelled</span>
+                    <strong>{{ cancelled_orders_count }}</strong>
+                </div>
+                <div class="status-track">
+                    <span style="width: {{ cancelled_orders_pct|floatformat:0 }}%;"></span>
+                </div>
+            </div>
+        </article>
+
+        <article class="dash-card mini-stats-card">
+            <h2>Quick Insights</h2>
+            <ul>
+                <li>
+                    <span>Orders in last 7 days</span>
+                    <strong>{{ orders_last_7_days }}</strong>
+                </li>
+                <li>
+                    <span>Open goals</span>
+                    <strong>{{ open_goals }}</strong>
+                </li>
+                <li>
+                    <span>Unread messages</span>
+                    <strong>{{ unread_messages }}</strong>
+                </li>
+            </ul>
+        </article>
+    </section>
+
+    <section class="dash-main-grid">
+        <article class="dash-card orders-card">
+            <div class="card-header-row">
+                <h2>Recent Orders</h2>
+                <a href="{% url 'dashboard:orders' %}">View all</a>
+            </div>
+
+            {% if recent_orders %}
+            <div class="table-wrap">
+                <table class="dash-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Date</th>
+                            <th>Items</th>
+                            <th>Payment</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in recent_orders %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'dashboard:orders' %}?search={{ order.order_id }}">{{ order.order_id }}</a>
+                            </td>
+                            <td>{{ order.created_at|date:"M d, Y" }}</td>
+                            <td>{{ order.item_count }}</td>
+                            <td>
+                                <span class="badge badge-payment badge-payment-{{ order.payment_status }}">
+                                    {{ order.get_payment_status_display }}
+                                </span>
+                            </td>
+                            <td>{{ currency_label }} {{ order.total_price|floatformat:2 }}</td>
+                            <td>
+                                <span class="badge badge-status badge-status-{{ order.status }}">
+                                    {{ order.get_status_display|truncatechars:24 }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-block">
+                <i class="fas fa-bag-shopping"></i>
+                <p>You do not have any orders yet.</p>
+                <a href="{% url 'store:store' %}" class="dash-btn dash-btn-primary">Start shopping</a>
+            </div>
+            {% endif %}
+        </article>
+
+        <div class="side-stack">
+            <article class="dash-card goals-card">
+                <div class="card-header-row">
+                    <h2>Recent Goals</h2>
+                    <a href="{% url 'dashboard:add_goal' %}">Add goal</a>
+                </div>
+
+                {% if goals %}
+                <ul class="goal-list">
+                    {% for goal in goals %}
+                    <li class="goal-item {% if goal.completed %}is-completed{% endif %}" data-goal-id="{{ goal.id }}">
+                        <button
+                            type="button"
+                            class="goal-toggle"
+                            data-goal-toggle
+                            data-url="{% url 'dashboard:toggle_goal' goal.id %}"
+                            aria-label="Toggle goal completion"
+                        >
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <div class="goal-body">
+                            <p class="goal-title">{{ goal.title }}</p>
+                            {% if goal.description %}
+                            <p class="goal-desc">{{ goal.description|truncatewords:12 }}</p>
+                            {% endif %}
+                            <small>{{ goal.updated_at|date:"M d, Y" }}</small>
+                        </div>
+                        {% if goal.completed %}
+                        <span class="goal-state">Done</span>
+                        {% else %}
+                        <span class="goal-state is-open">Open</span>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="empty-block compact-empty">
+                    <i class="fas fa-list-check"></i>
+                    <p>No goals yet.</p>
+                </div>
+                {% endif %}
+            </article>
+
+            <article class="dash-card conversations-card">
+                <div class="card-header-row">
+                    <h2>Recent Conversations</h2>
+                    <a href="{% url 'dashboard:chat' %}">Open inbox</a>
+                </div>
+
+                {% if conversations %}
+                <ul class="conversation-list">
+                    {% for conv in conversations %}
+                    <li>
+                        <a href="{% url 'dashboard:chat' %}?user={{ conv.user.id }}" class="conversation-link">
+                            <div class="conversation-avatar">
+                                {% if conv.avatar_url %}
+                                <img src="{{ conv.avatar_url }}" alt="{{ conv.display_name }}">
+                                {% else %}
+                                <span>{{ conv.initials }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="conversation-body">
+                                <div class="conversation-head">
+                                    <strong>{{ conv.display_name }}</strong>
+                                    <small>{{ conv.last_message.timestamp|date:"M d" }}</small>
+                                </div>
+                                <p>{{ conv.last_message.message|truncatewords:8 }}</p>
+                            </div>
+                            {% if conv.unread > 0 %}
+                            <span class="conversation-unread">{{ conv.unread }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="empty-block compact-empty">
+                    <i class="fas fa-comments"></i>
+                    <p>No conversations yet.</p>
+                </div>
+                {% endif %}
+            </article>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function() {
+    const getCookie = function(name) {
+        const cookies = document.cookie ? document.cookie.split(';') : [];
+        for (let i = 0; i < cookies.length; i += 1) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith(name + '=')) {
+                return decodeURIComponent(cookie.substring(name.length + 1));
+            }
+        }
+        return '';
+    };
+
+    const csrfToken = getCookie('csrftoken');
+    document.querySelectorAll('[data-goal-toggle]').forEach((button) => {
+        button.addEventListener('click', async () => {
+            const targetUrl = button.getAttribute('data-url');
+            if (!targetUrl || button.disabled) {
+                return;
+            }
+
+            button.disabled = true;
+            try {
+                const response = await fetch(targetUrl, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed request');
+                }
+
+                const data = await response.json();
+                if (data.success) {
+                    window.location.reload();
+                }
+            } catch (error) {
+                button.disabled = false;
+            }
+        });
+    });
+})();
+</script>
+{% endblock %}

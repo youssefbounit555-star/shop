@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load socialaccount %}
+
+{% block title %}Register - Create Your Account{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/register.css' %}">
+
+<section class="register-page">
+    <div class="container register-layout">
+        <aside class="register-showcase">
+            <p class="register-kicker">WELCOME TO ELEGANTSHOP</p>
+            <h1>Build Your Account In Minutes</h1>
+            <p class="register-copy">
+                Save your orders, track delivery, manage profile settings, and get personalized suggestions
+                from our store assistant.
+            </p>
+
+            <div class="register-showcase-grid">
+                <article>
+                    <i class="fas fa-shield-check"></i>
+                    <h3>Secure Access</h3>
+                    <p>Strong account protection and safe checkout flow.</p>
+                </article>
+                <article>
+                    <i class="fas fa-box-open"></i>
+                    <h3>Order Tracking</h3>
+                    <p>Follow your orders from confirmation to delivery.</p>
+                </article>
+                <article>
+                    <i class="fas fa-headset"></i>
+                    <h3>Direct Support</h3>
+                    <p>Get help fast when you need returns or assistance.</p>
+                </article>
+            </div>
+        </aside>
+
+        <div class="register-card-wrap">
+            <div class="register-card">
+                <header class="register-header">
+                    <h2>Create Account</h2>
+                    <p>Fill in your details to start shopping.</p>
+                </header>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} register-alert alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% if form.non_field_errors %}
+                    <div class="register-errors-box" role="alert">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <form method="POST" enctype="multipart/form-data" class="register-form" novalidate>
+                    {% csrf_token %}
+
+                    <div class="register-field">
+                        <label for="id_username" class="form-label">Username <span>*</span></label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <div class="register-field-errors">
+                                {% for error in form.username.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="register-grid-2">
+                        <div class="register-field">
+                            <label for="id_first_name" class="form-label">First Name</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                                <div class="register-field-errors">
+                                    {% for error in form.first_name.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="register-field">
+                            <label for="id_last_name" class="form-label">Last Name</label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                                <div class="register-field-errors">
+                                    {% for error in form.last_name.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="register-field">
+                        <label for="id_email" class="form-label">Email Address <span>*</span></label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="register-field-errors">
+                                {% for error in form.email.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="register-grid-2">
+                        <div class="register-field">
+                            <label for="id_password1" class="form-label">Password <span>*</span></label>
+                            {{ form.password1 }}
+                            {% if form.password1.help_text %}
+                                <small class="register-help">{{ form.password1.help_text|safe }}</small>
+                            {% endif %}
+                            {% if form.password1.errors %}
+                                <div class="register-field-errors">
+                                    {% for error in form.password1.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="register-field">
+                            <label for="id_password2" class="form-label">Confirm Password <span>*</span></label>
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                                <div class="register-field-errors">
+                                    {% for error in form.password2.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="register-grid-2">
+                        <div class="register-field">
+                            <label for="id_address" class="form-label">Address</label>
+                            {{ form.address }}
+                            {% if form.address.errors %}
+                                <div class="register-field-errors">
+                                    {% for error in form.address.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="register-field">
+                            <label for="id_city" class="form-label">City</label>
+                            {{ form.city }}
+                            {% if form.city.errors %}
+                                <div class="register-field-errors">
+                                    {% for error in form.city.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="register-grid-2">
+                        <div class="register-field">
+                            <label for="id_country" class="form-label">Country</label>
+                            {{ form.country }}
+                            {% if form.country.errors %}
+                                <div class="register-field-errors">
+                                    {% for error in form.country.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="register-field">
+                            <label for="id_interesting" class="form-label">Interests</label>
+                            {{ form.interesting }}
+                            {% if form.interesting.errors %}
+                                <div class="register-field-errors">
+                                    {% for error in form.interesting.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="register-field">
+                        <label for="id_avatar" class="form-label">Profile Picture</label>
+                        {{ form.avatar }}
+                        {% if form.avatar.errors %}
+                            <div class="register-field-errors">
+                                {% for error in form.avatar.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary register-submit">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Create Account</span>
+                    </button>
+                </form>
+
+                <div class="register-divider"><span>Or continue with</span></div>
+
+                <div class="register-social">
+                    <a href="{% provider_login_url 'google' %}" class="register-social-btn is-google">
+                        <i class="fab fa-google"></i>
+                        <span>Google</span>
+                    </a>
+                    <a href="{% provider_login_url 'facebook' %}" class="register-social-btn is-facebook">
+                        <i class="fab fa-facebook-f"></i>
+                        <span>Facebook</span>
+                    </a>
+                </div>
+
+                <p class="register-login-link">
+                    Already have an account?
+                    <a href="{% url 'user:login' %}">Log in here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,234 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Analytics Dashboard - Admin{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>
+        <i class="fas fa-chart-bar"></i>
+        Analytics Dashboard
+    </h1>
+    <div class="actions">
+        <button class="btn btn-secondary" onclick="location.reload()">
+            <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+    </div>
+</div>
+
+<!-- KPI Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="stat-card">
+            <div class="stat-card-icon"><i class="fas fa-receipt"></i></div>
+            <div class="stat-card-label">Total Orders</div>
+            <div class="stat-card-value">{{ total_orders }}</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card">
+            <div class="stat-card-icon"><i class="fas fa-dollar-sign"></i></div>
+            <div class="stat-card-label">Total Revenue</div>
+            <div class="stat-card-value">${{ total_revenue|floatformat:2 }}</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card">
+            <div class="stat-card-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-card-label">Total Customers</div>
+            <div class="stat-card-value">{{ total_customers }}</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card">
+            <div class="stat-card-icon"><i class="fas fa-shopping-bag"></i></div>
+            <div class="stat-card-label">Total Products</div>
+            <div class="stat-card-value">{{ total_products }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Revenue Chart -->
+<div class="row mb-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-chart-line"></i> Revenue Trend (Last 12 Months)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="revenueChart" height="80"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-chart-pie"></i> Order Status</div>
+            </div>
+            <div class="card-body">
+                <canvas id="statusChart" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Top Products & Detailed Stats -->
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-fire"></i> Top Selling Products</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th width="120">Units Sold</th>
+                            <th width="120">Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in top_products %}
+                        <tr>
+                            <td><strong>{{ product.product__name }}</strong></td>
+                            <td><span class="badge badge-success">{{ product.total_sold }}</span></td>
+                            <td>${{ product.total_revenue|floatformat:2 }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center py-4 text-muted">
+                                No sales data available yet
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-list-check"></i> Order Status Breakdown</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    {% if order_statuses %}
+                        {% for status, count in orders_by_status %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-3 border-bottom">
+                            <span>{{ status|title }}</span>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <span class="badge badge-secondary">{{ count }}</span>
+                                <div class="progress" style="width: 100px;">
+                                    <div class="progress-bar" style="width: {% widthratio count total_orders 100 %}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center py-4">No order data available</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Revenue Trend Chart
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    const revenueChart = new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+            labels: {{ revenue_labels|safe }},
+            datasets: [{
+                label: 'Monthly Revenue',
+                data: {{ revenue_data|safe }},
+                borderColor: '#667eea',
+                backgroundColor: 'rgba(102, 126, 234, 0.05)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 5,
+                pointBackgroundColor: '#667eea',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointHoverRadius: 7
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        font: { size: 12, weight: 600 },
+                        usePointStyle: true,
+                        boxWidth: 8,
+                        padding: 20
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)',
+                        drawBorder: false
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value.toLocaleString();
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false,
+                        drawBorder: false
+                    }
+                }
+            }
+        }
+    });
+
+    // Order Status Distribution
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    const statusChart = new Chart(statusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: {{ order_statuses|safe }},
+            datasets: [{
+                data: {{ order_counts|safe }},
+                backgroundColor: [
+                    '#ed8936',
+                    '#4299e1',
+                    '#a0aec0',
+                    '#48bb78',
+                    '#f56565'
+                ],
+                borderColor: '#fff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: { size: 11, weight: 600 },
+                        usePointStyle: true,
+                        padding: 15,
+                        boxWidth: 10
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

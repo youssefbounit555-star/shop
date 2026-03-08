@@ -1,0 +1,126 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Discounts - Admin{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>
+        <i class="fas fa-tags"></i>
+        Discounts Management
+    </h1>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-pen"></i> Apply Discount</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="apply">
+
+                    {% if discount_form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ discount_form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label class="form-label">Product</label>
+                        {{ discount_form.product }}
+                        {% if discount_form.product.errors %}
+                        <div class="invalid-feedback d-block">{{ discount_form.product.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">New Discount Price ({{ currency_label }})</label>
+                        {{ discount_form.new_discount_price }}
+                        <small class="text-muted d-block mt-2">Optional. Leave empty if you only want a promo text.</small>
+                        {% if discount_form.new_discount_price.errors %}
+                        <div class="invalid-feedback d-block">{{ discount_form.new_discount_price.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Promo Text Under Product</label>
+                        {{ discount_form.discount_note }}
+                        <small class="text-muted d-block mt-2">Example: Limited-time offer</small>
+                        {% if discount_form.discount_note.errors %}
+                        <div class="invalid-feedback d-block">{{ discount_form.discount_note.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-bolt"></i> Save Discount
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-list"></i> Discounted Products</h5>
+                <span class="badge bg-info">{{ discounted_products|length }} items</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Old Price</th>
+                            <th>New Price</th>
+                            <th>Text</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in discounted_products %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'admin_panel:products_detail' product.pk %}" style="color: var(--primary); text-decoration: none; font-weight: 600;">
+                                    {{ product.name }}
+                                </a>
+                            </td>
+                            <td>{{ product.price|floatformat:2 }} {{ currency_label }}</td>
+                            <td>
+                                {% if product.discount_price is not None %}
+                                    <strong class="text-success">{{ product.discount_price|floatformat:2 }} {{ currency_label }}</strong>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if product.discount_note %}
+                                    {{ product.discount_note }}
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="post" onsubmit="return confirm('Remove discount for this product?');">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="remove">
+                                    <input type="hidden" name="product_id" value="{{ product.pk }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-xmark"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4">No discounted products yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
