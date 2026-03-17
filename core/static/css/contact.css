@@ -5,8 +5,13 @@
 .contact-hero {
     margin-top: 70px;
     padding: 4rem 0;
-    background: linear-gradient(135deg, #f0f4ff 0%, #f9f5ff 100%);
+    background:
+        linear-gradient(135deg, rgba(15, 118, 110, 0.15), rgba(37, 99, 235, 0.15)),
+        linear-gradient(180deg, #ffffff 0%, #f3f7fb 100%);
     text-align: center;
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);
 }
 
 .contact-hero h1 {
@@ -77,8 +82,9 @@
 .form-group textarea {
     padding: 12px 16px;
     border: 1px solid var(--light-3);
-    border-radius: 8px;
-    font-family: 'Poppins', sans-serif;
+    border-radius: 0;
+    clip-path: var(--clip-angled-sm);
+    font-family: 'Manrope', sans-serif;
     font-size: 1rem;
     color: var(--dark);
     transition: var(--transition);
@@ -148,8 +154,10 @@
     margin-bottom: 2rem;
     padding: 1.5rem;
     background: var(--light);
-    border-radius: 12px;
+    border-radius: 0;
+    clip-path: var(--clip-angled);
     transition: var(--transition);
+    border: 1px solid var(--light-3);
 }
 
 .info-card:hover {
@@ -196,7 +204,8 @@
     width: 45px;
     height: 45px;
     background: var(--light);
-    border-radius: 50%;
+    border-radius: 0;
+    clip-path: var(--clip-angled-sm);
     color: var(--primary);
     font-size: 1.2rem;
     transition: var(--transition);
@@ -232,7 +241,8 @@
 .category-box {
     background: white;
     padding: 2rem;
-    border-radius: 12px;
+    border-radius: 0;
+    clip-path: var(--clip-angled);
     border: 1px solid var(--light-3);
     text-align: center;
     transition: var(--transition);

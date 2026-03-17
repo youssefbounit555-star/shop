@@ -19,7 +19,6 @@ ALLOWED_FILE_EXTENSIONS = {
 }
 ALLOWED_AUDIO_EXTENSIONS = {'webm', 'mp3', 'wav', 'ogg', 'm4a', 'aac'}
 
-
 def get_default_admin():
     """Get the default admin user (store manager)."""
     return User.objects.filter(is_staff=True, is_superuser=True).first() or User.objects.filter(is_staff=True).first()

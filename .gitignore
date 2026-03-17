@@ -6,7 +6,10 @@
 **/.env
 *.env
 db.sqlite3
+staticfiles/
 
 # Python bytecode and caches
 __pycache__/
 *.py[cod]
+
+projcts/

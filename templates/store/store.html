@@ -1,40 +1,97 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Store - ElegantShop{% endblock title %}
+{% block title %}{{ geo_strings.store_title }} - ElegantShop{% endblock title %}
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/store.css' %}">
 
+<div class="store-page"
+     data-currency="{{ currency_label }}"
+     data-quickview-add="{{ geo_strings.store_quickview_add_to_cart }}"
+     data-quickview-soldout="{{ geo_strings.store_quickview_sold_out }}"
+     data-stock-in="{{ geo_strings.store_in_stock }}"
+     data-stock-out="{{ geo_strings.store_out_of_stock }}"
+     data-product-fallback="{{ geo_strings.store_product_fallback }}">
 <!-- Page Hero -->
 <section class="store-hero">
     <div class="container">
-        <h1>Our Store</h1>
-        <p>Discover our complete collection of premium products</p>
+        <h1>{{ geo_strings.store_title }}</h1>
+        <p>{{ geo_strings.store_subtitle }}</p>
     </div>
 </section>
 
 <!-- Main Store Section -->
 <section class="store-section">
     <div class="container">
+        <!-- Search Panel -->
+        <div class="store-search-panel">
+            <div class="store-search-card">
+                <div class="store-search-copy">
+                    <span class="search-kicker">{{ geo_strings.store_search_kicker }}</span>
+                    <h2>{{ geo_strings.store_search_title }}</h2>
+                    <p>{{ geo_strings.store_search_copy }}</p>
+                </div>
+                <form method="get" class="store-search-form">
+                    <input type="hidden" name="category" value="{{ selected_category }}">
+                    {% if min_price %}
+                        <input type="hidden" name="min_price" value="{{ min_price }}">
+                    {% endif %}
+                    {% if max_price %}
+                        <input type="hidden" name="max_price" value="{{ max_price }}">
+                    {% endif %}
+                    {% if in_stock_only %}
+                        <input type="hidden" name="in_stock" value="true">
+                    {% endif %}
+                    {% if featured_only %}
+                        <input type="hidden" name="featured" value="true">
+                    {% endif %}
+                    {% if sort_by %}
+                        <input type="hidden" name="sort" value="{{ sort_by }}">
+                    {% endif %}
+                    <div class="search-input-group">
+                        <span class="search-icon"><i class="fas fa-search"></i></span>
+                        <input
+                            type="text"
+                            name="search"
+                            placeholder="{{ geo_strings.store_search_placeholder }}"
+                            value="{{ search_query }}"
+                            class="store-search-input"
+                        >
+                        <button type="submit" class="btn btn-primary store-search-btn">
+                            {{ geo_strings.store_search_button }}
+                        </button>
+                    </div>
+                    <div class="search-hints">
+                        <span>{{ geo_strings.store_search_hint }}</span>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <div class="store-wrapper">
             <!-- Sidebar Filters -->
             <aside class="filters-sidebar">
-                <form method="get" class="filters-form">
-                    <!-- Search -->
-                    <div class="filter-group">
-                        <h4>Search</h4>
-                        <input type="text" name="search" placeholder="Search products..." value="{{ search_query }}" class="form-control">
+                <div class="filters-header">
+                    <div>
+                        <h3>{{ geo_strings.store_filters_title }}</h3>
+                        <p>{{ geo_strings.store_filters_subtitle }}</p>
                     </div>
+                    <span class="filters-icon"><i class="fas fa-sliders-h"></i></span>
+                </div>
+                <form method="get" class="filters-form">
+                    {% if search_query %}
+                        <input type="hidden" name="search" value="{{ search_query }}">
+                    {% endif %}
 
                     <!-- Category Filter -->
                     <div class="filter-group">
-                        <h4>Category</h4>
+                        <h4>{{ geo_strings.store_filter_category }}</h4>
                         <div class="filter-options">
                             <label class="filter-checkbox">
                                 <input type="radio" name="category" value="all" 
                                        {% if selected_category == 'all' %}checked{% endif %}>
-                                <span>All Products</span>
+                                <span>{{ geo_strings.store_filter_all }}</span>
                             </label>
                             {% for value, label in categories %}
                                 <label class="filter-checkbox">
@@ -48,47 +105,49 @@
 
                     <!-- Price Filter -->
                     <div class="filter-group">
-                        <h4>Price Range</h4>
+                        <h4>{{ geo_strings.store_filter_price_range }}</h4>
                         <div class="price-inputs">
-                            <input type="number" name="min_price" placeholder="Min Price" 
+                            <input type="number" name="min_price" placeholder="{{ geo_strings.store_filter_min }}" 
                                    value="{{ min_price }}" class="form-control">
-                            <input type="number" name="max_price" placeholder="Max Price" 
+                            <input type="number" name="max_price" placeholder="{{ geo_strings.store_filter_max }}" 
                                    value="{{ max_price }}" class="form-control">
                         </div>
                     </div>
 
                     <!-- Availability Filter -->
                     <div class="filter-group">
-                        <h4>Availability</h4>
+                        <h4>{{ geo_strings.store_filter_availability }}</h4>
                         <label class="filter-checkbox">
                             <input type="checkbox" name="in_stock" value="true" 
                                    {% if in_stock_only %}checked{% endif %}>
-                            <span>In Stock Only</span>
+                            <span>{{ geo_strings.store_filter_in_stock }}</span>
                         </label>
                         <label class="filter-checkbox">
                             <input type="checkbox" name="featured" value="true" 
                                    {% if featured_only %}checked{% endif %}>
-                            <span>Featured Only</span>
+                            <span>{{ geo_strings.store_filter_featured }}</span>
                         </label>
                     </div>
 
                     <!-- Sorting -->
                     <div class="filter-group">
-                        <h4>Sort By</h4>
+                        <h4>{{ geo_strings.store_filter_sort_by }}</h4>
                         <select name="sort" class="form-control">
-                            <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest</option>
-                            <option value="featured" {% if sort_by == 'featured' %}selected{% endif %}>Featured</option>
-                            <option value="price_low" {% if sort_by == 'price_low' %}selected{% endif %}>Price: Low to High</option>
-                            <option value="price_high" {% if sort_by == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                            <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>{{ geo_strings.store_sort_newest }}</option>
+                            <option value="featured" {% if sort_by == 'featured' %}selected{% endif %}>{{ geo_strings.store_sort_featured }}</option>
+                            <option value="price_low" {% if sort_by == 'price_low' %}selected{% endif %}>{{ geo_strings.store_sort_price_low }}</option>
+                            <option value="price_high" {% if sort_by == 'price_high' %}selected{% endif %}>{{ geo_strings.store_sort_price_high }}</option>
                         </select>
                     </div>
 
-                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem;">
-                        <i class="fas fa-filter"></i> Apply Filters
-                    </button>
-                    <a href="{% url 'store:store' %}" class="btn btn-secondary" style="width: 100%; margin-top: 0.75rem; display: block; text-align: center;">
-                        Clear All
-                    </a>
+                    <div class="filters-footer">
+                        <button type="submit" class="btn btn-primary store-filter-btn">
+                            <i class="fas fa-filter"></i> {{ geo_strings.store_apply_filters }}
+                        </button>
+                        <a href="{% url 'store:store' %}" class="btn btn-secondary store-clear-btn">
+                            {{ geo_strings.store_clear_all }}
+                        </a>
+                    </div>
                 </form>
             </aside>
 
@@ -97,65 +156,155 @@
                 <!-- Top Bar -->
                 <div class="store-top-bar">
                     <div class="results-info">
-                        <span>Showing {{ products|length }} of {{ total_products }} products</span>
+                        <span>{{ geo_strings.store_showing }} <strong id="storeResultsCount">{{ products|length }}</strong> {{ geo_strings.store_of }} {{ total_products }} {{ geo_strings.products_label }}</span>
+                        <span class="results-live" id="storeResultsLive">{{ geo_strings.store_live }}</span>
                     </div>
+                    <form method="get" class="store-mini-filters" id="storeMiniFilters">
+                        {% if search_query %}
+                            <input type="hidden" name="search" value="{{ search_query }}">
+                        {% endif %}
+                        {% if in_stock_only %}
+                            <input type="hidden" name="in_stock" value="true">
+                        {% endif %}
+                        {% if featured_only %}
+                            <input type="hidden" name="featured" value="true">
+                        {% endif %}
+                        {% if sort_by %}
+                            <input type="hidden" name="sort" value="{{ sort_by }}">
+                        {% endif %}
+                        <label class="store-mini-field">
+                            <span>{{ geo_strings.store_top_category }}</span>
+                            <select name="category" class="store-mini-select">
+                                <option value="all" {% if selected_category == 'all' %}selected{% endif %}>{{ geo_strings.store_filter_all }}</option>
+                                {% for value, label in categories %}
+                                    <option value="{{ value }}" {% if selected_category == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                        <label class="store-mini-field">
+                            <span>{{ geo_strings.store_top_min }}</span>
+                            <input type="number" name="min_price" value="{{ min_price }}" placeholder="0" class="store-mini-input">
+                        </label>
+                        <label class="store-mini-field">
+                            <span>{{ geo_strings.store_top_max }}</span>
+                            <input type="number" name="max_price" value="{{ max_price }}" placeholder="999" class="store-mini-input">
+                        </label>
+                        <button type="submit" class="store-mini-btn">
+                            {{ geo_strings.store_top_apply }}
+                        </button>
+                        <a href="{% url 'store:store' %}" class="store-mini-reset">{{ geo_strings.store_top_clear }}</a>
+                    </form>
                 </div>
 
                 <!-- Products Grid -->
                 {% if products %}
                     <div class="products-grid store-grid">
                         {% for product in products %}
-                            <div class="product-card">
-                                <div class="product-image">
-                                    {% if product.main_image %}
-                                        <img src="{{ product.main_image.url }}" alt="{{ product.name }}" style="width: 100%; height: 250px; object-fit: cover;">
-                                    {% else %}
-                                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 100%; height: 250px;"></div>
-                                    {% endif %}
-                                    
-                                    <!-- Badges -->
-                                    
-                                    {% if product.discount_percentage > 0 %}
-                                        <div class="product-badge sale">-{{ product.discount_percentage|floatformat:0 }}%</div>
-                                    {% endif %}
-                                    {% if not product.in_stock %}
-                                        <div class="product-badge out-of-stock">Out of Stock</div>
-                                    {% endif %}
-                                    
-                                    <!-- Actions -->
+                            <div
+                                class="product-card"
+                                data-id="{{ product.id }}"
+                                data-name="{{ product.name|escape }}"
+                                data-category="{{ product.category }}"
+                                data-category-label="{{ product.get_category_display|escape }}"
+                                data-price="{{ product.current_price|floatformat:2 }}"
+                                data-old-price="{{ product.price|floatformat:2 }}"
+                                data-description="{{ product.short_description|default_if_none:''|striptags|truncatewords:18|escape }}"
+                                data-image="{% if product.main_image %}{{ product.main_image.url }}{% endif %}"
+                                data-url="{% url 'store:product_detail' product.id %}"
+                                data-in-stock="{% if product.in_stock %}1{% else %}0{% endif %}"
+                                data-discount="{{ product.discount_percentage|floatformat:0 }}"
+                                data-featured="{% if product.featured %}1{% else %}0{% endif %}"
+                            >
+                                <a class="product-card-link" href="{% url 'store:product_detail' product.id %}" aria-label="{{ geo_strings.store_view_product }} {{ product.name }}"></a>
+                                <div class="product-media">
+                                    <div class="product-media-link">
+                                        {% if product.main_image %}
+                                            <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="product-image-img">
+                                        {% else %}
+                                            <div class="product-image-placeholder">
+                                                <i class="fas fa-image"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="product-badges">
+                                        {% if product.featured %}
+                                            <span class="product-badge featured">{{ geo_strings.store_badge_featured }}</span>
+                                        {% endif %}
+                                        {% if product.discount_percentage > 0 %}
+                                            <span class="product-badge sale">-{{ product.discount_percentage|floatformat:0 }}%</span>
+                                        {% endif %}
+                                        {% if not product.in_stock %}
+                                            <span class="product-badge out-of-stock">{{ geo_strings.store_badge_out_of_stock }}</span>
+                                        {% endif %}
+                                    </div>
+
                                     <div class="product-actions">
-                                        <button class="icon-btn-sm" title="Add to Wishlist"><i class="far fa-heart"></i></button>
-                                        <a href="{% url 'store:product_detail' product.id %}" class="btn-add-cart" title="View Details">
-                                            <i class="fas fa-shopping-bag"></i>
-                                        </a>
+                                        <button class="icon-btn-sm store-quickview-trigger" type="button" title="{{ geo_strings.store_quick_view }}" data-quickview-trigger>
+                                            <i class="far fa-eye"></i>
+                                        </button>
+                                        <form method="post" action="{% url 'store:store_action' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action" value="add_to_wishlist">
+                                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                                            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                            <button class="icon-btn-sm" type="submit" title="{{ geo_strings.store_add_wishlist }}">
+                                                <i class="far fa-heart"></i>
+                                            </button>
+                                        </form>
+                                        {% if product.in_stock %}
+                                            <form method="post" action="{% url 'store:store_action' %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="add_to_cart">
+                                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                                <input type="hidden" name="quantity" value="1">
+                                                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                                <button class="icon-btn-sm is-solid" type="submit" title="{{ geo_strings.store_add_cart }}">
+                                                    <i class="fas fa-cart-plus"></i>
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <span class="icon-btn-sm is-solid is-disabled" title="{{ geo_strings.store_out_of_stock }}">
+                                                <i class="fas fa-ban"></i>
+                                            </span>
+                                        {% endif %}
                                     </div>
                                 </div>
 
-                                <div class="product-info">
-                                    <h3 class="product-name">{{ product.name }}</h3>
-                                    {% if product.featured %}
-                                        <div style="font-weight: bold;" class="product-description">Featured</div>
-                                    {% endif %}
-                                    <p class="product-description">{{ product.short_description|truncatewords:8 }}</p>
-                                    <p class="product-category">{{ product.get_category_display }}</p>
-                                    
+                                <div class="product-body">
+                                    <div class="product-meta">
+                                        <span class="product-category">{{ product.get_category_display }}</span>
+                                        <span class="product-stock {% if product.in_stock %}is-in{% else %}is-out{% endif %}">
+                                            {% if product.in_stock %}{{ geo_strings.store_in_stock }}{% else %}{{ geo_strings.store_out_of_stock }}{% endif %}
+                                        </span>
+                                    </div>
+                                    <h3 class="product-name">
+                                        {{ product.name }}
+                                    </h3>
+                                    <p class="product-description">{{ product.short_description|truncatewords:12 }}</p>
+
                                     <div class="product-footer">
                                         <div class="product-price">
                                             {% if product.discount_price %}
-                                                <span class="original-price">${{ product.price }}</span>
-                                                <span class="sale-price">${{ product.discount_price }}</span>
+                                                <span class="original-price">{{ product.price }} {{ currency_label }}</span>
+                                                <span class="sale-price">{{ product.discount_price }} {{ currency_label }}</span>
                                             {% else %}
-                                                <span class="sale-price">${{ product.price }}</span>
+                                                <span class="sale-price">{{ product.price }} {{ currency_label }}</span>
                                             {% endif %}
                                         </div>
                                         {% if product.in_stock %}
-                                            <a href="{% url 'store:product_detail' product.id %}" class="btn-add-cart" title="View Details">
-                                                <i class="fas fa-shopping-bag"></i>
-                                            </a>
+                                            <form method="post" action="{% url 'store:store_action' %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="add_to_cart">
+                                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                                <input type="hidden" name="quantity" value="1">
+                                                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                                <button type="submit" class="product-cta">
+                                                    {{ geo_strings.store_add_to_cart }}
+                                                </button>
+                                            </form>
                                         {% else %}
-                                            <button class="btn-add-cart" disabled style="opacity: 0.5; cursor: not-allowed;">
-                                                <i class="fas fa-ban"></i>
-                                            </button>
+                                            <span class="product-cta is-disabled">{{ geo_strings.store_sold_out }}</span>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -167,37 +316,77 @@
                     {% if is_paginated %}
                         <div class="pagination">
                             {% if page_obj.has_previous %}
-                                <a href="?page=1" class="btn btn-secondary">First</a>
-                                <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-secondary">Previous</a>
+                                <a href="?page=1" class="btn btn-secondary">{{ geo_strings.store_pagination_first }}</a>
+                                <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-secondary">{{ geo_strings.store_pagination_previous }}</a>
                             {% endif %}
 
                             {% for num in page_obj.paginator.page_range %}
                                 {% if page_obj.number == num %}
-                                    <span class="btn btn-primary" style="pointer-events: none;">{{ num }}</span>
+                                    <span class="btn btn-primary is-active">{{ num }}</span>
                                 {% else %}
                                     <a href="?page={{ num }}" class="btn btn-secondary">{{ num }}</a>
                                 {% endif %}
                             {% endfor %}
 
                             {% if page_obj.has_next %}
-                                <a href="?page={{ page_obj.next_page_number }}" class="btn btn-secondary">Next</a>
-                                <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-secondary">Last</a>
+                                <a href="?page={{ page_obj.next_page_number }}" class="btn btn-secondary">{{ geo_strings.store_pagination_next }}</a>
+                                <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-secondary">{{ geo_strings.store_pagination_last }}</a>
                             {% endif %}
                         </div>
                     {% endif %}
                 {% else %}
                     <div class="no-products">
-                        <i class="fas fa-inbox" style="font-size: 100px; color: #ccc; margin: 30px 0;"></i>
-                        <h3>No products found</h3>
-                        <p>Try adjusting your filters or search terms</p>
-                        <a href="{% url 'store:store' %}" class="btn btn-primary">Clear Filters</a>
+                        <i class="fas fa-inbox no-products-icon"></i>
+                        <h3>{{ geo_strings.store_no_products_title }}</h3>
+                        <p>{{ geo_strings.store_no_products_hint }}</p>
+                        <a href="{% url 'store:store' %}" class="btn btn-primary">{{ geo_strings.store_clear_filters }}</a>
                     </div>
                 {% endif %}
             </div>
         </div>
     </div>
 </section>
+</div>
 
+<div class="store-quickview" id="storeQuickview" hidden>
+    <div class="store-quickview-card" role="dialog" aria-modal="true" aria-labelledby="storeQuickviewTitle">
+        <button type="button" class="store-quickview-close" data-quickview-close aria-label="{{ geo_strings.store_quickview_close }}">
+            <i class="fas fa-xmark"></i>
+        </button>
+        <div class="store-quickview-media">
+            <img id="storeQuickviewImage" src="" alt="" hidden>
+            <div class="store-quickview-placeholder" id="storeQuickviewPlaceholder">
+                <i class="fas fa-image"></i>
+                <span>{{ geo_strings.store_quickview_no_image }}</span>
+            </div>
+        </div>
+        <div class="store-quickview-body">
+            <div class="store-quickview-meta">
+                <span class="store-quickview-category" id="storeQuickviewCategory"></span>
+                <span class="store-quickview-stock" id="storeQuickviewStock"></span>
+            </div>
+            <h3 id="storeQuickviewTitle"></h3>
+            <p id="storeQuickviewDesc"></p>
+            <div class="store-quickview-pricing">
+                <span class="store-quickview-price" id="storeQuickviewPrice"></span>
+                <span class="store-quickview-old" id="storeQuickviewOld"></span>
+            </div>
+            <div class="store-quickview-actions">
+                <a href="#" class="store-quickview-link" id="storeQuickviewLink">{{ geo_strings.store_quickview_view_details }}</a>
+                <form method="post" action="{% url 'store:store_action' %}" id="storeQuickviewCartForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add_to_cart">
+                    <input type="hidden" name="product_id" id="storeQuickviewProductId">
+                    <input type="hidden" name="quantity" value="1">
+                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                    <button type="submit" class="store-quickview-btn" id="storeQuickviewAddBtn">{{ geo_strings.store_quickview_add_to_cart }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% comment %}
 <style>
     .store-hero {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -549,54 +738,55 @@
     <button class="pagination-btn next">Next <i class="fas fa-chevron-right"></i></button>
 </div>
                 
+{% endcomment %}
 
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>About ElegantShop</h4>
-                    <p>We provide premium quality products for modern living with exceptional customer service.</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                    </div>
-                </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="../index.html">Home</a></li>
-                        <li><a href="store.html">Shop</a></li>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Customer Service</h4>
-                    <ul>
-                        <li><a href="#">Shipping Info</a></li>
-                        <li><a href="#">Returns</a></li>
-                        <li><a href="faq.html">FAQ</a></li>
-                        <li><a href="#">Track Order</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Contact Info</h4>
-                    <p><strong>Email:</strong> info@elegantshop.com</p>
-                    <p><strong>Phone:</strong> +1 (555) 123-4567</p>
-                    <p><strong>Address:</strong> 123 Shopping Street, Commerce City, CC 12345</p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>{{ geo_strings.footer_about_title }}</h4>
+                <p>{{ geo_strings.footer_about_text }}</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 ElegantShop. All rights reserved.</p>
-                <div class="footer-links">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                    <a href="#">Cookie Policy</a>
-                </div>
+            <div class="footer-section">
+                <h4>{{ geo_strings.footer_quick_links }}</h4>
+                <ul>
+                    <li><a href="{% url 'store:home' %}">{{ geo_strings.footer_home }}</a></li>
+                    <li><a href="{% url 'store:store' %}">{{ geo_strings.footer_shop }}</a></li>
+                    <li><a href="{% url 'store:about' %}">{{ geo_strings.footer_about }}</a></li>
+                    <li><a href="{% url 'store:contact' %}">{{ geo_strings.footer_contact }}</a></li>
+                </ul>
             </div>
+            <div class="footer-section">
+                <h4>{{ geo_strings.footer_customer_service }}</h4>
+                <ul>
+                    <li><a href="#">{{ geo_strings.footer_shipping_info }}</a></li>
+                    <li><a href="#">{{ geo_strings.footer_returns }}</a></li>
+                    <li><a href="{% url 'store:faq' %}">{{ geo_strings.footer_faq }}</a></li>
+                    <li><a href="#">{{ geo_strings.footer_track_order }}</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>{{ geo_strings.footer_contact_info }}</h4>
+                <p><strong>{{ geo_strings.footer_email }}:</strong> info@elegantshop.com</p>
+                <p><strong>{{ geo_strings.footer_phone }}:</strong> +1 (555) 123-4567</p>
+                <p><strong>{{ geo_strings.footer_address }}:</strong> 123 Shopping Street, Commerce City, CC 12345</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 ElegantShop. {{ geo_strings.footer_rights }}</p>
+            <div class="footer-links">
+                <a href="#">{{ geo_strings.footer_privacy }}</a>
+                <a href="#">{{ geo_strings.footer_terms }}</a>
+                <a href="#">{{ geo_strings.footer_cookies }}</a>
+            </div>
+        </div>
         </div>
     </footer>
 
@@ -604,11 +794,11 @@
     <div class="modal" id="cartModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Shopping Cart</h2>
+                <h2>{{ geo_strings.cart_title }}</h2>
                 <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body">
-                <p class="empty-cart-msg">Your cart is empty</p>
+                <p class="empty-cart-msg">{{ geo_strings.cart_empty_title }}</p>
             </div>
         </div>
     </div>
@@ -616,13 +806,13 @@
     <div class="modal" id="userModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Account</h2>
+                <h2>{{ geo_strings.store_modal_account }}</h2>
                 <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="auth-buttons">
-                    <button class="btn btn-primary" style="width: 100%;">Sign In</button>
-                    <button class="btn btn-secondary" style="width: 100%;">Create Account</button>
+                    <button class="btn btn-primary">{{ geo_strings.store_modal_sign_in }}</button>
+                    <button class="btn btn-secondary">{{ geo_strings.store_modal_create_account }}</button>
                 </div>
             </div>
         </div>
@@ -631,9 +821,178 @@
     <!-- Success Alert -->
     <div class="alert alert-success" id="successAlert">
         <i class="fas fa-check-circle"></i>
-        <span>Product added to cart successfully!</span>
+        <span>{{ geo_strings.store_alert_added_cart }}</span>
     </div>
 
+    <script>
+        (function () {
+            const cards = Array.from(document.querySelectorAll('.product-card'));
+            const countEl = document.getElementById('storeResultsCount');
+            const miniForm = document.getElementById('storeMiniFilters');
+            const storePage = document.querySelector('.store-page');
+            const currencyLabel = storePage ? storePage.getAttribute('data-currency') || '$' : '$';
+            const quickviewAddLabel = storePage ? storePage.getAttribute('data-quickview-add') || 'Add to cart' : 'Add to cart';
+            const quickviewSoldOutLabel = storePage ? storePage.getAttribute('data-quickview-soldout') || 'Sold out' : 'Sold out';
+            const stockInLabel = storePage ? storePage.getAttribute('data-stock-in') || 'In stock' : 'In stock';
+            const stockOutLabel = storePage ? storePage.getAttribute('data-stock-out') || 'Out of stock' : 'Out of stock';
+            const productFallback = storePage ? storePage.getAttribute('data-product-fallback') || 'Product' : 'Product';
+            const categorySelect = miniForm ? miniForm.querySelector('select[name="category"]') : null;
+            const minInput = miniForm ? miniForm.querySelector('input[name="min_price"]') : null;
+            const maxInput = miniForm ? miniForm.querySelector('input[name="max_price"]') : null;
+
+            const parseNumber = (value) => {
+                if (value === null || value === undefined || value === '') {
+                    return Number.NaN;
+                }
+                const parsed = Number(value);
+                return Number.isFinite(parsed) ? parsed : Number.NaN;
+            };
+
+            const applyClientFilters = () => {
+                if (!cards.length) {
+                    return;
+                }
+
+                const selectedCategory = categorySelect ? categorySelect.value : 'all';
+                const minValue = minInput ? parseNumber(minInput.value) : Number.NaN;
+                const maxValue = maxInput ? parseNumber(maxInput.value) : Number.NaN;
+
+                let visibleCount = 0;
+                cards.forEach((card) => {
+                    const category = card.getAttribute('data-category') || '';
+                    const price = parseNumber(card.getAttribute('data-price'));
+
+                    let isVisible = true;
+                    if (selectedCategory && selectedCategory !== 'all' && category !== selectedCategory) {
+                        isVisible = false;
+                    }
+                    if (!Number.isNaN(minValue) && Number.isFinite(price) && price < minValue) {
+                        isVisible = false;
+                    }
+                    if (!Number.isNaN(maxValue) && Number.isFinite(price) && price > maxValue) {
+                        isVisible = false;
+                    }
+
+                    card.classList.toggle('is-filtered-out', !isVisible);
+                    if (isVisible) {
+                        visibleCount += 1;
+                    }
+                });
+
+                if (countEl) {
+                    countEl.textContent = visibleCount.toString();
+                }
+            };
+
+            if (miniForm) {
+                miniForm.addEventListener('input', applyClientFilters);
+                miniForm.addEventListener('change', applyClientFilters);
+            }
+
+            applyClientFilters();
+
+            const quickview = document.getElementById('storeQuickview');
+            if (!quickview) {
+                return;
+            }
+
+            const quickviewImage = document.getElementById('storeQuickviewImage');
+            const quickviewPlaceholder = document.getElementById('storeQuickviewPlaceholder');
+            const quickviewTitle = document.getElementById('storeQuickviewTitle');
+            const quickviewCategory = document.getElementById('storeQuickviewCategory');
+            const quickviewStock = document.getElementById('storeQuickviewStock');
+            const quickviewDesc = document.getElementById('storeQuickviewDesc');
+            const quickviewPrice = document.getElementById('storeQuickviewPrice');
+            const quickviewOld = document.getElementById('storeQuickviewOld');
+            const quickviewLink = document.getElementById('storeQuickviewLink');
+            const quickviewProductId = document.getElementById('storeQuickviewProductId');
+            const quickviewAddBtn = document.getElementById('storeQuickviewAddBtn');
+
+            const openQuickview = (card) => {
+                const name = card.getAttribute('data-name') || productFallback;
+                const category = card.getAttribute('data-category-label') || '';
+                const description = card.getAttribute('data-description') || '';
+                const price = card.getAttribute('data-price') || '';
+                const oldPrice = card.getAttribute('data-old-price') || '';
+                const url = card.getAttribute('data-url') || '#';
+                const image = card.getAttribute('data-image') || '';
+                const inStock = card.getAttribute('data-in-stock') === '1';
+                const productId = card.getAttribute('data-id') || '';
+
+                if (quickviewTitle) quickviewTitle.textContent = name;
+                if (quickviewCategory) quickviewCategory.textContent = category;
+                if (quickviewDesc) quickviewDesc.textContent = description;
+                if (quickviewPrice) quickviewPrice.textContent = price ? `${price} ${currencyLabel}` : '';
+                if (quickviewOld) {
+                    if (oldPrice && oldPrice !== price && Number(oldPrice) > Number(price)) {
+                        quickviewOld.textContent = `${oldPrice} ${currencyLabel}`;
+                        quickviewOld.classList.add('is-visible');
+                    } else {
+                        quickviewOld.textContent = '';
+                        quickviewOld.classList.remove('is-visible');
+                    }
+                }
+                if (quickviewLink) quickviewLink.setAttribute('href', url);
+                if (quickviewProductId) quickviewProductId.value = productId;
+                if (quickviewStock) {
+                    quickviewStock.textContent = inStock ? stockInLabel : stockOutLabel;
+                    quickviewStock.classList.toggle('is-out', !inStock);
+                }
+                if (quickviewAddBtn) {
+                    quickviewAddBtn.disabled = !inStock;
+                    quickviewAddBtn.classList.toggle('is-disabled', !inStock);
+                    quickviewAddBtn.textContent = inStock ? quickviewAddLabel : quickviewSoldOutLabel;
+                }
+
+                if (image && quickviewImage) {
+                    quickviewImage.src = image;
+                    quickviewImage.alt = name;
+                    quickviewImage.hidden = false;
+                    if (quickviewPlaceholder) {
+                        quickviewPlaceholder.hidden = true;
+                    }
+                } else if (quickviewImage && quickviewPlaceholder) {
+                    quickviewImage.hidden = true;
+                    quickviewPlaceholder.hidden = false;
+                }
+
+                quickview.removeAttribute('hidden');
+                document.body.classList.add('store-quickview-open');
+            };
+
+            const closeQuickview = () => {
+                quickview.setAttribute('hidden', '');
+                document.body.classList.remove('store-quickview-open');
+            };
+
+            document.querySelectorAll('[data-quickview-trigger]').forEach((trigger) => {
+                trigger.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    const card = trigger.closest('.product-card');
+                    if (card) {
+                        openQuickview(card);
+                    }
+                });
+            });
+
+            quickview.querySelectorAll('[data-quickview-close]').forEach((button) => {
+                button.addEventListener('click', closeQuickview);
+            });
+
+            quickview.addEventListener('click', (event) => {
+                if (event.target === quickview) {
+                    closeQuickview();
+                }
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && !quickview.hasAttribute('hidden')) {
+                    closeQuickview();
+                }
+            });
+        })();
+    </script>
     <script src="{% static "js/main.js" %}"></script>
 </body>
 </html>

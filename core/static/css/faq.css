@@ -5,8 +5,13 @@
 .faq-hero {
     margin-top: 70px;
     padding: 4rem 0;
-    background: linear-gradient(135deg, #f0f4ff 0%, #f9f5ff 100%);
+    background:
+        linear-gradient(135deg, rgba(15, 118, 110, 0.15), rgba(37, 99, 235, 0.15)),
+        linear-gradient(180deg, #ffffff 0%, #f3f7fb 100%);
     text-align: center;
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);
 }
 
 .faq-hero h1 {
@@ -30,9 +35,11 @@
     max-width: 500px;
     margin: 0 auto;
     background: white;
-    border-radius: 50px;
+    border-radius: 0;
+    clip-path: var(--clip-angled-sm);
     overflow: hidden;
     box-shadow: var(--shadow-md);
+    border: 1px solid var(--light-3);
 }
 
 .faq-search input {
@@ -40,7 +47,7 @@
     border: none;
     padding: 12px 24px;
     outline: none;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Manrope', sans-serif;
     font-size: 1rem;
 }
 
@@ -98,7 +105,8 @@
 
 .accordion-item {
     border: 1px solid var(--light-3);
-    border-radius: 12px;
+    border-radius: 0;
+    clip-path: var(--clip-angled);
     overflow: hidden;
     transition: var(--transition);
 }
@@ -121,7 +129,7 @@
     font-weight: 600;
     color: var(--dark);
     transition: var(--transition);
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Manrope', sans-serif;
 }
 
 .accordion-header:hover {
@@ -172,6 +180,7 @@
     color: white;
     padding: 4rem 0;
     text-align: center;
+    clip-path: polygon(0 8%, 100% 0, 100% 100%, 0 100%);
 }
 
 .faq-cta h2 {

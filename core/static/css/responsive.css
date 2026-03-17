@@ -353,6 +353,7 @@ table {
 
     .header-guest .nav-menu ul,
     .header-user .nav-menu ul {
+        display: flex;
         gap: 0.7rem;
     }
 
@@ -537,5 +538,40 @@ table {
 
     .support-chat-badge {
         font-size: 0.66rem;
+    }
+}
+
+/* Angle scale-down on small screens */
+@media (max-width: 768px) {
+    :root {
+        --angle: 14px;
+        --angle-sm: 9px;
+        --angle-lg: 20px;
+        --site-angle: 14px;
+        --site-angle-sm: 9px;
+        --site-angle-lg: 20px;
+        --home-angle: 14px;
+        --home-angle-sm: 9px;
+        --dash-angle: 14px;
+        --dash-angle-sm: 9px;
+        --admin-angle: 14px;
+        --admin-angle-sm: 9px;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --angle: 12px;
+        --angle-sm: 8px;
+        --angle-lg: 18px;
+        --site-angle: 12px;
+        --site-angle-sm: 8px;
+        --site-angle-lg: 18px;
+        --home-angle: 12px;
+        --home-angle-sm: 8px;
+        --dash-angle: 12px;
+        --dash-angle-sm: 8px;
+        --admin-angle: 12px;
+        --admin-angle-sm: 8px;
     }
 }

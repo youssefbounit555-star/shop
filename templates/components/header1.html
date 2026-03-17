@@ -11,25 +11,25 @@
 
                 <nav class="nav-menu">
                     <ul>
-                        <li><a href="{% url 'store:home' %}">Home</a></li>
-                        <li><a href="{% url 'store:store' %}">Shop</a></li>
-                        <li><a href="{% url 'store:discounts' %}">Discounts</a></li>
-                        <li><a href="#" data-open-ai-widget="true">AI Agents</a></li>
-                        <li><a href="{% url 'store:about' %}">About</a></li>
-                        <li><a href="{% url 'store:faq' %}">FAQ</a></li>
-                        <li><a href="{% url 'store:contact' %}">Contact</a></li>
+                        <li><a href="{% url 'store:home' %}">{{ geo_strings.home }}</a></li>
+                        <li><a href="{% url 'store:store' %}">{{ geo_strings.shop }}</a></li>
+                        <li><a href="{% url 'store:discounts' %}">{{ geo_strings.discounts }}</a></li>
+                        <li><a href="#" data-open-ai-widget="true">{{ geo_strings.ai_agents }}</a></li>
+                        <li><a href="{% url 'store:about' %}">{{ geo_strings.about }}</a></li>
+                        <li><a href="{% url 'store:faq' %}">{{ geo_strings.faq }}</a></li>
+                        <li><a href="{% url 'store:contact' %}">{{ geo_strings.contact }}</a></li>
                     </ul>
                 </nav>
 
                 <div class="header-guest-actions">
                     <a href="{% url 'user:login' %}">
                         <button class="btn btn-secondary btn-small">
-                            <i class="fas fa-sign-in-alt"></i> Sign In
+                            <i class="fas fa-sign-in-alt"></i> {{ geo_strings.header_sign_in }}
                         </button>
                     </a>
                     <a href="{% url 'user:register' %}">
                     <button class="btn btn-primary btn-small">
-                        <i class="fas fa-user-plus"></i> Sign Up
+                        <i class="fas fa-user-plus"></i> {{ geo_strings.header_sign_up }}
                     </button>
                 </a>
                 </div>

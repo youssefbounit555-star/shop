@@ -25,6 +25,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('manage/', include('admin_panel.urls')),
     path('chat/', include('chat.urls')),
+    path('analytics/', include('analytics.urls')),
     path('', include('store.urls')),
     path('user/', include('user.urls')),
     path('dashboard/', include('dashboard.urls')),
@@ -34,9 +35,9 @@ urlpatterns = [
     path('test-500/', core_views.test_500_view, name='test_500'),
 ]
 
-# Serve static and media files during development (even when DEBUG=False)
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Serve static and media files only in local development.
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Error handlers
 handler404 = 'core.views.custom_404_view'

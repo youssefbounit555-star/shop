@@ -20,6 +20,10 @@ from store.forms import (
     ProductForm, OrderForm, SiteSettingsForm, BulkProductActionForm,
     ProductFilterForm, OrderFilterForm, DiscountSetupForm, MAX_GALLERY_IMAGES
 )
+from analytics.models import Insight
+from analytics.insights import ensure_recent_insights
+from analytics.utils import get_live_counts, LIVE_WINDOW_MINUTES
+
 
 
 def get_user_display_name(user, fallback=''):
@@ -979,6 +983,7 @@ class AnalyticsDashboardView(AdminOnlyMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        ensure_recent_insights(days=7, max_age_hours=24)
         
         # Revenue by month (last 12 months)
         today = timezone.now()
@@ -1014,5 +1019,21 @@ class AnalyticsDashboardView(AdminOnlyMixin, TemplateView):
         )
         context['order_statuses'] = [s['status'] for s in status_dist]
         context['order_counts'] = [s['count'] for s in status_dist]
+        
+        # Add insights
+        context['insights'] = Insight.objects.filter(is_archived=False).order_by('-generated_at')
+
+        live_products = list(
+            Product.objects.filter(is_active=True, status='active').order_by('name')
+        )
+        live_counts = get_live_counts([product.id for product in live_products])
+        context['live_products'] = [
+            {
+                'product': product,
+                'count': live_counts.get(product.id, 0),
+            }
+            for product in live_products
+        ]
+        context['live_window_minutes'] = LIVE_WINDOW_MINUTES
         
         return context

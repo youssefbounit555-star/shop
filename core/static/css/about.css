@@ -5,8 +5,13 @@
 .about-hero {
     margin-top: 70px;
     padding: 4rem 0;
-    background: linear-gradient(135deg, #f0f4ff 0%, #f9f5ff 100%);
+    background:
+        linear-gradient(135deg, rgba(15, 118, 110, 0.15), rgba(37, 99, 235, 0.15)),
+        linear-gradient(180deg, #ffffff 0%, #f3f7fb 100%);
     text-align: center;
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);
 }
 
 .about-hero h1 {
@@ -63,7 +68,9 @@
     width: 300px;
     height: 300px;
     background: linear-gradient(135deg, var(--primary), var(--secondary));
-    border-radius: 20px;
+    border-radius: 0;
+    clip-path: var(--clip-angled-lg);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -86,7 +93,8 @@
 .mission-card {
     background: white;
     padding: 2.5rem;
-    border-radius: 16px;
+    border-radius: 0;
+    clip-path: var(--clip-angled);
     border: 1px solid var(--light-3);
     text-align: center;
     transition: var(--transition);
@@ -122,7 +130,9 @@
     margin-bottom: 6rem;
     padding: 3rem;
     background: var(--light);
-    border-radius: 20px;
+    border-radius: 0;
+    clip-path: var(--clip-angled);
+    border: 1px solid var(--light-3);
 }
 
 .why-choose-section h2 {
@@ -141,8 +151,10 @@
 .reason-card {
     background: white;
     padding: 2rem;
-    border-radius: 12px;
+    border-radius: 0;
+    clip-path: var(--clip-angled);
     position: relative;
+    border: 1px solid var(--light-3);
 }
 
 .reason-number {
@@ -190,7 +202,8 @@
 
 .team-member {
     background: white;
-    border-radius: 16px;
+    border-radius: 0;
+    clip-path: var(--clip-angled);
     padding: 2rem;
     text-align: center;
     border: 1px solid var(--light-3);
@@ -207,7 +220,8 @@
     width: 120px;
     height: 120px;
     background: linear-gradient(135deg, var(--primary), var(--secondary));
-    border-radius: 50%;
+    border-radius: 0;
+    clip-path: var(--clip-angled);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -246,7 +260,8 @@
     margin-bottom: 6rem;
     padding: 3rem;
     background: linear-gradient(135deg, var(--primary), var(--secondary));
-    border-radius: 20px;
+    border-radius: 0;
+    clip-path: var(--clip-angled);
 }
 
 .stat-card {
@@ -274,6 +289,7 @@
     color: white;
     padding: 5rem 0;
     text-align: center;
+    clip-path: polygon(0 8%, 100% 0, 100% 100%, 0 100%);
 }
 
 .about-cta h2 {

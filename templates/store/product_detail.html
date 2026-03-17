@@ -14,9 +14,9 @@
   <div class="pd-orb pd-orb-two"></div>
   <div class="container pd-container">
     <nav class="pd-breadcrumb" aria-label="Breadcrumb">
-      <a href="{% url 'store:home' %}">Home</a>
+      <a href="{% url 'store:home' %}">{{ geo_strings.pd_breadcrumb_home }}</a>
       <i class="fas fa-chevron-right" aria-hidden="true"></i>
-      <a href="{% url 'store:store' %}">Shop</a>
+      <a href="{% url 'store:store' %}">{{ geo_strings.pd_breadcrumb_shop }}</a>
       <i class="fas fa-chevron-right" aria-hidden="true"></i>
       <span>{{ product.name }}</span>
     </nav>
@@ -34,17 +34,17 @@
     <div class="pd-highlight-strip">
       <div class="pd-highlight-item">
         <i class="fas fa-shield-halved"></i>
-        <span>Secure checkout</span>
+        <span>{{ geo_strings.pd_highlight_secure }}</span>
       </div>
       {% if free_shipping_threshold and free_shipping_threshold > 0 %}
         <div class="pd-highlight-item">
           <i class="fas fa-truck-fast"></i>
-          <span>Free shipping above {{ free_shipping_threshold }} {{ currency_label }}</span>
+          <span>{{ geo_strings.pd_highlight_free_shipping }} {{ free_shipping_threshold }} {{ currency_label }}</span>
         </div>
       {% endif %}
       <div class="pd-highlight-item">
         <i class="fas fa-headset"></i>
-        <span>Support within 24h</span>
+        <span>{{ geo_strings.pd_highlight_support }}</span>
       </div>
     </div>
 
@@ -55,11 +55,11 @@
             <span class="pd-pill pd-pill-discount">-{{ product.discount_percentage|floatformat:0 }}%</span>
           {% endif %}
           {% if product.low_stock %}
-            <span class="pd-pill pd-pill-alert">Low Stock</span>
+            <span class="pd-pill pd-pill-alert">{{ geo_strings.pd_low_stock }}</span>
           {% endif %}
 
           {% if product.main_image or product_images %}
-            <button class="pd-zoom-btn" type="button" id="pdZoomTrigger" aria-label="Open image viewer">
+            <button class="pd-zoom-btn" type="button" id="pdZoomTrigger" aria-label="{{ geo_strings.pd_zoom_label }}">
               <i class="fas fa-up-right-and-down-left-from-center"></i>
             </button>
           {% endif %}
@@ -81,7 +81,7 @@
           {% else %}
             <div class="pd-main-placeholder">
               <i class="fas fa-image"></i>
-              <span>No image available</span>
+              <span>{{ geo_strings.pd_no_image }}</span>
             </div>
           {% endif %}
         </div>
@@ -93,7 +93,7 @@
               type="button"
               data-image="{{ product.main_image.url }}"
               data-image-alt="{{ product.name }}"
-              aria-label="Show image 1"
+              aria-label="{{ geo_strings.pd_thumb_show }} 1"
             >
               <img src="{{ product.main_image.url }}" alt="{{ product.name }} main image">
             </button>
@@ -104,7 +104,7 @@
               type="button"
               data-image="{{ image.image.url }}"
               data-image-alt="{{ image.alt_text|default:product.name }}"
-              aria-label="Show image {% if product.main_image %}{{ forloop.counter|add:1 }}{% else %}{{ forloop.counter }}{% endif %}"
+              aria-label="{{ geo_strings.pd_thumb_show }} {% if product.main_image %}{{ forloop.counter|add:1 }}{% else %}{{ forloop.counter }}{% endif %}"
             >
               <img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.name }}">
             </button>
@@ -119,18 +119,18 @@
             <span class="pd-chip pd-chip-soft">{{ product.brand }}</span>
           {% endif %}
           {% if product.featured %}
-            <span class="pd-chip pd-chip-featured">Featured</span>
+            <span class="pd-chip pd-chip-featured">{{ geo_strings.pd_chip_featured }}</span>
           {% endif %}
         </div>
 
         <h1 class="pd-title">{{ product.name }}</h1>
-        <p class="pd-short">{{ product.short_description|default:"Premium quality product selected for your lifestyle." }}</p>
+        <p class="pd-short">{{ product.short_description|default:geo_strings.pd_short_fallback }}</p>
 
         <div class="pd-pricing">
           <span class="pd-price">{{ product.current_price }} {{ currency_label }}</span>
           {% if product.discount_price is not None %}
             <span class="pd-price-old">{{ product.price }} {{ currency_label }}</span>
-            <span class="pd-save">Save {{ product.discount_percentage|floatformat:0 }}%</span>
+            <span class="pd-save">{{ geo_strings.pd_save }} {{ product.discount_percentage|floatformat:0 }}%</span>
           {% endif %}
         </div>
         {% if product.discount_note %}
@@ -139,20 +139,20 @@
 
         <div class="pd-stockline">
           {% if product.in_stock %}
-            <span class="pd-status pd-status-in"><i class="fas fa-circle-check"></i> In stock ({{ product.stock_quantity }})</span>
+            <span class="pd-status pd-status-in"><i class="fas fa-circle-check"></i> {{ geo_strings.pd_status_in }} ({{ product.stock_quantity }})</span>
           {% else %}
-            <span class="pd-status pd-status-out"><i class="fas fa-circle-xmark"></i> Out of stock</span>
+            <span class="pd-status pd-status-out"><i class="fas fa-circle-xmark"></i> {{ geo_strings.pd_status_out }}</span>
           {% endif %}
           {% if product.sku %}
-            <span class="pd-sku">SKU: {{ product.sku }}</span>
+            <span class="pd-sku">{{ geo_strings.pd_sku_label }}: {{ product.sku }}</span>
           {% endif %}
         </div>
 
         {% if product.in_stock %}
           <div class="pd-stock-meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ stock_meter }}">
             <div class="pd-stock-meter-head">
-              <span>Stock level</span>
-              <strong>{% if product.low_stock %}Only {{ product.stock_quantity }} left{% else %}Ready to ship{% endif %}</strong>
+              <span>{{ geo_strings.pd_stock_level }}</span>
+              <strong>{% if product.low_stock %}{{ geo_strings.pd_stock_only_left_prefix }} {{ product.stock_quantity }} {{ geo_strings.pd_stock_only_left_suffix }}{% else %}{{ geo_strings.pd_stock_ready }}{% endif %}</strong>
             </div>
             <div class="pd-stock-meter-track">
               <span style="width: {{ stock_meter }}%"></span>
@@ -162,11 +162,11 @@
 
         <div class="pd-payment-panel">
           <div class="pd-payment-head">
-            <span class="pd-payment-kicker">Payment</span>
+            <span class="pd-payment-kicker">{{ geo_strings.pd_payment_title }}</span>
             <strong>{{ product.get_payment_mode_display }}</strong>
           </div>
           {% if product.requires_online_payment %}
-            <p class="pd-payment-copy">This product is paid from the website using the enabled gateways below.</p>
+            <p class="pd-payment-copy">{{ geo_strings.pd_payment_online_copy }}</p>
             <div class="pd-payment-tags">
               {% for method in product.allowed_payment_methods %}
                 <span class="pd-payment-tag">
@@ -177,19 +177,19 @@
                   {% endif %}
                   {{ method.1 }}
                 </span>
-              {% empty %}
+                {% empty %}
                 <span class="pd-payment-tag pd-payment-tag-warning">
                   <i class="fas fa-triangle-exclamation"></i>
-                  No online payment method configured
+                  {{ geo_strings.pd_payment_no_method }}
                 </span>
               {% endfor %}
             </div>
           {% else %}
-            <p class="pd-payment-copy">This product is configured for payment on delivery.</p>
+            <p class="pd-payment-copy">{{ geo_strings.pd_payment_cod_copy }}</p>
             <div class="pd-payment-tags">
               <span class="pd-payment-tag pd-payment-tag-cod">
                 <i class="fas fa-money-bill-wave"></i>
-                Cash on Delivery (COD)
+                {{ geo_strings.pd_payment_cod_label }}
               </span>
             </div>
           {% endif %}
@@ -215,7 +215,7 @@
             >
               <i class="fas fa-cart-plus"></i>
               <span>
-                Add to Cart
+                {{ geo_strings.pd_add_to_cart }}
                 {% if cart_quantity > 0 %}({{ cart_quantity }}){% endif %}
               </span>
             </button>
@@ -228,7 +228,7 @@
               class="pd-action-btn pd-action-btn-wishlist {% if in_wishlist %}is-active{% endif %}"
             >
               <i class="{% if in_wishlist %}fas{% else %}far{% endif %} fa-heart"></i>
-              <span>{% if in_wishlist %}In Wishlist{% else %}Add to Wishlist{% endif %}</span>
+              <span>{% if in_wishlist %}{{ geo_strings.pd_in_wishlist }}{% else %}{{ geo_strings.pd_add_wishlist }}{% endif %}</span>
             </button>
 
             <button
@@ -239,14 +239,14 @@
               class="pd-action-btn pd-action-btn-goal"
             >
               <i class="fas fa-bullseye"></i>
-              <span>Add as Goal</span>
+              <span>{{ geo_strings.pd_add_goal }}</span>
             </button>
           </div>
 
           <div class="pd-quantity-wrap pd-buybox-quantity">
-            <label for="quantity">Quantity</label>
+            <label for="quantity">{{ geo_strings.pd_quantity_label }}</label>
             <div class="pd-quantity-control">
-              <button type="button" class="pd-qty-btn" data-qty-step="-1" aria-label="Decrease quantity">
+              <button type="button" class="pd-qty-btn" data-qty-step="-1" aria-label="{{ geo_strings.pd_qty_decrease_label }}">
                 <i class="fas fa-minus"></i>
               </button>
               <input
@@ -258,7 +258,7 @@
                 max="{{ product.stock_quantity|default:1 }}"
                 {% if not product.in_stock %}disabled{% endif %}
               >
-              <button type="button" class="pd-qty-btn" data-qty-step="1" aria-label="Increase quantity">
+              <button type="button" class="pd-qty-btn" data-qty-step="1" aria-label="{{ geo_strings.pd_qty_increase_label }}">
                 <i class="fas fa-plus"></i>
               </button>
             </div>
@@ -267,40 +267,40 @@
           {% if not product.is_digital %}
             <div class="pd-shipping-wrap pd-buybox-shipping">
               <div class="pd-shipping-head">
-                <label>Delivery Information</label>
-                <span class="pd-shipping-required">Required for non-digital products</span>
+                <label>{{ geo_strings.pd_shipping_title }}</label>
+                <span class="pd-shipping-required">{{ geo_strings.pd_shipping_required }}</span>
               </div>
 
               <div class="pd-shipping-grid">
                 <div class="pd-shipping-field">
-                  <label for="customer_phone">Phone Number</label>
-                  <input type="text" id="customer_phone" name="customer_phone" placeholder="+212..." required>
+                  <label for="customer_phone">{{ geo_strings.pd_shipping_phone }}</label>
+                  <input type="text" id="customer_phone" name="customer_phone" placeholder="{{ geo_strings.pd_shipping_phone_placeholder }}" required>
                 </div>
                 <div class="pd-shipping-field">
-                  <label for="shipping_country">Country</label>
-                  <input type="text" id="shipping_country" name="shipping_country" placeholder="Country" required>
+                  <label for="shipping_country">{{ geo_strings.pd_shipping_country }}</label>
+                  <input type="text" id="shipping_country" name="shipping_country" placeholder="{{ geo_strings.pd_shipping_country_placeholder }}" required>
                 </div>
                 <div class="pd-shipping-field">
-                  <label for="shipping_city">City</label>
-                  <input type="text" id="shipping_city" name="shipping_city" placeholder="City" required>
+                  <label for="shipping_city">{{ geo_strings.pd_shipping_city }}</label>
+                  <input type="text" id="shipping_city" name="shipping_city" placeholder="{{ geo_strings.pd_shipping_city_placeholder }}" required>
                 </div>
                 <div class="pd-shipping-field pd-shipping-field-wide">
-                  <label for="shipping_address">Detailed Address</label>
-                  <input type="text" id="shipping_address" name="shipping_address" placeholder="Street, building, floor..." required>
+                  <label for="shipping_address">{{ geo_strings.pd_shipping_address }}</label>
+                  <input type="text" id="shipping_address" name="shipping_address" placeholder="{{ geo_strings.pd_shipping_address_placeholder }}" required>
                 </div>
               </div>
 
               <div class="pd-map-panel">
                 <div class="pd-map-panel-head">
-                  <strong>Exact Delivery Location</strong>
+                  <strong>{{ geo_strings.pd_location_title }}</strong>
                   <button type="button" class="pd-map-locate-btn" id="pdLocateMe">
                     <i class="fas fa-location-crosshairs"></i>
-                    Use my current location
+                    {{ geo_strings.pd_location_use_current }}
                   </button>
                 </div>
                 <div id="pdLocationMap" class="pd-location-map"></div>
                 <p class="pd-map-status" id="pdLocationStatus">
-                  Click on the map to set your exact location.
+                  {{ geo_strings.pd_location_hint }}
                 </p>
                 <input type="hidden" name="shipping_latitude" id="shipping_latitude">
                 <input type="hidden" name="shipping_longitude" id="shipping_longitude">
@@ -310,14 +310,14 @@
 
           <div class="pd-payment-choice-wrap pd-buybox-payment">
             <div class="pd-payment-choice-head">
-              <label id="pdPaymentMethodLabel">Payment Method</label>
+              <label id="pdPaymentMethodLabel">{{ geo_strings.pd_payment_method_label }}</label>
               <span class="pd-payment-secure">
                 <i class="fas fa-lock"></i>
-                Secure checkout
+                {{ geo_strings.pd_payment_secure_label }}
               </span>
             </div>
             {% if product.requires_online_payment %}
-              <p class="pd-payment-hint">Choose your method, then press the button to continue to secure payment.</p>
+              <p class="pd-payment-hint">{{ geo_strings.pd_payment_hint }}</p>
               <div class="pd-payment-options" role="radiogroup" aria-labelledby="pdPaymentMethodLabel">
                 {% for method in product.allowed_payment_methods %}
                   <label
@@ -345,11 +345,11 @@
                       <strong>{{ method.1 }}</strong>
                       <small>
                         {% if method.0 == 'stripe' %}
-                          Card checkout powered by Stripe.
+                          {{ geo_strings.pd_payment_stripe_note }}
                         {% elif method.0 == 'paypal' %}
-                          Pay via PayPal account or card.
+                          {{ geo_strings.pd_payment_paypal_note }}
                         {% else %}
-                          Secure checkout with this provider.
+                          {{ geo_strings.pd_payment_other_note }}
                         {% endif %}
                       </small>
                     </span>
@@ -361,12 +361,12 @@
                   {% if product.current_price <= 0 %}
                     <div class="pd-payment-warning">
                       <i class="fas fa-circle-info"></i>
-                      This is a free test product. You can place the order without a payment gateway.
+                      {{ geo_strings.pd_payment_free_note }}
                     </div>
                   {% else %}
                     <div class="pd-payment-warning">
                       <i class="fas fa-triangle-exclamation"></i>
-                      Online payment is required, but no gateway is enabled for this product.
+                      {{ geo_strings.pd_payment_gateway_missing }}
                     </div>
                   {% endif %}
                 {% endfor %}
@@ -374,18 +374,18 @@
               {% if product.allowed_payment_methods %}
                 <div class="pd-selected-payment-note" id="pdSelectedPaymentNote" aria-live="polite">
                   <i class="fas fa-shield-halved"></i>
-                  <span id="pdSelectedPaymentText">Selected: {{ product.allowed_payment_methods.0.1 }}</span>
+                  <span id="pdSelectedPaymentText">{{ geo_strings.pd_selected_prefix }} {{ product.allowed_payment_methods.0.1 }}</span>
                 </div>
               {% endif %}
             {% else %}
               <input type="hidden" name="payment_method" value="cash_on_delivery">
               <div class="pd-payment-static">
                 <i class="fas fa-money-bill-wave"></i>
-                Cash on Delivery (COD)
+                {{ geo_strings.pd_payment_cod_label }}
               </div>
               <div class="pd-selected-payment-note" aria-live="polite">
                 <i class="fas fa-box-open"></i>
-                <span>Selected: Cash on Delivery (COD)</span>
+                <span>{{ geo_strings.pd_selected_prefix }} {{ geo_strings.pd_payment_cod_label }}</span>
               </div>
             {% endif %}
           </div>
@@ -401,28 +401,28 @@
             <i class="fas fa-bag-shopping"></i>
             <span id="pdBuyButtonLabel">
               {% if product.in_stock %}
-                {% if product.current_price <= 0 %}Place Free Test Order{% elif product.requires_online_payment %}Pay From Site{% else %}Reserve Now{% endif %}
+                {% if product.current_price <= 0 %}{{ geo_strings.pd_buy_free }}{% elif product.requires_online_payment %}{{ geo_strings.pd_buy_pay_site }}{% else %}{{ geo_strings.pd_buy_reserve }}{% endif %}
               {% else %}
-                Unavailable
+                {{ geo_strings.pd_buy_unavailable }}
               {% endif %}
             </span>
           </button>
 
-          <p class="pd-line-total pd-buybox-total">Estimated total: <strong id="pdEstimatedTotal">{{ product.current_price }} {{ currency_label }}</strong></p>
+          <p class="pd-line-total pd-buybox-total">{{ geo_strings.pd_buy_total_label }}: <strong id="pdEstimatedTotal">{{ product.current_price }} {{ currency_label }}</strong></p>
         </form>
 
         <div class="pd-contact-row">
           
-          {% with whatsapp_text="Hello, I am interested in "|add:product.name %}
+          {% with whatsapp_text=geo_strings.pd_whatsapp_prefix|add:product.name %}
             {% if whatsapp_number %}
               <a href="https://wa.me/{{ whatsapp_number }}?text={{ whatsapp_text|urlencode }}" target="_blank" rel="noopener noreferrer" class="pd-contact-btn pd-contact-whatsapp">
                 <i class="fab fa-whatsapp"></i>
-                WhatsApp
+                {{ geo_strings.pd_contact_whatsapp }}
               </a>
             {% else %}
               <a href="{% url 'store:chat' %}" class="pd-contact-btn pd-contact-whatsapp">
                 <i class="fas fa-comments"></i>
-                Live Chat
+                {{ geo_strings.pd_contact_chat }}
               </a>
             {% endif %}
           {% endwith %}
@@ -431,15 +431,15 @@
         <div class="pd-trust-grid">
           <div class="pd-trust-item">
             <i class="fas fa-shield-halved"></i>
-            <span>Secure Checkout</span>
+            <span>{{ geo_strings.pd_trust_secure }}</span>
           </div>
           <div class="pd-trust-item">
             <i class="fas fa-headset"></i>
-            <span>Fast Support</span>
+            <span>{{ geo_strings.pd_trust_support }}</span>
           </div>
           <div class="pd-trust-item">
             <i class="fas fa-rotate-left"></i>
-            <span>Easy Returns</span>
+            <span>{{ geo_strings.pd_trust_returns }}</span>
           </div>
         </div>
       </section>
@@ -447,35 +447,35 @@
 
     <div class="pd-info-grid">
       <article class="pd-panel">
-        <h2>Description</h2>
+        <h2>{{ geo_strings.pd_description_title }}</h2>
         <div class="pd-description">
           {% if product.description %}
             {{ product.description|safe }}
           {% elif product.short_description %}
             <p>{{ product.short_description }}</p>
           {% else %}
-            <p>No detailed description is available for this product yet.</p>
+            <p>{{ geo_strings.pd_description_empty }}</p>
           {% endif %}
         </div>
         {% if product.product_video %}
           <div class="pd-video-wrap">
-            <h3>Product Video</h3>
+            <h3>{{ geo_strings.pd_video_title }}</h3>
             <video controls preload="metadata" class="pd-product-video">
               <source src="{{ product.product_video.url }}">
-              Your browser does not support HTML5 video.
+              {{ geo_strings.pd_video_unsupported }}
             </video>
           </div>
         {% endif %}
       </article>
 
       <aside class="pd-panel pd-facts">
-        <h2>Product Facts</h2>
+        <h2>{{ geo_strings.pd_facts_title }}</h2>
         <ul class="pd-facts-list">
-          <li><span>Category</span><strong>{{ product.get_category_display }}</strong></li>
-          {% if product.brand %}<li><span>Brand</span><strong>{{ product.brand }}</strong></li>{% endif %}
-          {% if product.weight %}<li><span>Weight</span><strong>{{ product.weight }} kg</strong></li>{% endif %}
-          {% if product.sku %}<li><span>SKU</span><strong>{{ product.sku }}</strong></li>{% endif %}
-          <li><span>Availability</span><strong>{% if product.in_stock %}In Stock{% else %}Out of Stock{% endif %}</strong></li>
+          <li><span>{{ geo_strings.pd_fact_category }}</span><strong>{{ product.get_category_display }}</strong></li>
+          {% if product.brand %}<li><span>{{ geo_strings.pd_fact_brand }}</span><strong>{{ product.brand }}</strong></li>{% endif %}
+          {% if product.weight %}<li><span>{{ geo_strings.pd_fact_weight }}</span><strong>{{ product.weight }} kg</strong></li>{% endif %}
+          {% if product.sku %}<li><span>{{ geo_strings.pd_fact_sku }}</span><strong>{{ product.sku }}</strong></li>{% endif %}
+          <li><span>{{ geo_strings.pd_fact_availability }}</span><strong>{% if product.in_stock %}{{ geo_strings.pd_status_in }}{% else %}{{ geo_strings.pd_status_out }}{% endif %}</strong></li>
         </ul>
       </aside>
     </div>
@@ -483,8 +483,8 @@
     {% if related_products %}
       <section class="pd-related">
         <div class="pd-related-head">
-          <h2>You Might Also Like</h2>
-          <a href="{% url 'store:store' %}">View all products</a>
+          <h2>{{ geo_strings.pd_related_title }}</h2>
+          <a href="{% url 'store:store' %}">{{ geo_strings.pd_related_view_all }}</a>
         </div>
         <div class="pd-related-grid">
           {% for related in related_products %}
@@ -519,7 +519,7 @@
 
 <div class="pd-mobile-buybar">
   <div class="pd-mobile-buy-meta">
-    <small>Total</small>
+    <small>{{ geo_strings.pd_mobile_total_label }}</small>
     <strong id="pdMobileTotal">{{ product.current_price }} {{ currency_label }}</strong>
   </div>
   <button
@@ -530,29 +530,29 @@
   >
     <span id="pdMobileBuyLabel">
       {% if product.in_stock %}
-        {% if product.current_price <= 0 %}Free order{% elif product.requires_online_payment %}Pay now{% else %}Reserve{% endif %}
+        {% if product.current_price <= 0 %}{{ geo_strings.pd_mobile_free }}{% elif product.requires_online_payment %}{{ geo_strings.pd_mobile_pay }}{% else %}{{ geo_strings.pd_mobile_reserve }}{% endif %}
       {% else %}
-        Unavailable
+        {{ geo_strings.pd_buy_unavailable }}
       {% endif %}
     </span>
   </button>
 </div>
 
 <div class="pd-lightbox" id="pdLightbox" hidden>
-  <button type="button" class="pd-lightbox-close" id="pdLightboxClose" aria-label="Close image viewer">
+  <button type="button" class="pd-lightbox-close" id="pdLightboxClose" aria-label="{{ geo_strings.pd_lightbox_close }}">
     <i class="fas fa-xmark"></i>
   </button>
-  <button type="button" class="pd-lightbox-nav pd-lightbox-prev" id="pdLightboxPrev" aria-label="Previous image">
+  <button type="button" class="pd-lightbox-nav pd-lightbox-prev" id="pdLightboxPrev" aria-label="{{ geo_strings.pd_lightbox_prev }}">
     <i class="fas fa-chevron-left"></i>
   </button>
   <img id="pdLightboxImage" src="" alt="{{ product.name }}">
-  <button type="button" class="pd-lightbox-nav pd-lightbox-next" id="pdLightboxNext" aria-label="Next image">
+  <button type="button" class="pd-lightbox-nav pd-lightbox-next" id="pdLightboxNext" aria-label="{{ geo_strings.pd_lightbox_next }}">
     <i class="fas fa-chevron-right"></i>
   </button>
   <p class="pd-lightbox-caption" id="pdLightboxCaption">{{ product.name }}</p>
 </div>
 
-<a href="{% url 'store:chat' %}" class="pd-chat-float" aria-label="Open chat">
+<a href="{% url 'store:chat' %}" class="pd-chat-float" aria-label="{{ geo_strings.pd_chat_open_label }}">
   <i class="fas fa-comments"></i>
 </a>
 
@@ -562,6 +562,29 @@
 
 <script>
   (function () {
+    const pdStrings = {
+      inStock: "{{ geo_strings.pd_status_in|escapejs }}",
+      outStock: "{{ geo_strings.pd_status_out|escapejs }}",
+      codLabel: "{{ geo_strings.pd_payment_cod_label|escapejs }}",
+      selectedPrefix: "{{ geo_strings.pd_selected_prefix|escapejs }}",
+      freeOrder: "{{ geo_strings.pd_buy_free|escapejs }}",
+      freeOrderShort: "{{ geo_strings.pd_buy_free_short|escapejs }}",
+      paySite: "{{ geo_strings.pd_buy_pay_site|escapejs }}",
+      reserveNow: "{{ geo_strings.pd_buy_reserve|escapejs }}",
+      reserveShort: "{{ geo_strings.pd_buy_reserve_short|escapejs }}",
+      unavailable: "{{ geo_strings.pd_buy_unavailable|escapejs }}",
+      payStripe: "{{ geo_strings.pd_buy_pay_stripe|escapejs }}",
+      payPaypal: "{{ geo_strings.pd_buy_pay_paypal|escapejs }}",
+      continueLabel: "{{ geo_strings.pd_buy_continue|escapejs }}",
+      payNow: "{{ geo_strings.pd_mobile_pay|escapejs }}",
+      locationSetPrefix: "{{ geo_strings.pd_location_set_prefix|escapejs }}",
+      mapFailed: "{{ geo_strings.pd_map_failed|escapejs }}",
+      mapDetecting: "{{ geo_strings.pd_map_detecting|escapejs }}",
+      mapGeolocUnsupported: "{{ geo_strings.pd_map_geoloc_unsupported|escapejs }}",
+      mapGeolocFailed: "{{ geo_strings.pd_map_geoloc_failed|escapejs }}",
+      shippingMissing: "{{ geo_strings.pd_shipping_missing_fields|escapejs }}",
+      shippingSelectMap: "{{ geo_strings.pd_shipping_select_map|escapejs }}",
+    };
     const mainImage = document.getElementById('pdMainImage');
     const thumbs = Array.from(document.querySelectorAll('.pd-thumb'));
     const quantityInput = document.getElementById('quantity');
@@ -716,7 +739,7 @@
 
       const hiddenMethod = buyForm.querySelector('input[type="hidden"][name="payment_method"]');
       if (hiddenMethod) {
-        return { value: hiddenMethod.value, label: 'Cash on Delivery (COD)' };
+        return { value: hiddenMethod.value, label: pdStrings.codLabel };
       }
       return null;
     };
@@ -728,7 +751,7 @@
       }
 
       if (selectedPaymentText) {
-        selectedPaymentText.textContent = `Selected: ${selectedPayment.label}`;
+        selectedPaymentText.textContent = `${pdStrings.selectedPrefix} ${selectedPayment.label}`;
       }
 
       if (buyButton && buyButton.disabled) {
@@ -737,30 +760,30 @@
 
       if (isFreeOrder) {
         if (buyButtonLabel) {
-          buyButtonLabel.textContent = 'Place Free Test Order';
+          buyButtonLabel.textContent = pdStrings.freeOrder;
         }
         if (mobileBuyLabel && mobileBuyBtn && !mobileBuyBtn.disabled) {
-          mobileBuyLabel.textContent = 'Free order';
+          mobileBuyLabel.textContent = pdStrings.freeOrderShort;
         }
         return;
       }
 
       const desktopLabels = {
-        stripe: 'Pay with Stripe',
-        paypal: 'Pay with PayPal',
-        cash_on_delivery: 'Reserve Now'
+        stripe: pdStrings.payStripe,
+        paypal: pdStrings.payPaypal,
+        cash_on_delivery: pdStrings.reserveNow
       };
       const mobileLabels = {
-        stripe: 'Stripe',
-        paypal: 'PayPal',
-        cash_on_delivery: 'Reserve'
+        stripe: pdStrings.payStripe,
+        paypal: pdStrings.payPaypal,
+        cash_on_delivery: pdStrings.reserveShort
       };
 
       if (buyButtonLabel) {
-        buyButtonLabel.textContent = desktopLabels[selectedPayment.value] || 'Continue';
+        buyButtonLabel.textContent = desktopLabels[selectedPayment.value] || pdStrings.continueLabel;
       }
       if (mobileBuyLabel && mobileBuyBtn && !mobileBuyBtn.disabled) {
-        mobileBuyLabel.textContent = mobileLabels[selectedPayment.value] || 'Continue';
+        mobileBuyLabel.textContent = mobileLabels[selectedPayment.value] || pdStrings.continueLabel;
       }
     };
 
@@ -783,7 +806,7 @@
 
       shippingLatInput.value = Number(lat).toFixed(7);
       shippingLngInput.value = Number(lng).toFixed(7);
-      updateLocationStatus(`Location set: ${shippingLatInput.value}, ${shippingLngInput.value}`, false);
+      updateLocationStatus(`${pdStrings.locationSetPrefix} ${shippingLatInput.value}, ${shippingLngInput.value}`, false);
 
       if (shippingMap && window.L) {
         const point = [lat, lng];
@@ -800,7 +823,7 @@
 
     if (requiresShipping && locationMapElement) {
       if (typeof window.L === 'undefined') {
-        updateLocationStatus('Map failed to load. Please refresh the page and try again.', true);
+        updateLocationStatus(pdStrings.mapFailed, true);
       } else {
         shippingMap = window.L.map(locationMapElement).setView([33.5731, -7.5898], 6);
         window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -821,17 +844,17 @@
     if (locateMeButton) {
       locateMeButton.addEventListener('click', () => {
         if (!navigator.geolocation) {
-          updateLocationStatus('Geolocation is not supported by your browser.', true);
+          updateLocationStatus(pdStrings.mapGeolocUnsupported, true);
           return;
         }
 
-        updateLocationStatus('Detecting your current location...', false);
+        updateLocationStatus(pdStrings.mapDetecting, false);
         navigator.geolocation.getCurrentPosition(
           (position) => {
             setShippingLocation(position.coords.latitude, position.coords.longitude, true);
           },
           () => {
-            updateLocationStatus('Unable to detect your location. Choose it manually on the map.', true);
+            updateLocationStatus(pdStrings.mapGeolocFailed, true);
           },
           { enableHighAccuracy: true, timeout: 10000 }
         );
@@ -864,13 +887,13 @@
 
           if (missingMainFields) {
             event.preventDefault();
-            updateLocationStatus('Fill all shipping fields before payment.', true);
+            updateLocationStatus(pdStrings.shippingMissing, true);
             return;
           }
 
           if (!shippingLatInput || !shippingLngInput || !shippingLatInput.value || !shippingLngInput.value) {
             event.preventDefault();
-            updateLocationStatus('Please select your exact location from the map.', true);
+            updateLocationStatus(pdStrings.shippingSelectMap, true);
             return;
           }
         }
@@ -981,5 +1004,53 @@
     refreshPaymentState();
     updateTotals();
   })();
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const productId = {{ product.id }};
+    const trackData = {
+        event_type: 'product_view',
+        product_id: productId,
+        {% if request.user.is_authenticated %}
+        user_id: {{ request.user.id }},
+        {% endif %}
+        details: {
+            path: window.location.pathname
+        }
+    };
+
+    fetch('/analytics/track_event/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(trackData),
+        keepalive: true
+    });
+
+    const livePayload = JSON.stringify({ product_id: productId });
+    const sendLivePing = () => {
+        if (document.visibilityState === 'hidden') {
+            return;
+        }
+        fetch('/analytics/track_live/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: livePayload,
+            keepalive: true
+        });
+    };
+
+    sendLivePing();
+    window.setInterval(sendLivePing, 20000);
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            sendLivePing();
+        }
+    });
+});
 </script>
 {% endblock %}

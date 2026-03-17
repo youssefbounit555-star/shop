@@ -251,6 +251,26 @@
     color: #475569;
 }
 
+/* ========================
+   ANGLED THEME OVERRIDES
+   ======================== */
+.ai-widget-launcher,
+.ai-widget-panel {
+    border-radius: 0;
+    clip-path: var(--clip-angled);
+}
+
+.ai-widget-close,
+.ai-widget-agent,
+.ai-widget-recommendation,
+.ai-widget-prompt,
+.ai-widget-form input,
+.ai-widget-form button,
+.ai-widget-message p {
+    border-radius: 0;
+    clip-path: var(--clip-angled-sm);
+}
+
 @media (max-width: 640px) {
     .ai-widget-root {
         right: 12px;

@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Discounts - ElegantShop{% endblock %}
+{% block title %}{{ geo_strings.discounts_title }} - ElegantShop{% endblock %}
 
 {% block content %}
 <section class="ds-page">
     <div class="container">
         <header class="ds-hero">
-            <p class="ds-kicker">SPECIAL OFFERS</p>
-            <h1>Discounted Products</h1>
-            <p>{{ total_discounted_products }} product{{ total_discounted_products|pluralize }} currently available with special pricing or promo labels.</p>
+            <p class="ds-kicker">{{ geo_strings.discounts_kicker }}</p>
+            <h1>{{ geo_strings.discounts_title }}</h1>
+            <p>{{ total_discounted_products }} {{ geo_strings.discounts_count_suffix }}</p>
         </header>
 
         {% if products %}
@@ -26,7 +26,7 @@
                     {% if product.discount_percentage > 0 %}
                     <span class="ds-badge">-{{ product.discount_percentage|floatformat:0 }}%</span>
                     {% elif product.discount_price is not None %}
-                    <span class="ds-badge">Special Price</span>
+                    <span class="ds-badge">{{ geo_strings.discounts_badge_special_price }}</span>
                     {% endif %}
                 </a>
 
@@ -46,7 +46,7 @@
                     <p class="ds-note">{{ product.discount_note }}</p>
                     {% endif %}
 
-                    <a href="{% url 'store:product_detail' product.pk %}" class="ds-btn">View Product</a>
+                    <a href="{% url 'store:product_detail' product.pk %}" class="ds-btn">{{ geo_strings.discounts_view_product }}</a>
                 </div>
             </article>
             {% endfor %}
@@ -55,20 +55,20 @@
         {% if is_paginated %}
         <nav class="ds-pagination" aria-label="Discounts pagination">
             {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            <a href="?page={{ page_obj.previous_page_number }}">{{ geo_strings.discounts_prev }}</a>
             {% endif %}
-            <span>Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+            <span>{{ geo_strings.discounts_page }} {{ page_obj.number }} {{ geo_strings.discounts_of }} {{ page_obj.paginator.num_pages }}</span>
             {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">Next</a>
+            <a href="?page={{ page_obj.next_page_number }}">{{ geo_strings.discounts_next }}</a>
             {% endif %}
         </nav>
         {% endif %}
         {% else %}
         <div class="ds-empty">
             <i class="fas fa-tags"></i>
-            <h2>No active discounts right now</h2>
-            <p>Check back later or browse all products.</p>
-            <a href="{% url 'store:store' %}" class="ds-btn">Open Store</a>
+            <h2>{{ geo_strings.discounts_empty_title }}</h2>
+            <p>{{ geo_strings.discounts_empty_text }}</p>
+            <a href="{% url 'store:store' %}" class="ds-btn">{{ geo_strings.discounts_open_store }}</a>
         </div>
         {% endif %}
     </div>

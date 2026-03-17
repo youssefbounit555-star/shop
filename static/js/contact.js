@@ -4,7 +4,8 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const contactForm = document.getElementById('contactForm');
-    
+    const messages = getContactMessages(contactForm);
+
     if (contactForm) {
         // Add form validation and submission
         contactForm.addEventListener('submit', (e) => {
@@ -20,19 +21,19 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Basic validation
             if (!fullName || !email || !subject || !message) {
-                showAlert('Please fill in all required fields', 'error');
+                showAlert(messages.required, 'error');
                 return;
             }
             
             // Email validation
             if (!isValidEmail(email)) {
-                showAlert('Please enter a valid email address', 'error');
+                showAlert(messages.invalidEmail, 'error');
                 return;
             }
             
             // Phone validation (if provided)
             if (phone && !isValidPhone(phone)) {
-                showAlert('Please enter a valid phone number', 'error');
+                showAlert(messages.invalidPhone, 'error');
                 return;
             }
             
@@ -48,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             // Show success message
-            showAlert('Message sent successfully! We\'ll get back to you soon.', 'success');
+            showAlert(messages.success, 'success');
             
             // Reset form
             contactForm.reset();
@@ -176,21 +177,10 @@ document.querySelectorAll('.category-box').forEach(box => {
             contactForm.scrollIntoView({ behavior: 'smooth' });
             
             // Optional: Pre-fill subject based on clicked category
-            const categoryText = box.querySelector('h3').textContent;
             const subjectSelect = document.getElementById('subject');
-            
-            // Map category to subject
-            const categoryMap = {
-                'Product Information': 'product-inquiry',
-                'Shipping & Delivery': 'product-inquiry',
-                'Returns & Refunds': 'return',
-                'Account Support': 'other',
-                'Report an Issue': 'complaint',
-                'Partnership': 'partnership'
-            };
-            
-            if (categoryMap[categoryText]) {
-                subjectSelect.value = categoryMap[categoryText];
+
+            if (subjectSelect && box.dataset.subject) {
+                subjectSelect.value = box.dataset.subject;
             }
         }
     });
@@ -205,7 +195,8 @@ let isSubmitting = false;
 const submitButton = document.querySelector('.contact-form button[type="submit"]');
 
 if (submitButton) {
-    const originalText = submitButton.textContent;
+    const originalHtml = submitButton.innerHTML;
+    const messages = getContactMessages(document.getElementById('contactForm'));
     
     submitButton.addEventListener('click', () => {
         if (isSubmitting) {
@@ -214,13 +205,13 @@ if (submitButton) {
         
         isSubmitting = true;
         submitButton.disabled = true;
-        submitButton.textContent = 'Sending...';
+        submitButton.textContent = messages.sending;
         
         // Reset after 3 seconds
         setTimeout(() => {
             isSubmitting = false;
             submitButton.disabled = false;
-            submitButton.textContent = originalText;
+            submitButton.innerHTML = originalHtml;
         }, 3000);
     });
 }
@@ -248,3 +239,16 @@ style.textContent = `
 `;
 
 document.head.appendChild(style);
+
+function getContactMessages(form) {
+    const geoStrings = window.geoStrings || {};
+    const data = form ? form.dataset : {};
+
+    return {
+        required: data.msgRequired || geoStrings.contact_error_required || 'Please fill in all required fields',
+        invalidEmail: data.msgInvalidEmail || geoStrings.contact_error_email || 'Please enter a valid email address',
+        invalidPhone: data.msgInvalidPhone || geoStrings.contact_error_phone || 'Please enter a valid phone number',
+        success: data.msgSuccess || geoStrings.contact_success_message || 'Message sent successfully! We\'ll get back to you soon.',
+        sending: data.msgSending || geoStrings.contact_sending || 'Sending...',
+    };
+}

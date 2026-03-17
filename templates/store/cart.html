@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}My Cart - ElegantShop{% endblock %}
+{% block title %}{{ geo_strings.cart_title }} - ElegantShop{% endblock %}
 
 {% block content %}
 <section class="sc-page">
   <div class="container sc-container">
     <div class="sc-head">
       <div>
-        <h1>My Cart</h1>
-        <p>Review your selected products and update quantities.</p>
+        <h1>{{ geo_strings.cart_title }}</h1>
+        <p>{{ geo_strings.cart_subtitle }}</p>
       </div>
       {% if cart_items %}
       <form method="post">
         {% csrf_token %}
         <input type="hidden" name="action" value="clear">
-        <button type="submit" class="sc-btn sc-btn-ghost">Clear cart</button>
+        <button type="submit" class="sc-btn sc-btn-ghost">{{ geo_strings.cart_clear }}</button>
       </form>
       {% endif %}
     </div>
@@ -26,8 +26,8 @@
           {% if cod_items %}
           <section class="sc-section">
             <div class="sc-section-head">
-              <h2>Cash on Delivery (COD)</h2>
-              <span class="sc-pill sc-pill-cod">{{ cod_items|length }} products • {{ cod_units }} qty</span>
+              <h2>{{ geo_strings.cart_cod_title }}</h2>
+              <span class="sc-pill sc-pill-cod">{{ cod_items|length }} {{ geo_strings.cart_products_label }} • {{ cod_units }} {{ geo_strings.cart_qty_label }}</span>
             </div>
             {% for item in cod_items %}
             <article class="sc-card">
@@ -41,7 +41,7 @@
 
               <div class="sc-body">
                 <h3><a href="{% url 'store:product_detail' item.product.pk %}">{{ item.product.name }}</a></h3>
-                <p>{{ item.product.current_price }} {{ currency_label }} each</p>
+                <p>{{ item.product.current_price }} {{ currency_label }} {{ geo_strings.cart_each_label }}</p>
                 <span class="sc-mode sc-mode-cod">{{ item.payment_mode_label }}</span>
 
                 <div class="sc-actions">
@@ -50,14 +50,14 @@
                     <input type="hidden" name="action" value="update">
                     <input type="hidden" name="product_id" value="{{ item.product.pk }}">
                     <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock_quantity|default:1 }}">
-                    <button type="submit" class="sc-btn sc-btn-primary">Update</button>
+                    <button type="submit" class="sc-btn sc-btn-primary">{{ geo_strings.cart_update }}</button>
                   </form>
 
                   <form method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="remove">
                     <input type="hidden" name="product_id" value="{{ item.product.pk }}">
-                    <button type="submit" class="sc-btn sc-btn-danger">Remove</button>
+                    <button type="submit" class="sc-btn sc-btn-danger">{{ geo_strings.cart_remove }}</button>
                   </form>
                 </div>
               </div>
@@ -73,8 +73,8 @@
           {% if online_items %}
           <section class="sc-section">
             <div class="sc-section-head">
-              <h2>Online Payment</h2>
-              <span class="sc-pill sc-pill-online">{{ online_items|length }} products • {{ online_units }} qty</span>
+              <h2>{{ geo_strings.cart_online_title }}</h2>
+              <span class="sc-pill sc-pill-online">{{ online_items|length }} {{ geo_strings.cart_products_label }} • {{ online_units }} {{ geo_strings.cart_qty_label }}</span>
             </div>
             {% for item in online_items %}
             <article class="sc-card">
@@ -88,7 +88,7 @@
 
               <div class="sc-body">
                 <h3><a href="{% url 'store:product_detail' item.product.pk %}">{{ item.product.name }}</a></h3>
-                <p>{{ item.product.current_price }} {{ currency_label }} each</p>
+                <p>{{ item.product.current_price }} {{ currency_label }} {{ geo_strings.cart_each_label }}</p>
                 <span class="sc-mode sc-mode-online">{{ item.payment_mode_label }}</span>
 
                 <div class="sc-actions">
@@ -97,14 +97,14 @@
                     <input type="hidden" name="action" value="update">
                     <input type="hidden" name="product_id" value="{{ item.product.pk }}">
                     <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="{{ item.product.stock_quantity|default:1 }}">
-                    <button type="submit" class="sc-btn sc-btn-primary">Update</button>
+                    <button type="submit" class="sc-btn sc-btn-primary">{{ geo_strings.cart_update }}</button>
                   </form>
 
                   <form method="post">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="remove">
                     <input type="hidden" name="product_id" value="{{ item.product.pk }}">
-                    <button type="submit" class="sc-btn sc-btn-danger">Remove</button>
+                    <button type="submit" class="sc-btn sc-btn-danger">{{ geo_strings.cart_remove }}</button>
                   </form>
                 </div>
               </div>
@@ -120,39 +120,39 @@
           {% if cod_items and online_items %}
           <div class="sc-mix-note">
             <i class="fas fa-circle-info"></i>
-            <span>Your cart has COD and Online products. Complete each product from its detail page with the correct payment flow.</span>
+            <span>{{ geo_strings.cart_mix_note }}</span>
           </div>
           {% endif %}
         </div>
 
         <aside class="sc-summary">
-          <h2>Summary</h2>
+          <h2>{{ geo_strings.cart_summary_title }}</h2>
           <div class="sc-summary-row">
-            <span>Items</span>
-            <strong>{{ cart_items|length }} products</strong>
+            <span>{{ geo_strings.cart_items_label }}</span>
+            <strong>{{ cart_items|length }} {{ geo_strings.cart_products_label }}</strong>
           </div>
           <div class="sc-summary-row">
-            <span>COD subtotal</span>
+            <span>{{ geo_strings.cart_cod_subtotal }}</span>
             <strong>{{ cod_total|floatformat:2 }} {{ currency_label }}</strong>
           </div>
           <div class="sc-summary-row">
-            <span>Online subtotal</span>
+            <span>{{ geo_strings.cart_online_subtotal }}</span>
             <strong>{{ online_total|floatformat:2 }} {{ currency_label }}</strong>
           </div>
           <div class="sc-summary-row sc-summary-total">
-            <span>Total</span>
+            <span>{{ geo_strings.cart_total }}</span>
             <strong>{{ cart_total|floatformat:2 }} {{ currency_label }}</strong>
           </div>
-          <p class="sc-note">Continue from the product page to select payment method and shipping details.</p>
-          <a href="{% url 'store:store' %}" class="sc-btn sc-btn-primary sc-full">Continue Shopping</a>
+          <p class="sc-note">{{ geo_strings.cart_note }}</p>
+          <a href="{% url 'store:store' %}" class="sc-btn sc-btn-primary sc-full">{{ geo_strings.cart_continue_shopping }}</a>
         </aside>
       </div>
     {% else %}
       <div class="sc-empty">
         <i class="fas fa-cart-shopping"></i>
-        <h2>Your cart is empty</h2>
-        <p>Add products from the product detail page.</p>
-        <a href="{% url 'store:store' %}" class="sc-btn sc-btn-primary">Browse products</a>
+        <h2>{{ geo_strings.cart_empty_title }}</h2>
+        <p>{{ geo_strings.cart_empty_text }}</p>
+        <a href="{% url 'store:store' %}" class="sc-btn sc-btn-primary">{{ geo_strings.cart_browse_products }}</a>
       </div>
     {% endif %}
   </div>

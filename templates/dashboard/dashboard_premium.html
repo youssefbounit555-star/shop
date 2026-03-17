@@ -58,123 +58,194 @@
         }
 
         /* ===== HEADER ===== */
-        .navbar-premium {
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border-color);
-            box-shadow: var(--shadow-md);
-            padding: 1rem 2rem;
+        .dash-topbar {
             position: sticky;
             top: 0;
             z-index: 1000;
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 1.6rem;
+            background: rgba(255, 255, 255, 0.92);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow-glass);
+            backdrop-filter: blur(16px);
         }
 
-        .navbar-brand {
+        .dash-topbar__inner {
+            display: grid;
+            grid-template-columns: auto minmax(240px, 1fr) auto;
+            align-items: center;
+            gap: 1.25rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .dash-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .dash-brand-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: #fff;
+            display: grid;
+            place-items: center;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 18px rgba(99, 102, 241, 0.25);
+        }
+
+        .dash-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+
+        .dash-brand-name {
             font-weight: 700;
-            font-size: 1.5rem;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            font-size: 1.15rem;
+            color: var(--text-primary);
         }
 
-        .navbar-brand i {
-            -webkit-text-fill-color: unset;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .dash-brand-sub {
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
         }
 
-        .search-wrapper {
-            flex: 1;
-            max-width: 400px;
-            margin: 0 2rem;
-        }
-
-        .search-box {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 50px;
-            padding: 0.75rem 1.25rem;
-            transition: all 0.3s ease;
-        }
-
-        .search-box:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-            outline: none;
-        }
-
-        .nav-icons {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-        }
-
-        .nav-icon-btn {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            position: relative;
-            transition: all 0.3s ease;
-            padding: 0.5rem;
-            border-radius: 8px;
-        }
-
-        .nav-icon-btn:hover {
+        .dash-badge {
+            padding: 0.3rem 0.7rem;
+            border-radius: 999px;
+            border: 1px dashed rgba(99, 102, 241, 0.35);
+            background: rgba(99, 102, 241, 0.08);
             color: var(--primary);
-            background: var(--bg-secondary);
-            transform: translateY(-2px);
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
 
-        .badge-notification {
+        .dash-search {
+            position: relative;
+            width: 100%;
+        }
+
+        .dash-search i {
             position: absolute;
-            top: -5px;
-            right: -5px;
-            background: var(--danger);
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: 600;
+            left: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-tertiary);
+            pointer-events: none;
         }
 
-        .profile-dropdown {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.5rem 0.75rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .profile-dropdown:hover {
+        .dash-search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.6rem;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
             background: var(--bg-secondary);
+            font-size: 0.92rem;
+            transition: all 0.2s ease;
         }
 
-        .avatar {
+        .dash-search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+            background: #fff;
+        }
+
+        .dash-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.35rem;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
+            background: #fff;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .dash-action-btn {
             width: 40px;
             height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            display: flex;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: #f9fafb;
+            color: var(--text-secondary);
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .dash-action-btn:hover {
+            color: var(--primary);
+            background: #fff;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .dash-badge-dot {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--danger);
+            color: #fff;
+            width: 18px;
+            height: 18px;
+            border-radius: 999px;
+            display: grid;
+            place-items: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .dash-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.45rem 0.8rem;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .dash-profile:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .dash-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: #fff;
+            display: grid;
+            place-items: center;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+        }
+
+        .dash-profile-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+
+        .dash-profile-text small {
+            color: var(--text-tertiary);
+            font-size: 0.7rem;
+        }
+
+        .dash-profile-text strong {
+            color: var(--text-primary);
+            font-size: 0.85rem;
         }
 
         /* ===== SIDEBAR ===== */
@@ -764,10 +835,22 @@
                 grid-template-columns: 1fr;
             }
 
-            .search-wrapper {
-                max-width: none;
-                margin: 0 1rem;
-                flex: 1;
+            .dash-topbar__inner {
+                grid-template-columns: 1fr;
+                gap: 0.85rem;
+            }
+
+            .dash-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .dash-search {
+                width: 100%;
+            }
+
+            .dash-profile-text {
+                display: none;
             }
 
             .page-title {
@@ -776,16 +859,21 @@
         }
 
         @media (max-width: 480px) {
-            .navbar-premium {
-                padding: 1rem;
+            .dash-topbar {
+                padding: 0.85rem 1rem;
             }
 
-            .search-wrapper {
+            .dash-search {
                 display: none;
             }
 
-            .nav-icons {
-                gap: 1rem;
+            .dash-actions {
+                gap: 0.45rem;
+            }
+
+            .dash-badge,
+            .dash-brand-sub {
+                display: none;
             }
 
             .main-wrapper {
@@ -810,48 +898,48 @@
 </head>
 <body>
     <!-- ===== HEADER ===== -->
-    <nav class="navbar-premium">
-        <div class="d-flex align-items-center w-100">
-            <!-- Logo -->
-            <div class="navbar-brand">
-                <i class="fas fa-chart-line"></i>
-                Dashboard
+    <nav class="dash-topbar">
+        <div class="dash-topbar__inner">
+            <div class="dash-brand">
+                <div class="dash-brand-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="dash-brand-text">
+                    <span class="dash-brand-name">Dashboard</span>
+                    <span class="dash-brand-sub">Premium workspace</span>
+                </div>
+                <span class="dash-badge">Live</span>
             </div>
 
-            <!-- Search Bar -->
-            <div class="search-wrapper">
-                <input type="text" class="form-control search-box" placeholder="Search anything...">
+            <div class="dash-search">
+                <i class="fas fa-search"></i>
+                <input type="text" class="dash-search-input" placeholder="Search reports, orders, customers">
             </div>
 
-            <!-- Icons & Profile -->
-            <div class="nav-icons ms-auto">
-                <!-- Notifications -->
-                <button class="nav-icon-btn" title="Notifications">
+            <div class="dash-actions">
+                <button class="dash-action-btn" title="Notifications">
+                    <span class="dash-badge-dot">5</span>
                     <i class="fas fa-bell"></i>
-                    <span class="badge-notification">5</span>
                 </button>
 
-                <!-- Messages -->
-                <button class="nav-icon-btn" title="Messages">
+                <button class="dash-action-btn" title="Messages">
+                    <span class="dash-badge-dot">3</span>
                     <i class="fas fa-envelope"></i>
-                    <span class="badge-notification">3</span>
                 </button>
 
-                <!-- Settings -->
-                <button class="nav-icon-btn" title="Settings">
+                <button class="dash-action-btn" title="Settings">
                     <i class="fas fa-cog"></i>
                 </button>
 
-                <!-- Profile Dropdown -->
-                <div class="profile-dropdown">
-                    <div class="avatar">
+                <button class="dash-profile" title="Profile">
+                    <span class="dash-avatar">
                         <i class="fas fa-user"></i>
-                    </div>
-                    <div class="d-none d-md-block">
-                        <small style="color: var(--text-secondary); display: block;">Account</small>
-                        <small style="font-weight: 600; color: var(--text-primary);">Admin</small>
-                    </div>
-                </div>
+                    </span>
+                    <span class="dash-profile-text">
+                        <small>Account</small>
+                        <strong>Admin</strong>
+                    </span>
+                </button>
             </div>
         </div>
     </nav>

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Live Support Chat{% endblock %}
+{% block title %}{{ geo_strings.chat_title }}{% endblock %}
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/realtime_chat.css' %}">
@@ -20,14 +20,12 @@
         data-poll-ms="1000"
     >
         <aside class="support-chat-panel support-chat-sidebar">
-            <span class="support-chat-badge"><i class="fas fa-bolt"></i> Live</span>
-            <h2 class="support-chat-title">Support Center</h2>
-            <p class="support-chat-subtitle">
-                Talk with store management instantly. You can send text, images, videos, and voice notes.
-            </p>
+            <span class="support-chat-badge"><i class="fas fa-bolt"></i> {{ geo_strings.chat_badge_live }}</span>
+            <h2 class="support-chat-title">{{ geo_strings.chat_heading }}</h2>
+            <p class="support-chat-subtitle">{{ geo_strings.chat_subtitle }}</p>
             <div class="support-chat-stats">
-                <div><strong>Conversation:</strong> #{{ conversation.id }}</div>
-                <div><strong>Status:</strong> {{ conversation.get_status_display }}</div>
+                <div><strong>{{ geo_strings.chat_conversation_label }}:</strong> #{{ conversation.id }}</div>
+                <div><strong>{{ geo_strings.chat_status_label }}:</strong> {{ conversation.get_status_display }}</div>
             </div>
         </aside>
 
@@ -38,8 +36,8 @@
                         {{ conversation.admin.username|default:"M"|slice:":1"|upper }}
                     </span>
                     <div>
-                        <h3>{{ conversation.admin.get_full_name|default:conversation.admin.username|default:"Store Manager" }}</h3>
-                        <p>Management Team</p>
+                        <h3>{{ conversation.admin.get_full_name|default:conversation.admin.username|default:geo_strings.chat_manager_default }}</h3>
+                        <p>{{ geo_strings.chat_manager_team }}</p>
                     </div>
                 </div>
             </header>
@@ -48,32 +46,32 @@
 
             <form class="support-composer" id="supportChatForm" enctype="multipart/form-data" autocomplete="off">
                 {% csrf_token %}
-                <textarea id="supportChatText" class="support-input" rows="2" placeholder="Type your message..."></textarea>
+                <textarea id="supportChatText" class="support-input" rows="2" placeholder="{{ geo_strings.chat_input_placeholder }}"></textarea>
 
                 <div class="support-tools">
                     <div class="support-tool-group">
                         <label class="support-btn ghost" for="supportChatFile">
-                            <i class="fas fa-photo-film"></i> Media
+                            <i class="fas fa-photo-film"></i> {{ geo_strings.chat_media }}
                         </label>
                         <input id="supportChatFile" type="file" accept="image/*,video/*" hidden>
 
                         <button type="button" class="support-btn ghost" id="supportChatRecord">
-                            <i class="fas fa-microphone"></i> Voice
+                            <i class="fas fa-microphone"></i> {{ geo_strings.chat_voice }}
                         </button>
 
                         <button type="button" class="support-btn ghost" id="supportChatClearAudio" hidden>
-                            <i class="fas fa-xmark"></i> Remove Voice
+                            <i class="fas fa-xmark"></i> {{ geo_strings.chat_remove_voice }}
                         </button>
                     </div>
 
                     <button type="submit" class="support-btn primary" id="supportChatSend">
-                        <i class="fas fa-paper-plane"></i> Send
+                        <i class="fas fa-paper-plane"></i> {{ geo_strings.chat_send }}
                     </button>
                 </div>
 
                 <div class="support-attachment" id="supportChatAttachmentPreview"></div>
                 <div class="support-audio-preview" id="supportChatAudioPreview" hidden>
-                    <strong>Voice preview:</strong>
+                    <strong>{{ geo_strings.chat_voice_preview }}:</strong>
                     <audio controls id="supportChatAudioPlayer"></audio>
                 </div>
                 <div class="support-typing" id="supportChatTyping"></div>

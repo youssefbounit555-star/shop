@@ -562,3 +562,31 @@
         padding: 0 14px;
     }
 }
+
+/* ========================
+   ANGLED THEME OVERRIDES
+   ======================== */
+.agents-catalog,
+.agent-chat,
+.agents-reco,
+.agent-card,
+.agents-reco-card,
+.recommendation-card,
+.quick-prompt-btn,
+.chat-input-row input,
+.chat-input-row button,
+.agents-badge,
+.chat-status,
+.message-body,
+.agents-reco-media,
+.agent-icon-wrap {
+    border-radius: 0;
+    clip-path: var(--clip-angled-sm);
+}
+
+.agents-catalog,
+.agent-chat,
+.agents-reco,
+.agents-reco-card {
+    clip-path: var(--clip-angled);
+}

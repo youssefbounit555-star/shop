@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}PayPal Checkout - {{ order.order_id }}{% endblock %}
+{% block title %}{{ geo_strings.paypal_checkout_title }} - {{ order.order_id }}{% endblock %}
 
 {% block content %}
 <style>
@@ -115,16 +115,16 @@
 <div class="pp-checkout-wrap">
   <div class="pp-checkout-card">
     <div class="pp-checkout-head">
-      <h1>PayPal Checkout</h1>
+      <h1>{{ geo_strings.paypal_checkout_title }}</h1>
     </div>
     <div class="pp-checkout-body">
       <div class="pp-order-meta">
         <div class="pp-meta-box">
-          <span class="pp-meta-label">Order</span>
+          <span class="pp-meta-label">{{ geo_strings.paypal_order_label }}</span>
           <span class="pp-meta-value">{{ order.order_id }}</span>
         </div>
         <div class="pp-meta-box">
-          <span class="pp-meta-label">Payment Method</span>
+          <span class="pp-meta-label">{{ geo_strings.paypal_payment_label }}</span>
           <span class="pp-meta-value">{{ order.get_payment_method_display }}</span>
         </div>
       </div>
@@ -132,10 +132,10 @@
       <table class="pp-items">
         <thead>
           <tr>
-            <th>Product</th>
-            <th>Qty</th>
-            <th>Price</th>
-            <th>Subtotal</th>
+            <th>{{ geo_strings.paypal_product_label }}</th>
+            <th>{{ geo_strings.paypal_qty_label }}</th>
+            <th>{{ geo_strings.paypal_price_label }}</th>
+            <th>{{ geo_strings.paypal_subtotal_label }}</th>
           </tr>
         </thead>
         <tbody>
@@ -150,29 +150,29 @@
         </tbody>
       </table>
 
-      <div class="pp-total">Total: {{ order.total_price }} {{ currency_label }}</div>
+      <div class="pp-total">{{ geo_strings.paypal_total_label }}: {{ order.total_price }} {{ currency_label }}</div>
       {% if paypal_charge.converted %}
       <p class="pp-note">
-        PayPal charge amount:
+        {{ geo_strings.paypal_charge_label }}
         <strong>{{ paypal_charge.paypal_amount }} {{ paypal_charge.paypal_currency }}</strong>
-        (converted from {{ paypal_charge.store_amount }} {{ paypal_charge.store_currency }} at rate {{ paypal_charge.conversion_rate }}).
+        ({{ geo_strings.paypal_converted_from }} {{ paypal_charge.store_amount }} {{ paypal_charge.store_currency }} {{ geo_strings.paypal_converted_rate }} {{ paypal_charge.conversion_rate }}).
       </p>
       {% else %}
       <p class="pp-note">
-        PayPal charge amount:
+        {{ geo_strings.paypal_charge_label }}
         <strong>{{ paypal_charge.paypal_amount }} {{ paypal_charge.paypal_currency }}</strong>.
       </p>
       {% endif %}
-      <p class="pp-note">Press the PayPal button below to continue to secure PayPal checkout.</p>
+      <p class="pp-note">{{ geo_strings.paypal_note }}</p>
 
       <div class="pp-actions">
         <form method="post">
           {% csrf_token %}
           <button type="submit" class="pp-btn pp-btn-paypal">
-            Continue with PayPal
+            {{ geo_strings.paypal_continue }}
           </button>
         </form>
-        <a href="{% url 'store:orders' %}" class="pp-btn pp-btn-secondary">Back to Orders</a>
+        <a href="{% url 'store:orders' %}" class="pp-btn pp-btn-secondary">{{ geo_strings.paypal_back_orders }}</a>
       </div>
     </div>
   </div>

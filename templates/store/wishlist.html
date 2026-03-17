@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}My Wishlist - ElegantShop{% endblock %}
+{% block title %}{{ geo_strings.wishlist_title }} - ElegantShop{% endblock %}
 
 {% block content %}
 <section class="sw-page">
   <div class="container sw-container">
     <div class="sw-head">
       <div>
-        <h1>My Wishlist</h1>
-        <p>Products you saved for later.</p>
+        <h1>{{ geo_strings.wishlist_title }}</h1>
+        <p>{{ geo_strings.wishlist_subtitle }}</p>
       </div>
       {% if wishlist_products %}
       <form method="post">
         {% csrf_token %}
         <input type="hidden" name="action" value="clear">
-        <button type="submit" class="sw-btn sw-btn-ghost">Clear wishlist</button>
+        <button type="submit" class="sw-btn sw-btn-ghost">{{ geo_strings.wishlist_clear }}</button>
       </form>
       {% endif %}
     </div>
@@ -38,9 +38,9 @@
             <div class="sw-meta">
               <strong>{{ product.current_price }} {{ currency_label }}</strong>
               {% if product.in_stock %}
-                <span class="sw-stock is-in">In stock</span>
+                <span class="sw-stock is-in">{{ geo_strings.wishlist_in_stock }}</span>
               {% else %}
-                <span class="sw-stock is-out">Out of stock</span>
+                <span class="sw-stock is-out">{{ geo_strings.wishlist_out_of_stock }}</span>
               {% endif %}
             </div>
           </div>
@@ -50,14 +50,14 @@
               {% csrf_token %}
               <input type="hidden" name="action" value="move_to_cart">
               <input type="hidden" name="product_id" value="{{ product.pk }}">
-              <button type="submit" class="sw-btn sw-btn-primary" {% if not product.in_stock %}disabled{% endif %}>Move to cart</button>
+              <button type="submit" class="sw-btn sw-btn-primary" {% if not product.in_stock %}disabled{% endif %}>{{ geo_strings.wishlist_move_to_cart }}</button>
             </form>
 
             <form method="post">
               {% csrf_token %}
               <input type="hidden" name="action" value="remove">
               <input type="hidden" name="product_id" value="{{ product.pk }}">
-              <button type="submit" class="sw-btn sw-btn-danger">Remove</button>
+              <button type="submit" class="sw-btn sw-btn-danger">{{ geo_strings.wishlist_remove }}</button>
             </form>
           </div>
         </article>
@@ -66,9 +66,9 @@
     {% else %}
       <div class="sw-empty">
         <i class="fas fa-heart"></i>
-        <h2>Your wishlist is empty</h2>
-        <p>Add products from any product detail page.</p>
-        <a href="{% url 'store:store' %}" class="sw-btn sw-btn-primary">Browse products</a>
+        <h2>{{ geo_strings.wishlist_empty_title }}</h2>
+        <p>{{ geo_strings.wishlist_empty_text }}</p>
+        <a href="{% url 'store:store' %}" class="sw-btn sw-btn-primary">{{ geo_strings.wishlist_browse_products }}</a>
       </div>
     {% endif %}
   </div>

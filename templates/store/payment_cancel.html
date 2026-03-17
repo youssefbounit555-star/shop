@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Payment Canceled - ElegantShop{% endblock %}
+{% block title %}{{ geo_strings.payment_cancel_title }} - ElegantShop{% endblock %}
 
 {% block content %}
 <section style="padding: 130px 16px 70px;">
@@ -9,7 +9,7 @@
     <div style="padding: 22px 24px; border-bottom: 1px solid #eef2f7; background: linear-gradient(120deg, #fff8f1, #fef2f2);">
       <h1 style="margin: 0; font-size: 1.5rem; color: #7f1d1d;">
         <i class="fas fa-circle-xmark"></i>
-        Payment Canceled
+        {{ geo_strings.payment_cancel_title }}
       </h1>
     </div>
     <div style="padding: 22px 24px;">
@@ -20,11 +20,11 @@
       <div style="margin-bottom: 16px; border: 1px solid #e2e8f0; border-radius: 12px; background: #f8fafc; padding: 12px;">
         <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;">
           <div>
-            <small style="color: #64748b;">Order</small>
+            <small style="color: #64748b;">{{ geo_strings.payment_order_label }}</small>
             <div style="color: #0f172a; font-weight: 700;">{{ order.order_id }}</div>
           </div>
           <div>
-            <small style="color: #64748b;">Payment Method</small>
+            <small style="color: #64748b;">{{ geo_strings.payment_method_label }}</small>
             <div style="color: #0f172a; font-weight: 700;">
               {% if provider == 'paypal' %}
                 PayPal
@@ -39,17 +39,17 @@
       </div>
 
       <p style="margin: 0 0 16px; color: #475569;">
-        Payment was not completed. You can retry directly from the product page.
+        {{ geo_strings.payment_cancel_note }}
       </p>
 
       <div style="display: flex; gap: 10px; flex-wrap: wrap;">
         <a href="{{ retry_url }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:10px;background:#0f766e;color:#fff;font-weight:700;text-decoration:none;">
           <i class="fas fa-rotate-right"></i>
-          Retry Payment
+          {{ geo_strings.payment_retry }}
         </a>
         <a href="{% url 'store:store' %}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:10px;background:#e2e8f0;color:#1e293b;font-weight:700;text-decoration:none;">
           <i class="fas fa-store"></i>
-          Continue Shopping
+          {{ geo_strings.payment_continue }}
         </a>
       </div>
     </div>

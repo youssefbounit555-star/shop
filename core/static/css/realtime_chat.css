@@ -327,3 +327,22 @@
         min-height: 78vh;
     }
 }
+
+/* ========================
+   ANGLED THEME OVERRIDES
+   ======================== */
+.support-chat-panel,
+.support-chat-stats,
+.support-bubble,
+.support-input,
+.support-btn,
+.support-file-link,
+.support-media img,
+.support-media video {
+    border-radius: 0;
+    clip-path: var(--clip-angled-sm);
+}
+
+.support-chat-panel {
+    clip-path: var(--clip-angled);
+}

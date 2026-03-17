@@ -1,30 +1,30 @@
 {% load static %}
   <!-- ===== LOGGED IN USER HEADER ===== -->
-    <header class="header-user" style="margin-top: 70px;">
+    <header class="header-user">
         <div class="container">
             <div class="header-wrapper">
                 <div class="logo">
-                    <i style="color:#6366f1;" class="fas fa-shopping-bag"></i>
-                    <span style="color:#6366f1;">ElegantShop</span>
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>ElegantShop</span>
                 </div>
 
                 <nav class="nav-menu">
                     <ul>
-                        <li><a style="color:#333;" href="{% url 'store:home' %}">Home</a></li>
-                        <li><a style="color:#333;" href="{% url 'store:store' %}">Shop</a></li>
-                        <li><a style="color:#333;" href="{% url 'store:discounts' %}">Discounts</a></li>
-                        <li><a style="color:#333;" href="#" data-open-ai-widget="true">AI Agents</a></li>
-                        <li><a style="color:#333;" href="{% url 'store:about' %}">About</a></li>
-                        <li><a style="color:#333;" href="{% url 'store:contact' %}">Contact</a></li>
+                        <li><a href="{% url 'store:home' %}">{{ geo_strings.home }}</a></li>
+                        <li><a href="{% url 'store:store' %}">{{ geo_strings.shop }}</a></li>
+                        <li><a href="{% url 'store:discounts' %}">{{ geo_strings.discounts }}</a></li>
+                        <li><a href="#" data-open-ai-widget="true">{{ geo_strings.ai_agents }}</a></li>
+                        <li><a href="{% url 'store:about' %}">{{ geo_strings.about }}</a></li>
+                        <li><a href="{% url 'store:contact' %}">{{ geo_strings.contact }}</a></li>
                     </ul>
                 </nav>
 
                 <div class="header-user-actions">
-                    <a class="icon-btn" id="notificationBtn" href="{% url 'store:wishlist' %}" title="Wishlist">
+                    <a class="icon-btn" id="notificationBtn" href="{% url 'store:wishlist' %}" title="{{ geo_strings.header_wishlist_title }}">
                         <span class="notification-badge">{{ wishlist_items_count|default:0 }}</span>
                         <i class="fas fa-heart"></i>
                     </a>
-                    <a class="icon-btn" id="cartBtn2" href="{% url 'store:cart' %}" title="Cart">
+                    <a class="icon-btn" id="cartBtn2" href="{% url 'store:cart' %}" title="{{ geo_strings.header_cart_title }}">
                         <i class="fas fa-shopping-cart"></i>
                         <span class="notification-badge">{{ cart_items_count|default:0 }}</span>
                     </a>
@@ -35,15 +35,15 @@
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="dropdown-menu">
-                            <a href="{% url 'user:profile' %}"><i class="fas fa-user"></i> Profile</a>
-                            <a href="{% url 'dashboard:index' %}"><i class="fas fa-th-large"></i> Dashboard</a>
-                            <a href="{% url 'store:cart' %}"><i class="fas fa-cart-shopping"></i> My Cart</a>
-                            <a href="{% url 'store:wishlist' %}"><i class="fas fa-heart"></i> My Wishlist</a>
-                            <a href="{% url 'dashboard:orders' %}"><i class="fas fa-shopping-bag"></i> My Orders</a>
-                            <a href="{% url 'dashboard:chat' %}"><i class="fas fa-comments"></i> Messages</a>
-                            <a href="{% url 'dashboard:goals' %}"><i class="fas fa-tasks"></i> My Goals</a>
+                            <a href="{% url 'user:profile' %}"><i class="fas fa-user"></i> {{ geo_strings.header_profile }}</a>
+                            <a href="{% url 'dashboard:index' %}"><i class="fas fa-th-large"></i> {{ geo_strings.header_dashboard }}</a>
+                            <a href="{% url 'store:cart' %}"><i class="fas fa-cart-shopping"></i> {{ geo_strings.header_my_cart }}</a>
+                            <a href="{% url 'store:wishlist' %}"><i class="fas fa-heart"></i> {{ geo_strings.header_my_wishlist }}</a>
+                            <a href="{% url 'dashboard:orders' %}"><i class="fas fa-shopping-bag"></i> {{ geo_strings.header_my_orders }}</a>
+                            <a href="{% url 'dashboard:chat' %}"><i class="fas fa-comments"></i> {{ geo_strings.header_messages }}</a>
+                            <a href="{% url 'dashboard:goals' %}"><i class="fas fa-tasks"></i> {{ geo_strings.header_my_goals }}</a>
                             <hr>
-                            <a href="{% url 'user:logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                            <a href="{% url 'user:logout' %}"><i class="fas fa-sign-out-alt"></i> {{ geo_strings.header_logout }}</a>
                         </div>
                     </div>
                 </div>

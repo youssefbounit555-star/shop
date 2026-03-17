@@ -1,6 +1,7 @@
 from django.urls import reverse
 
 from .ai_agents import get_agent_catalog
+from .geo import get_geo_profile, get_locale_strings
 
 
 def _cart_count_from_session(request):
@@ -52,4 +53,20 @@ def ai_agents_widget_context(request):
             "agent_prompts": {agent["id"]: agent["quick_prompts"] for agent in agents},
             "chat_endpoint": reverse("store:ai_agent_chat"),
         }
+    }
+
+
+def geo_context(request):
+    profile = getattr(request, "geo_profile", None) or get_geo_profile(request)
+    locale_strings = get_locale_strings(profile.language)
+    return {
+        "geo_profile": {
+            "country": profile.country,
+            "language": profile.language,
+            "currency": profile.currency,
+            "currency_label": profile.currency_label,
+            "theme": profile.theme,
+            "direction": profile.direction,
+        },
+        "geo_strings": locale_strings,
     }

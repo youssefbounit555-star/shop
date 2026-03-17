@@ -18,6 +18,10 @@
     --shadow-strong: 0 20px 45px rgba(15, 23, 42, 0.12);
     --admin-font-display: "Bricolage Grotesque", sans-serif;
     --admin-font-body: "Manrope", sans-serif;
+    --admin-angle: 18px;
+    --admin-angle-sm: 12px;
+    --admin-clip: polygon(var(--admin-angle) 0, 100% 0, 100% calc(100% - var(--admin-angle)), calc(100% - var(--admin-angle)) 100%, 0 100%, 0 var(--admin-angle));
+    --admin-clip-sm: polygon(var(--admin-angle-sm) 0, 100% 0, 100% calc(100% - var(--admin-angle-sm)), calc(100% - var(--admin-angle-sm)) 100%, 0 100%, 0 var(--admin-angle-sm));
 }
 
 *,
@@ -658,6 +662,33 @@ code {
     font-size: 2.5rem;
     color: #8ba9e8;
     margin-bottom: 0.5rem;
+}
+
+/* ========================
+   ANGLED THEME OVERRIDES
+   ======================== */
+.admin-topbar,
+.page-header,
+.top-bar,
+.card,
+.filter-panel,
+.stat-card,
+.sidebar-toggle-btn,
+.btn,
+.form-control,
+.form-select,
+.page-link,
+.nav-menu a,
+.badge,
+.alerts-container .alert {
+    border-radius: 0;
+    clip-path: var(--admin-clip-sm);
+}
+
+.card,
+.filter-panel,
+.stat-card {
+    clip-path: var(--admin-clip);
 }
 
 @media (max-width: 1199.98px) {

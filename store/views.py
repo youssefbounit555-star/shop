@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import View, ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.views import redirect_to_login
 from django.http import JsonResponse, HttpResponse
 from django.conf import settings
 from django.urls import reverse_lazy, reverse
 from django.db.models import Q, Sum, Count, Avg
 from django.utils import timezone
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.contrib import messages
 from django.utils.html import format_html
 from datetime import timedelta
@@ -21,7 +23,7 @@ try:
 except ImportError:  # pragma: no cover - optional dependency at runtime
     stripe = None
 from django.contrib.auth.models import User
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_http_methods, require_GET
 
 from user.models import UserProfile
 from dashboard.models import Message, Goal
@@ -35,6 +37,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
 from admin_panel.views import AdminOnlyMixin
+from .request_context import get_current_request
+from analytics.utils import record_event
 
 
 # ==================== FRONTEND VIEWS ====================
@@ -60,10 +64,20 @@ class PaymentGatewayError(Exception):
 def _get_currency_codes():
     settings_obj = SiteSettings.get_settings()
     currency = (settings_obj.currency or 'USD').strip() or 'USD'
+    request = get_current_request()
+    if request and hasattr(request, "geo_profile"):
+        geo_currency = getattr(request.geo_profile, "currency", None)
+        if geo_currency:
+            currency = str(geo_currency).strip() or currency
     return currency.lower(), currency.upper()
 
 
 def _get_currency_label():
+    request = get_current_request()
+    if request and hasattr(request, "geo_profile"):
+        currency_label = getattr(request.geo_profile, "currency_label", None)
+        if currency_label:
+            return str(currency_label)
     _, currency_upper = _get_currency_codes()
     return currency_upper
 
@@ -464,6 +478,32 @@ def get_profile(request):
     return None
 
 
+@require_GET
+def services_summary(request):
+    active_products = Product.objects.filter(is_active=True, status='active')
+    category_labels = dict(Product.CATEGORY_CHOICES)
+    category_counts = (
+        active_products.values('category')
+        .annotate(total=Count('id'))
+        .order_by('-total')
+    )
+    categories = [
+        {
+            'value': entry['category'],
+            'label': category_labels.get(entry['category'], entry['category']),
+            'count': entry['total'],
+        }
+        for entry in category_counts
+        if entry['category']
+    ]
+    products = active_products.order_by('-featured', '-created_at')[:8]
+    product_list = [{'id': product.id, 'name': product.name} for product in products]
+    return JsonResponse({
+        'categories': categories,
+        'products': product_list,
+    })
+
+
 def home(request):
     profile = get_profile(request)
     active_products = Product.objects.filter(is_active=True, status='active')
@@ -720,6 +760,7 @@ class StoreProductListView(ListView):
         context['profile'] = get_profile(self.request)
         context['categories'] = Product.CATEGORY_CHOICES
         context['total_products'] = Product.objects.filter(is_active=True).count()
+        context['currency_label'] = _get_currency_label()
         
         # Pass search/filter parameters to template
         context['search_query'] = self.request.GET.get('search', '')
@@ -729,6 +770,29 @@ class StoreProductListView(ListView):
         context['sort_by'] = self.request.GET.get('sort', 'newest')
         context['in_stock_only'] = self.request.GET.get('in_stock', '')
         context['featured_only'] = self.request.GET.get('featured', '')
+
+        search_query = context['search_query']
+        if search_query:
+            record_event(
+                self.request,
+                'search',
+                details={
+                    'query': search_query,
+                    'category': context['selected_category'],
+                },
+            )
+
+        selected_category = context['selected_category']
+        if selected_category and selected_category != 'all':
+            category_label = dict(Product.CATEGORY_CHOICES).get(selected_category, selected_category)
+            record_event(
+                self.request,
+                'category_view',
+                details={
+                    'category': selected_category,
+                    'label': category_label,
+                },
+            )
         
         return context
 
@@ -756,6 +820,84 @@ class DiscountedProductsView(ListView):
         context['currency_label'] = _get_currency_label()
         context['total_discounted_products'] = self.get_queryset().count()
         return context
+
+
+class StoreQuickActionView(View):
+    def post(self, request):
+        action = (request.POST.get('action') or '').strip().lower()
+        next_url = (request.POST.get('next') or '').strip()
+        if not url_has_allowed_host_and_scheme(
+            url=next_url,
+            allowed_hosts={request.get_host()},
+            require_https=request.is_secure()
+        ):
+            next_url = reverse('store:store')
+
+        if not request.user.is_authenticated:
+            return redirect_to_login(next_url, login_url=reverse('user:login'))
+
+        product_id_raw = request.POST.get('product_id', '').strip()
+        try:
+            product_id = int(product_id_raw)
+        except (TypeError, ValueError):
+            messages.error(request, 'المنتج غير صالح.')
+            return redirect(next_url)
+
+        product = Product.objects.filter(pk=product_id, is_active=True, status='active').first()
+        if not product:
+            messages.error(request, 'هذا المنتج غير متوفر حالياً.')
+            return redirect(next_url)
+
+        if action == 'add_to_wishlist':
+            wishlist = _get_session_wishlist(request)
+            if product.pk in wishlist:
+                messages.info(request, 'هذا المنتج موجود بالفعل في قائمة الأحلام.')
+            else:
+                wishlist.append(product.pk)
+                _save_session_wishlist(request, wishlist)
+                messages.success(request, 'تمت إضافة المنتج إلى قائمة الأحلام.')
+                record_event(
+                    request,
+                    'wishlist_add',
+                    product=product,
+                    details={'source': 'store_quick_action'},
+                )
+            return redirect(next_url)
+
+        if action == 'add_to_cart':
+            if not product.in_stock:
+                messages.error(request, 'هذا المنتج غير متوفر حالياً ولا يمكن إضافته للعربة.')
+                return redirect(next_url)
+
+            try:
+                quantity = int(request.POST.get('quantity', 1))
+            except (TypeError, ValueError):
+                quantity = 1
+            quantity = max(1, quantity)
+
+            if quantity > product.stock_quantity:
+                quantity = product.stock_quantity
+                messages.warning(request, f'تم تعديل الكمية إلى {quantity} حسب المتوفر.')
+
+            _, added_quantity = _add_product_to_cart(request, product, quantity)
+            record_event(
+                request,
+                'add_to_cart',
+                product=product,
+                details={
+                    'requested_quantity': quantity,
+                    'added_quantity': added_quantity,
+                    'source': 'store_quick_action',
+                },
+            )
+            if added_quantity <= 0:
+                messages.info(request, 'المنتج موجود في العربة بالفعل بأقصى كمية متاحة.')
+            else:
+                messages.success(request, f'تمت إضافة {added_quantity} من "{product.name}" إلى العربة.')
+            return redirect(next_url)
+
+        messages.error(request, 'طلب غير صالح.')
+        return redirect(next_url)
 
 
 class ProductDetailView(DetailView):
@@ -814,6 +956,12 @@ class ProductDetailView(DetailView):
                 wishlist.append(product.pk)
                 _save_session_wishlist(request, wishlist)
                 messages.success(request, 'تمت إضافة المنتج إلى قائمة الأحلام.')
+                record_event(
+                    request,
+                    'wishlist_add',
+                    product=product,
+                    details={'source': 'product_detail'},
+                )
             return redirect('store:product_detail', pk=product.pk)
 
         if action == 'add_to_goal':
@@ -843,6 +991,16 @@ class ProductDetailView(DetailView):
                 messages.warning(request, f'تم تعديل الكمية إلى {quantity} حسب المتوفر.')
 
             _, added_quantity = _add_product_to_cart(request, product, quantity)
+            record_event(
+                request,
+                'add_to_cart',
+                product=product,
+                details={
+                    'requested_quantity': quantity,
+                    'added_quantity': added_quantity,
+                    'source': 'product_detail',
+                },
+            )
             if added_quantity <= 0:
                 messages.info(request, 'المنتج موجود في العربة بالفعل بأقصى كمية متاحة.')
             else:

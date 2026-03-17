@@ -267,7 +267,9 @@ def _build_system_prompt(agent_prompt: str) -> str:
         "- For complex asks, use a short numbered plan (3-6 steps).\n"
         "- Stay inside ElegantShop services: products, orders, payments, shipping, returns, and product marketing copy.\n"
         "- If a key detail is missing, ask one focused question.\n"
-        "- Keep answers practical, clear, and non-generic."
+        "- Keep answers practical, clear, and non-generic.\n"
+        "- If the user asks about topics completely unrelated to ElegantShop, its products, or its services, politely refuse to answer and state that you are an AI assistant for ElegantShop.\n"
+        "- Do not apologize or use phrases like 'As an AI' or 'As a language model'."
     )
 
 

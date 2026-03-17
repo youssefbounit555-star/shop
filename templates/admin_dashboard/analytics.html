@@ -1,0 +1,100 @@
+{% extends "admin/base.html" %}
+{% block title %}Analytics Insights{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1>Analytics Insights</h1>
+            <p>This page shows insights generated from user activity.</p>
+            <hr>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for insight in insights %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ insight.title }}</h5>
+                    <p class="card-text">{{ insight.content }}</p>
+                    <p class="card-text"><small class="text-muted">Generated on {{ insight.generated_at|date:"Y-m-d H:i" }}</small></p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info" role="alert">
+                No insights have been generated yet. Run the `generate_insights` management command to create some.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-eye"></i> Live Product Viewers</h5>
+                    <small class="text-muted">Window: {{ live_window_minutes }} min</small>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" id="liveViewTable">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th width="160">Live Viewers</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in live_products %}
+                            <tr data-product-id="{{ entry.product.id }}">
+                                <td><strong>{{ entry.product.name }}</strong></td>
+                                <td class="live-view-count">{{ entry.count }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-center py-4 text-muted">
+                                    No products available
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    (function () {
+        const table = document.getElementById('liveViewTable');
+        if (!table) {
+            return;
+        }
+
+        const updateLiveCounts = () => {
+            fetch('/analytics/live_counts/')
+                .then((response) => response.json())
+                .then((data) => {
+                    if (!data || data.status !== 'success') {
+                        return;
+                    }
+                    const counts = data.counts || {};
+                    table.querySelectorAll('tbody tr[data-product-id]').forEach((row) => {
+                        const productId = row.getAttribute('data-product-id');
+                        const cell = row.querySelector('.live-view-count');
+                        if (!cell) {
+                            return;
+                        }
+                        cell.textContent = counts[productId] || 0;
+                    });
+                })
+                .catch(() => {});
+        };
+
+        updateLiveCounts();
+        window.setInterval(updateLiveCounts, 15000);
+    })();
+</script>
+{% endblock %}

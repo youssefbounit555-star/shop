@@ -3,11 +3,11 @@
 {% block content %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ geo_profile.language }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - ElegantShop</title>
+    <title>{{ geo_strings.about_title }} - ElegantShop</title>
     <link rel="stylesheet" href="{% static "css/main.css" %}">
     <link rel="stylesheet" href="{% static "css/about.css" %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,7 +17,7 @@
     <!-- Search Bar -->
     <div class="search-bar" id="searchBar">
         <div class="search-container">
-            <input type="text" placeholder="Search for products...">
+            <input type="text" placeholder="{{ geo_strings.search_placeholder }}">
             <button><i class="fas fa-search"></i></button>
         </div>
         <button class="close-btn" id="closeSearch">&times;</button>
@@ -26,8 +26,8 @@
     <!-- Hero Section -->
     <section class="about-hero">
         <div class="container">
-            <h1>About ElegantShop</h1>
-            <p>Your trusted partner in premium quality products and exceptional customer experience</p>
+            <h1>{{ geo_strings.about_hero_title }}</h1>
+            <p>{{ geo_strings.about_hero_text }}</p>
         </div>
     </section>
 
@@ -37,10 +37,10 @@
             <!-- Our Story -->
             <div class="content-block story-block">
                 <div class="story-content">
-                    <h2>Our Story</h2>
-                    <p>ElegantShop was founded in 2015 with a simple mission: to provide premium quality products that enhance everyday life. What started as a small online boutique has grown into a thriving e-commerce platform serving thousands of satisfied customers worldwide.</p>
-                    <p>Our journey has been driven by a passion for excellence, innovation, and customer satisfaction. We carefully curate our collection to ensure every product meets our high standards of quality and value.</p>
-                    <p>Today, we're proud to offer a diverse range of products across multiple categories, all backed by our commitment to customer service and satisfaction.</p>
+                    <h2>{{ geo_strings.about_story_title }}</h2>
+                    <p>{{ geo_strings.about_story_p1 }}</p>
+                    <p>{{ geo_strings.about_story_p2 }}</p>
+                    <p>{{ geo_strings.about_story_p3 }}</p>
                 </div>
                 <div class="story-visual">
                     <div class="story-image">
@@ -55,80 +55,80 @@
                     <div class="mission-icon">
                         <i class="fas fa-bullseye"></i>
                     </div>
-                    <h3>Our Mission</h3>
-                    <p>To empower customers with premium products that enhance their lifestyle and provide exceptional value through innovative e-commerce solutions and outstanding customer service.</p>
+                    <h3>{{ geo_strings.about_mission_title }}</h3>
+                    <p>{{ geo_strings.about_mission_text }}</p>
                 </div>
 
                 <div class="mission-card">
                     <div class="mission-icon">
                         <i class="fas fa-star"></i>
                     </div>
-                    <h3>Our Vision</h3>
-                    <p>To become the most trusted and customer-centric online retailer, known for exceptional quality, innovative products, and unparalleled customer experiences.</p>
+                    <h3>{{ geo_strings.about_vision_title }}</h3>
+                    <p>{{ geo_strings.about_vision_text }}</p>
                 </div>
 
                 <div class="mission-card">
                     <div class="mission-icon">
                         <i class="fas fa-heart"></i>
                     </div>
-                    <h3>Our Values</h3>
-                    <p>Quality, integrity, customer focus, innovation, and sustainability guide every decision we make and interaction we have with our customers.</p>
+                    <h3>{{ geo_strings.about_values_title }}</h3>
+                    <p>{{ geo_strings.about_values_text }}</p>
                 </div>
             </div>
 
             <!-- Why Choose Us -->
             <div class="why-choose-section">
-                <h2>Why Choose ElegantShop?</h2>
+                <h2>{{ geo_strings.about_why_title }}</h2>
                 <div class="reasons-grid">
                     <div class="reason-card">
                         <div class="reason-number">01</div>
-                        <h3>Premium Quality</h3>
-                        <p>We meticulously select every product to ensure superior quality and durability that exceeds expectations.</p>
+                        <h3>{{ geo_strings.about_reason_1_title }}</h3>
+                        <p>{{ geo_strings.about_reason_1_text }}</p>
                     </div>
 
                     <div class="reason-card">
                         <div class="reason-number">02</div>
-                        <h3>Competitive Pricing</h3>
-                        <p>High-quality products at affordable prices with regular promotions and exclusive deals for our valued customers.</p>
+                        <h3>{{ geo_strings.about_reason_2_title }}</h3>
+                        <p>{{ geo_strings.about_reason_2_text }}</p>
                     </div>
 
                     <div class="reason-card">
                         <div class="reason-number">03</div>
-                        <h3>Fast Shipping</h3>
-                        <p>Quick and reliable shipping to your doorstep with multiple delivery options to suit your needs.</p>
+                        <h3>{{ geo_strings.about_reason_3_title }}</h3>
+                        <p>{{ geo_strings.about_reason_3_text }}</p>
                     </div>
 
                     <div class="reason-card">
                         <div class="reason-number">04</div>
-                        <h3>Secure Shopping</h3>
-                        <p>Your safety is our priority with industry-leading encryption and secure payment processing.</p>
+                        <h3>{{ geo_strings.about_reason_4_title }}</h3>
+                        <p>{{ geo_strings.about_reason_4_text }}</p>
                     </div>
 
                     <div class="reason-card">
                         <div class="reason-number">05</div>
-                        <h3>Easy Returns</h3>
-                        <p>Hassle-free 30-day returns policy so you can shop with confidence and peace of mind.</p>
+                        <h3>{{ geo_strings.about_reason_5_title }}</h3>
+                        <p>{{ geo_strings.about_reason_5_text }}</p>
                     </div>
 
                     <div class="reason-card">
                         <div class="reason-number">06</div>
-                        <h3>24/7 Support</h3>
-                        <p>Our dedicated customer service team is always ready to help with any questions or concerns.</p>
+                        <h3>{{ geo_strings.about_reason_6_title }}</h3>
+                        <p>{{ geo_strings.about_reason_6_text }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Team Section -->
             <div class="team-section">
-                <h2>Meet Our Team</h2>
+                <h2>{{ geo_strings.about_team_title }}</h2>
                 <div class="team-grid">
                     <div class="team-member">
                         <div class="member-image">
                             <i class="fas fa-user-circle"></i>
                         </div>
                         <h3>Sarah Anderson</h3>
-                        <p class="role">Founder & CEO</p>
-                        <p class="bio">Visionary leader with 15+ years in e-commerce and retail</p>
+                        <p class="role">{{ geo_strings.about_team_member_1_role }}</p>
+                        <p class="bio">{{ geo_strings.about_team_member_1_bio }}</p>
                     </div>
 
                     <div class="team-member">
@@ -136,8 +136,8 @@
                             <i class="fas fa-user-circle"></i>
                         </div>
                         <h3>Michael Chen</h3>
-                        <p class="role">Operations Director</p>
-                        <p class="bio">Expert in supply chain and fulfillment optimization</p>
+                        <p class="role">{{ geo_strings.about_team_member_2_role }}</p>
+                        <p class="bio">{{ geo_strings.about_team_member_2_bio }}</p>
                     </div>
 
                     <div class="team-member">
@@ -145,8 +145,8 @@
                             <i class="fas fa-user-circle"></i>
                         </div>
                         <h3>Emily Rodriguez</h3>
-                        <p class="role">Customer Experience Lead</p>
-                        <p class="bio">Passionate about creating delightful customer experiences</p>
+                        <p class="role">{{ geo_strings.about_team_member_3_role }}</p>
+                        <p class="bio">{{ geo_strings.about_team_member_3_bio }}</p>
                     </div>
 
                     <div class="team-member">
@@ -154,8 +154,8 @@
                             <i class="fas fa-user-circle"></i>
                         </div>
                         <h3>James Thompson</h3>
-                        <p class="role">Product Manager</p>
-                        <p class="bio">Focused on curating the best products for our customers</p>
+                        <p class="role">{{ geo_strings.about_team_member_4_role }}</p>
+                        <p class="bio">{{ geo_strings.about_team_member_4_bio }}</p>
                     </div>
                 </div>
             </div>
@@ -164,19 +164,19 @@
             <div class="stats-section">
                 <div class="stat-card">
                     <div class="stat-number">100K+</div>
-                    <p>Happy Customers</p>
+                    <p>{{ geo_strings.about_stat_customers }}</p>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number">50K+</div>
-                    <p>Products Available</p>
+                    <p>{{ geo_strings.about_stat_products }}</p>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number">150+</div>
-                    <p>Countries Served</p>
+                    <p>{{ geo_strings.about_stat_countries }}</p>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number">11+</div>
-                    <p>Years in Business</p>
+                    <p>{{ geo_strings.about_stat_years }}</p>
                 </div>
             </div>
         </div>
@@ -185,10 +185,10 @@
     <!-- CTA Section -->
     <section class="about-cta">
         <div class="container">
-            <h2>Ready to Explore Our Collection?</h2>
-            <p>Discover thousands of premium products curated just for you</p>
-            <a href="store.html" class="btn btn-primary">
-                Shop Now <i class="fas fa-arrow-right"></i>
+            <h2>{{ geo_strings.about_cta_title }}</h2>
+            <p>{{ geo_strings.about_cta_text }}</p>
+            <a href="{% url 'store:store' %}" class="btn btn-primary">
+                {{ geo_strings.about_cta_button }} <i class="fas fa-arrow-right"></i>
             </a>
         </div>
     </section>
@@ -198,8 +198,8 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h4>About ElegantShop</h4>
-                    <p>We provide premium quality products for modern living with exceptional customer service.</p>
+                    <h4>{{ geo_strings.footer_about_title }}</h4>
+                    <p>{{ geo_strings.footer_about_text }}</p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-facebook"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
@@ -208,36 +208,36 @@
                     </div>
                 </div>
                 <div class="footer-section">
-                    <h4>Quick Links</h4>
+                    <h4>{{ geo_strings.footer_quick_links }}</h4>
                     <ul>
-                        <li><a href="../index.html">Home</a></li>
-                        <li><a href="store.html">Shop</a></li>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="{% url 'store:home' %}">{{ geo_strings.footer_home }}</a></li>
+                        <li><a href="{% url 'store:store' %}">{{ geo_strings.footer_shop }}</a></li>
+                        <li><a href="{% url 'store:about' %}">{{ geo_strings.footer_about }}</a></li>
+                        <li><a href="{% url 'store:contact' %}">{{ geo_strings.footer_contact }}</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h4>Customer Service</h4>
+                    <h4>{{ geo_strings.footer_customer_service }}</h4>
                     <ul>
-                        <li><a href="#">Shipping Info</a></li>
-                        <li><a href="#">Returns</a></li>
-                        <li><a href="faq.html">FAQ</a></li>
-                        <li><a href="#">Track Order</a></li>
+                        <li><a href="#">{{ geo_strings.footer_shipping_info }}</a></li>
+                        <li><a href="#">{{ geo_strings.footer_returns }}</a></li>
+                        <li><a href="{% url 'store:faq' %}">{{ geo_strings.footer_faq }}</a></li>
+                        <li><a href="#">{{ geo_strings.footer_track_order }}</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h4>Contact Info</h4>
-                    <p><strong>Email:</strong> info@elegantshop.com</p>
-                    <p><strong>Phone:</strong> +1 (555) 123-4567</p>
-                    <p><strong>Address:</strong> 123 Shopping Street, Commerce City, CC 12345</p>
+                    <h4>{{ geo_strings.footer_contact_info }}</h4>
+                    <p><strong>{{ geo_strings.footer_email }}:</strong> info@elegantshop.com</p>
+                    <p><strong>{{ geo_strings.footer_phone }}:</strong> +1 (555) 123-4567</p>
+                    <p><strong>{{ geo_strings.footer_address }}:</strong> 123 Shopping Street, Commerce City, CC 12345</p>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 ElegantShop. All rights reserved.</p>
+                <p>&copy; 2026 ElegantShop. {{ geo_strings.footer_rights }}</p>
                 <div class="footer-links">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                    <a href="#">Cookie Policy</a>
+                    <a href="#">{{ geo_strings.footer_privacy }}</a>
+                    <a href="#">{{ geo_strings.footer_terms }}</a>
+                    <a href="#">{{ geo_strings.footer_cookies }}</a>
                 </div>
             </div>
         </div>
@@ -247,11 +247,11 @@
     <div class="modal" id="cartModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Shopping Cart</h2>
+                <h2>{{ geo_strings.cart_title }}</h2>
                 <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body">
-                <p class="empty-cart-msg">Your cart is empty</p>
+                <p class="empty-cart-msg">{{ geo_strings.cart_empty_title }}</p>
             </div>
         </div>
     </div>
@@ -259,13 +259,13 @@
     <div class="modal" id="userModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Account</h2>
+                <h2>{{ geo_strings.store_modal_account }}</h2>
                 <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="auth-buttons">
-                    <button class="btn btn-primary" style="width: 100%;">Sign In</button>
-                    <button class="btn btn-secondary" style="width: 100%;">Create Account</button>
+                    <button class="btn btn-primary" style="width: 100%;">{{ geo_strings.store_modal_sign_in }}</button>
+                    <button class="btn btn-secondary" style="width: 100%;">{{ geo_strings.store_modal_create_account }}</button>
                 </div>
             </div>
         </div>
@@ -273,7 +273,7 @@
 
     <div class="alert alert-success" id="successAlert">
         <i class="fas fa-check-circle"></i>
-        <span>Operation completed successfully!</span>
+        <span>{{ geo_strings.store_alert_added_cart }}</span>
     </div>
 
     <script src="{% static "js/main.js" %}"></script>

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Home - ElegantShop{% endblock title %}
+{% block title %}{{ geo_strings.home }} - ElegantShop{% endblock title %}
 
 {% block content %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -9,112 +9,109 @@
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 
-<main class="home-page">
-    <section class="home-hero">
+<main class="home-page home-build">
+    <section class="home-hero" data-build style="--build-order: 0;">
         <div class="container home-hero-grid">
-            <div class="home-hero-copy">
-                <p class="home-kicker">CURATED STORE EXPERIENCE</p>
-                <h1>Everything You Need, In One Smart Shopping Space</h1>
-                <p class="home-lead">
-                    ElegantShop combines premium products, fast support, and AI guidance so customers
-                    can choose faster with more confidence.
-                </p>
+            <div class="home-hero-copy home-build-block">
+                <p class="home-kicker">{{ geo_strings.home_kicker }}</p>
+                <h1>{{ geo_strings.home_title }}</h1>
+                <p class="home-lead">{{ geo_strings.home_lead }}</p>
                 <div class="home-hero-actions">
                     <a href="{% url 'store:store' %}" class="home-btn home-btn-primary">
                         <i class="fas fa-bag-shopping"></i>
-                        <span>Explore All Products</span>
+                        <span>{{ geo_strings.home_explore_button }}</span>
                     </a>
                     <a href="#" data-open-ai-widget="true" class="home-btn home-btn-ghost">
                         <i class="fas fa-robot"></i>
-                        <span>Open AI Assistant</span>
+                        <span>{{ geo_strings.home_ai_button }}</span>
                     </a>
                 </div>
             </div>
 
-            <div class="home-hero-panel">
-                <h2>Live Store Snapshot</h2>
+            <div class="home-hero-panel home-build-block">
+                <h2>{{ geo_strings.home_snapshot_title }}</h2>
                 <div class="home-metric-grid">
                     <article>
                         <strong>{{ total_active_products }}</strong>
-                        <span>Active Products</span>
+                        <span>{{ geo_strings.home_metric_active }}</span>
                     </article>
                     <article>
                         <strong>{{ featured_products|length }}</strong>
-                        <span>Featured Picks</span>
+                        <span>{{ geo_strings.home_metric_featured }}</span>
                     </article>
                     <article>
                         <strong>24/7</strong>
-                        <span>Human + AI Support</span>
+                        <span>{{ geo_strings.home_metric_support }}</span>
                     </article>
                     <article>
                         <strong>Fast</strong>
-                        <span>Delivery Pipeline</span>
+                        <span>{{ geo_strings.home_metric_delivery }}</span>
                     </article>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="home-values">
+    <section class="home-values" data-build style="--build-order: 1;">
         <div class="container home-values-grid">
-            <article>
+            <article class="home-build-block">
                 <i class="fas fa-shield-heart"></i>
-                <h3>Secure Checkout</h3>
-                <p>Protected payment workflows and safe account flows.</p>
+                <h3>{{ geo_strings.home_values_secure }}</h3>
+                <p>{{ geo_strings.home_values_secure_desc }}</p>
             </article>
-            <article>
+            <article class="home-build-block">
                 <i class="fas fa-truck-fast"></i>
-                <h3>Fast Fulfillment</h3>
-                <p>Orders move quickly with clear delivery tracking.</p>
+                <h3>{{ geo_strings.home_values_fast }}</h3>
+                <p>{{ geo_strings.home_values_fast_desc }}</p>
             </article>
-            <article>
+            <article class="home-build-block">
                 <i class="fas fa-comments"></i>
-                <h3>Always Available Help</h3>
-                <p>Customers can ask support or AI at any step.</p>
+                <h3>{{ geo_strings.home_values_help }}</h3>
+                <p>{{ geo_strings.home_values_help_desc }}</p>
             </article>
-            <article>
+            <article class="home-build-block">
                 <i class="fas fa-arrow-rotate-left"></i>
-                <h3>Smooth Returns</h3>
-                <p>Clear return process with practical guidance.</p>
+                <h3>{{ geo_strings.home_values_returns }}</h3>
+                <p>{{ geo_strings.home_values_returns_desc }}</p>
             </article>
         </div>
     </section>
 
-    <section class="home-categories">
+    <section class="home-categories" data-build style="--build-order: 2;">
         <div class="container">
             <header class="home-section-head">
                 <div>
-                    <p class="home-kicker">SHOP BY SEGMENT</p>
-                    <h2>Popular Categories</h2>
+                    <p class="home-kicker">{{ geo_strings.home_categories_kicker }}</p>
+                    <h2>{{ geo_strings.home_categories_title }}</h2>
                 </div>
             </header>
             <div class="home-category-grid">
                 {% for category in category_highlights %}
-                <article class="home-category-card">
+                <article class="home-category-card home-build-block">
                     <p>{{ category.label }}</p>
-                    <strong>{{ category.total }} products</strong>
+                    <strong>{{ category.total }} {{ geo_strings.products_label }}</strong>
                 </article>
                 {% empty %}
-                <article class="home-empty-state">
-                    <p>No category data available yet.</p>
+                <article class="home-empty-state home-build-block">
+                    <p>{{ geo_strings.home_categories_empty }}</p>
                 </article>
                 {% endfor %}
             </div>
         </div>
     </section>
 
-    <section class="home-featured">
+    <section class="home-featured" data-build style="--build-order: 3;">
         <div class="container">
             <header class="home-section-head">
                 <div>
-                    <p class="home-kicker">HIGHLIGHTED</p>
-                    <h2>Featured Products</h2>
+                    <p class="home-kicker">{{ geo_strings.home_featured_kicker }}</p>
+                    <h2>{{ geo_strings.home_featured_title }}</h2>
                 </div>
             </header>
             <div class="home-featured-grid">
                 {% for product in featured_products %}
-                <article class="home-featured-card">
-                    <a href="{% url 'store:product_detail' product.id %}" class="home-featured-media">
+                <article class="home-featured-card home-build-block">
+                    <a href="{% url 'store:product_detail' product.id %}" class="home-featured-media home-build-media">
                         {% if product.main_image %}
                         <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
                         {% else %}
@@ -124,35 +121,35 @@
                     <div class="home-featured-content">
                         <p>{{ product.get_category_display }}</p>
                         <h3><a href="{% url 'store:product_detail' product.id %}">{{ product.name|truncatewords:6 }}</a></h3>
-                        <strong>${{ product.current_price }}</strong>
+                        <strong>{{ product.current_price }} {{ geo_profile.currency_label }}</strong>
                     </div>
                 </article>
                 {% empty %}
-                <article class="home-empty-state">
-                    <p>No featured products available.</p>
+                <article class="home-empty-state home-build-block">
+                    <p>{{ geo_strings.home_featured_empty }}</p>
                 </article>
                 {% endfor %}
             </div>
         </div>
     </section>
 
-    <section class="home-products">
+    <section class="home-products" data-build style="--build-order: 4;">
         <div class="container">
             <header class="home-section-head">
                 <div>
-                    <p class="home-kicker">PRODUCT CATALOG</p>
-                    <h2>Latest Products</h2>
+                    <p class="home-kicker">{{ geo_strings.home_products_kicker }}</p>
+                    <h2>{{ geo_strings.home_products_title }}</h2>
                 </div>
                 <a href="{% url 'store:store' %}" class="home-link">
-                    View full store
+                    {{ geo_strings.home_view_store }}
                     <i class="fas fa-arrow-right"></i>
                 </a>
             </header>
 
             <div class="home-product-grid">
                 {% for product in all_products %}
-                <article class="home-product-card">
-                    <a href="{% url 'store:product_detail' product.id %}" class="home-product-media">
+                <article class="home-product-card home-build-block">
+                    <a href="{% url 'store:product_detail' product.id %}" class="home-product-media home-build-media">
                         {% if product.main_image %}
                         <img src="{{ product.main_image.url }}" alt="{{ product.name }}">
                         {% else %}
@@ -168,115 +165,115 @@
                         <p class="home-product-desc">{{ product.short_description|truncatewords:12 }}</p>
                         <div class="home-product-meta">
                             <div class="home-price">
-                                <strong>${{ product.current_price }}</strong>
+                                <strong>{{ product.current_price }} {{ geo_profile.currency_label }}</strong>
                                 {% if product.discount_price %}
-                                <span>${{ product.price }}</span>
+                                <span>{{ product.price }} {{ geo_profile.currency_label }}</span>
                                 {% endif %}
                             </div>
                             <span class="home-stock {% if product.in_stock %}is-in{% else %}is-out{% endif %}">
-                                {% if product.in_stock %}In stock{% else %}Out of stock{% endif %}
+                                {% if product.in_stock %}{{ geo_strings.store_in_stock }}{% else %}{{ geo_strings.store_out_of_stock }}{% endif %}
                             </span>
                         </div>
                     </div>
                 </article>
                 {% empty %}
-                <article class="home-empty-state home-empty-full">
-                    <p>No products are available at the moment.</p>
+                <article class="home-empty-state home-empty-full home-build-block">
+                    <p>{{ geo_strings.home_products_empty }}</p>
                 </article>
                 {% endfor %}
             </div>
         </div>
     </section>
 
-    <section class="home-process">
+    <section class="home-process" data-build style="--build-order: 5;">
         <div class="container">
             <header class="home-section-head">
                 <div>
-                    <p class="home-kicker">HOW IT WORKS</p>
-                    <h2>Simple Shopping Flow</h2>
+                    <p class="home-kicker">{{ geo_strings.home_process_kicker }}</p>
+                    <h2>{{ geo_strings.home_process_title }}</h2>
                 </div>
             </header>
             <div class="home-process-grid">
-                <article>
+                <article class="home-build-block">
                     <span>01</span>
-                    <h3>Discover</h3>
-                    <p>Browse categories and explore product details quickly.</p>
+                    <h3>{{ geo_strings.home_process_discover }}</h3>
+                    <p>{{ geo_strings.home_process_discover_desc }}</p>
                 </article>
-                <article>
+                <article class="home-build-block">
                     <span>02</span>
-                    <h3>Compare</h3>
-                    <p>Use AI assistant to compare based on budget and quality.</p>
+                    <h3>{{ geo_strings.home_process_compare }}</h3>
+                    <p>{{ geo_strings.home_process_compare_desc }}</p>
                 </article>
-                <article>
+                <article class="home-build-block">
                     <span>03</span>
-                    <h3>Order</h3>
-                    <p>Checkout securely and track order status in your dashboard.</p>
+                    <h3>{{ geo_strings.home_process_order }}</h3>
+                    <p>{{ geo_strings.home_process_order_desc }}</p>
                 </article>
-                <article>
+                <article class="home-build-block">
                     <span>04</span>
-                    <h3>Support</h3>
-                    <p>Get direct support for delivery, returns, and account help.</p>
+                    <h3>{{ geo_strings.home_process_support }}</h3>
+                    <p>{{ geo_strings.home_process_support_desc }}</p>
                 </article>
             </div>
         </div>
     </section>
 
-    <section class="home-testimonials">
+    <section class="home-testimonials" data-build style="--build-order: 6;">
         <div class="container">
             <header class="home-section-head">
                 <div>
-                    <p class="home-kicker">CUSTOMER VOICE</p>
-                    <h2>What Shoppers Say</h2>
+                    <p class="home-kicker">{{ geo_strings.home_testimonials_kicker }}</p>
+                    <h2>{{ geo_strings.home_testimonials_title }}</h2>
                 </div>
             </header>
             <div class="home-testimonial-grid">
-                <article>
-                    <p>"Product quality is better than expected and delivery was fast."</p>
-                    <strong>Sarah M.</strong>
+                <article class="home-build-block">
+                    <p>"{{ geo_strings.home_testimonial_1 }}"</p>
+                    <strong>{{ geo_strings.home_testimonial_1_name }}</strong>
                 </article>
-                <article>
-                    <p>"The AI assistant helped me choose the exact product in minutes."</p>
-                    <strong>Omar H.</strong>
+                <article class="home-build-block">
+                    <p>"{{ geo_strings.home_testimonial_2 }}"</p>
+                    <strong>{{ geo_strings.home_testimonial_2_name }}</strong>
                 </article>
-                <article>
-                    <p>"Clean shopping experience and excellent customer support."</p>
-                    <strong>Lina R.</strong>
+                <article class="home-build-block">
+                    <p>"{{ geo_strings.home_testimonial_3 }}"</p>
+                    <strong>{{ geo_strings.home_testimonial_3_name }}</strong>
                 </article>
             </div>
         </div>
     </section>
 
-    <section class="home-faq">
-        <div class="container home-faq-shell">
+    <section class="home-faq" data-build style="--build-order: 7;">
+        <div class="container home-faq-shell home-build-block">
             <div>
-                <p class="home-kicker">QUICK HELP</p>
-                <h2>Need Answers Fast?</h2>
-                <p>Visit FAQ or message support directly from the contact page.</p>
+                <p class="home-kicker">{{ geo_strings.home_faq_kicker }}</p>
+                <h2>{{ geo_strings.home_faq_title }}</h2>
+                <p>{{ geo_strings.home_faq_text }}</p>
             </div>
             <div class="home-faq-actions">
                 <a href="{% url 'store:faq' %}" class="home-btn home-btn-ghost">
                     <i class="fas fa-circle-question"></i>
-                    <span>Open FAQ</span>
+                    <span>{{ geo_strings.home_faq_button }}</span>
                 </a>
                 <a href="{% url 'store:contact' %}" class="home-btn home-btn-primary">
                     <i class="fas fa-envelope"></i>
-                    <span>Contact Support</span>
+                    <span>{{ geo_strings.home_contact_button }}</span>
                 </a>
             </div>
         </div>
     </section>
 
-    <section class="home-cta">
+    <section class="home-cta" data-build style="--build-order: 8;">
         <div class="container">
-            <div class="home-cta-shell">
+            <div class="home-cta-shell home-build-block">
                 <div>
-                    <p class="home-kicker">SMART DECISIONS</p>
-                    <h2>Open AI and Get a Personalized Pick</h2>
-                    <p>Tell the assistant your budget and priority. It will suggest the best option instantly.</p>
+                    <p class="home-kicker">{{ geo_strings.home_cta_kicker }}</p>
+                    <h2>{{ geo_strings.home_cta_title }}</h2>
+                    <p>{{ geo_strings.home_cta_text }}</p>
                 </div>
                 <a href="#" data-open-ai-widget="true" class="home-btn home-btn-primary">
                     <i class="fas fa-comments"></i>
-                    <span>Start AI Chat</span>
+                    <span>{{ geo_strings.home_cta_button }}</span>
                 </a>
             </div>
         </div>

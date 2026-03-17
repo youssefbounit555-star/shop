@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 </head>
 
 {% if profile %}
@@ -20,6 +20,53 @@
 {% include "components/header1.html" %}
 {% endif %}
 
+<div class="modal choose-helper-modal" id="chooseHelperModal" data-store-url="{% url 'store:store' %}" aria-hidden="true">
+    <div class="modal-content choose-helper-content" role="dialog" aria-modal="true" aria-labelledby="chooseHelperTitle">
+        <div class="modal-header">
+            <div>
+                <p class="choose-helper-kicker">مساعد اختيار الخدمة</p>
+                <h2 id="chooseHelperTitle">ساعدني أختار الخدمة</h2>
+            </div>
+            <button type="button" class="modal-close" data-choose-helper-close aria-label="إغلاق">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="choose-helper-progress" aria-hidden="true">
+                <span class="is-active"></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="choose-helper-panel" data-step="0">
+                <h3>ما نوع مشروعك؟</h3>
+                <p class="choose-helper-subtitle">لنرشح لك الخدمة الأنسب لمجالك.</p>
+                <div class="choose-helper-options" data-question="project"></div>
+            </div>
+            <div class="choose-helper-panel" data-step="1" hidden>
+                <h3>كم ميزانيتك؟</h3>
+                <p class="choose-helper-subtitle">نرشح لك ضمن الميزانية التي تناسبك.</p>
+                <div class="choose-helper-options" data-question="budget"></div>
+            </div>
+            <div class="choose-helper-panel" data-step="2" hidden>
+                <h3>هل تريد للنساء أم للرجال أم للأطفال أم ستايل بسيط؟</h3>
+                <p class="choose-helper-subtitle">نراعي طبيعة جمهورك أو أسلوب الخدمة.</p>
+                <div class="choose-helper-options" data-question="audience"></div>
+            </div>
+            <div class="choose-helper-panel" data-step="3" hidden>
+                <h3>اقتراح الخدمة الأنسب</h3>
+                <p class="choose-helper-subtitle">بناءً على إجاباتك.</p>
+                <div class="choose-helper-result" id="chooseHelperResult"></div>
+                <div class="choose-helper-actions">
+                    <a class="btn btn-primary" id="chooseHelperLink" href="#">شاهد الخدمة</a>
+                    <a class="btn btn-secondary" id="chooseHelperSeeAll" href="{% url 'store:store' %}">عرض كل الخدمات</a>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer choose-helper-footer">
+            <button type="button" class="btn btn-secondary" id="chooseHelperBack">رجوع</button>
+            <button type="button" class="btn btn-primary" id="chooseHelperNext">التالي</button>
+        </div>
+    </div>
+</div>
+
 {% if ai_agent_widget.agents %}
 <section
     id="globalAiAgentWidget"
@@ -27,7 +74,7 @@
     data-chat-endpoint="{{ ai_agent_widget.chat_endpoint }}"
     data-default-agent="{{ ai_agent_widget.default_agent_id }}"
 >
-    <button type="button" class="ai-widget-launcher" id="globalAiLauncher" aria-label="Open AI assistant" aria-expanded="false">
+    <button type="button" class="ai-widget-launcher" id="globalAiLauncher" aria-label="{{ geo_strings.ai_widget_open_label }}" aria-expanded="false">
         <i class="fas fa-robot"></i>
         <span>AI</span>
     </button>
@@ -35,11 +82,11 @@
     <div class="ai-widget-panel" id="globalAiPanel" hidden>
         <header class="ai-widget-header">
             <div>
-                <p class="ai-widget-kicker">AI ASSISTANT</p>
-                <h3 id="globalAiActiveAgentName">Assistant</h3>
-                <p id="globalAiActiveAgentTagline">Ask anything about products and orders.</p>
-            </div>
-            <button type="button" class="ai-widget-close" id="globalAiClose" aria-label="Close assistant">
+            <p class="ai-widget-kicker">{{ geo_strings.ai_widget_kicker }}</p>
+            <h3 id="globalAiActiveAgentName">{{ geo_strings.ai_widget_title }}</h3>
+            <p id="globalAiActiveAgentTagline">{{ geo_strings.ai_widget_tagline }}</p>
+        </div>
+            <button type="button" class="ai-widget-close" id="globalAiClose" aria-label="{{ geo_strings.ai_widget_close_label }}">
                 <i class="fas fa-times"></i>
             </button>
         </header>
@@ -62,7 +109,7 @@
 
         <div class="ai-widget-feed" id="globalAiFeed" aria-live="polite">
             <article class="ai-widget-message ai-widget-message-assistant">
-                <p>Hello. Tell me what you want and I will help immediately.</p>
+                <p>{{ geo_strings.ai_widget_greeting }}</p>
             </article>
         </div>
 
@@ -75,7 +122,7 @@
                 type="text"
                 maxlength="1200"
                 required
-                placeholder="Type your message..."
+                placeholder="{{ geo_strings.ai_widget_input_placeholder }}"
             >
             <button type="submit" id="globalAiSend">
                 <i class="fas fa-paper-plane"></i>
@@ -88,5 +135,89 @@
 {{ ai_agent_widget.agents|json_script:"globalAgentCatalogData" }}
 <script src="{% static 'js/ai_agent_widget.js' %}"></script>
 {% endif %}
+
+<button
+    type="button"
+    class="choose-helper-fab"
+    data-choose-helper-open
+    aria-label="ساعدني أختار الخدمة"
+>
+    <i class="fas fa-hand-sparkles"></i>
+    <span>ساعدني أختار</span>
+</button>
+
+<button
+    type="button"
+    id="voiceAssistantBtn"
+    class="voice-assistant-btn"
+    aria-label="اسأل بالصوت"
+    aria-pressed="false"
+    data-voice-lang="ar-MA"
+    data-voice-api="{% url 'store:services_summary' %}"
+    data-voice-triggers="ما هي خدماتكم|ماهي خدماتكم|ما خدماتكم|شنو خدماتكم|شنو هي خدماتكم"
+    data-voice-prefix="خدماتنا تشمل"
+    data-voice-products-prefix="ومن الخدمات المتوفرة عندنا"
+    data-voice-suffix="إذا بغيتي تفاصيل على خدمة معينة، قول لي اسمها."
+    data-voice-fallback="خدماتنا متنوعة ومتكاملة حسب احتياجك."
+    data-voice-unknown="يمكنك أن تسأل مثلا: ما هي خدماتكم؟"
+    data-voice-joiner="، "
+>
+    <i class="fas fa-microphone"></i>
+    <span>اسأل بالصوت</span>
+</button>
+
+{{ geo_profile|json_script:"geoProfileData" }}
+{{ geo_strings|json_script:"geoStringsData" }}
+<script>
+    (function () {
+        const dataEl = document.getElementById('geoStringsData');
+        if (!dataEl) {
+            return;
+        }
+        try {
+            window.geoStrings = JSON.parse(dataEl.textContent);
+        } catch (error) {
+            window.geoStrings = {};
+        }
+    })();
+</script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const dataEl = document.getElementById('geoProfileData');
+        if (!dataEl) {
+            return;
+        }
+        let geoProfile = null;
+        try {
+            geoProfile = JSON.parse(dataEl.textContent);
+        } catch (error) {
+            return;
+        }
+        if (!geoProfile) {
+            return;
+        }
+        const root = document.documentElement;
+        if (geoProfile.language) {
+            root.setAttribute('lang', geoProfile.language);
+        }
+        if (geoProfile.direction) {
+            root.setAttribute('dir', geoProfile.direction);
+        }
+        const body = document.body;
+        if (body) {
+            if (geoProfile.theme) {
+                body.classList.add(`theme-${geoProfile.theme}`);
+            }
+            if (geoProfile.country) {
+                body.classList.add(`country-${geoProfile.country.toLowerCase()}`);
+            }
+            if (geoProfile.language) {
+                body.classList.add(`locale-${geoProfile.language}`);
+            }
+        }
+    });
+</script>
+<script src="{% static 'js/choose_helper.js' %}"></script>
+<script src="{% static 'js/voice_assistant.js' %}"></script>
 
 {% block content %}{% endblock content %}

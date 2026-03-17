@@ -2,11 +2,11 @@
 {% load static %}
 {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ geo_profile.language }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQ - ElegantShop</title>
+    <title>{{ geo_strings.faq_title }} - ElegantShop</title>
     <link rel="stylesheet" href="{% static "css/main.css" %}">
     <link rel="stylesheet" href="{% static "css/faq.css" %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,7 +15,7 @@
     <!-- Search Bar -->
     <div class="search-bar" id="searchBar">
         <div class="search-container">
-            <input type="text" placeholder="Search for products...">
+            <input type="text" placeholder="{{ geo_strings.search_placeholder }}">
             <button><i class="fas fa-search"></i></button>
         </div>
         <button class="close-btn" id="closeSearch">&times;</button>
@@ -24,10 +24,10 @@
     <!-- Hero Section -->
     <section class="faq-hero">
         <div class="container">
-            <h1>Frequently Asked Questions</h1>
-            <p>Find answers to common questions about our products and services</p>
+            <h1>{{ geo_strings.faq_hero_title }}</h1>
+            <p>{{ geo_strings.faq_hero_text }}</p>
             <div class="faq-search">
-                <input type="text" id="faqSearch" placeholder="Search FAQs...">
+                <input type="text" id="faqSearch" placeholder="{{ geo_strings.faq_search_placeholder }}">
                 <button><i class="fas fa-search"></i></button>
             </div>
         </div>
@@ -39,56 +39,56 @@
             <!-- Product FAQs -->
             <div class="faq-category">
                 <h2 class="category-title">
-                    <i class="fas fa-cube"></i> Products & Ordering
+                    <i class="fas fa-cube"></i> {{ geo_strings.faq_category_products }}
                 </h2>
                 <div class="accordion">
                     <div class="accordion-item">
                         <button class="accordion-header">
-                            <span>How do I place an order?</span>
+                            <span>{{ geo_strings.faq_products_q1 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="accordion-content">
-                            <p>Placing an order is simple! Browse our store, select the products you want, add them to your cart, and proceed to checkout. You'll need to provide your shipping address and payment information. Once your order is confirmed, you'll receive an email with your order details and tracking information.</p>
+                            <p>{{ geo_strings.faq_products_a1 }}</p>
                         </div>
                     </div>
 
                     <div class="accordion-item">
                         <button class="accordion-header">
-                            <span>What payment methods do you accept?</span>
+                            <span>{{ geo_strings.faq_products_q2 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="accordion-content">
-                            <p>We accept all major payment methods including credit cards (Visa, Mastercard, American Express), debit cards, PayPal, and digital wallets. All payments are processed securely using the latest encryption technology to protect your financial information.</p>
+                            <p>{{ geo_strings.faq_products_a2 }}</p>
                         </div>
                     </div>
 
                     <div class="accordion-item">
                         <button class="accordion-header">
-                            <span>Do you offer gift wrapping?</span>
+                            <span>{{ geo_strings.faq_products_q3 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="accordion-content">
-                            <p>Yes! We offer complimentary gift wrapping for select items. During checkout, you can choose the gift wrapping option and even add a personalized gift message. This is perfect for birthdays, holidays, and special occasions.</p>
+                            <p>{{ geo_strings.faq_products_a3 }}</p>
                         </div>
                     </div>
 
                     <div class="accordion-item">
                         <button class="accordion-header">
-                            <span>Can I track my order?</span>
+                            <span>{{ geo_strings.faq_products_q4 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="accordion-content">
-                            <p>Absolutely! Once your order ships, you'll receive a tracking number via email. You can use this number to monitor your package's journey in real-time. We also provide regular updates through your account dashboard.</p>
+                            <p>{{ geo_strings.faq_products_a4 }}</p>
                         </div>
                     </div>
 
                     <div class="accordion-item">
                         <button class="accordion-header">
-                            <span>Are there any bulk discounts available?</span>
+                            <span>{{ geo_strings.faq_products_q5 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="accordion-content">
-                            <p>Yes! We offer special bulk discounts for large orders. If you're interested in purchasing multiple items or need wholesale pricing, please contact our sales team at sales@elegantshop.com for a custom quote.</p>
+                            <p>{{ geo_strings.faq_products_a5 }}</p>
                         </div>
                     </div>
                 </div>
@@ -97,56 +97,56 @@
             <!-- Shipping FAQs -->
             <div class="faq-category">
                 <h2 class="category-title">
-                    <i class="fas fa-truck"></i> Shipping & Delivery
+                    <i class="fas fa-truck"></i> {{ geo_strings.faq_category_shipping }}
                 </h2>
                 <div class="accordion">
                     <div class="accordion-item">
                         <button class="accordion-header">
-                            <span>How much does shipping cost?</span>
+                            <span>{{ geo_strings.faq_shipping_q1 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="accordion-content">
-                            <p>Shipping costs vary based on your location and the weight of your order. We offer free shipping on orders over $50 in most regions. Standard shipping typically takes 5-7 business days, while express shipping is available for faster delivery.</p>
+                            <p>{{ geo_strings.faq_shipping_a1 }}</p>
                         </div>
                     </div>
 
                     <div class="accordion-item">
                         <button class="accordion-header">
-                            <span>Do you ship internationally?</span>
+                            <span>{{ geo_strings.faq_shipping_q2 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="accordion-content">
-                            <p>Yes! We ship to over 150 countries worldwide. International shipping times vary depending on your location but typically take 10-21 business days. Customs duties and taxes may apply to international orders, which are the responsibility of the customer.</p>
+                            <p>{{ geo_strings.faq_shipping_a2 }}</p>
                         </div>
                     </div>
 
                     <div class="accordion-item">
                         <button class="accordion-header">
-                            <span>What's your shipping policy?</span>
+                            <span>{{ geo_strings.faq_shipping_q3 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="accordion-content">
-                            <p>We aim to process and ship orders within 1-2 business days. Orders are shipped via trusted carriers. Once shipped, you'll receive a tracking number. We're not responsible for packages lost after they leave our facility, but we'll work with the carrier to investigate any issues.</p>
+                            <p>{{ geo_strings.faq_shipping_a3 }}</p>
                         </div>
                     </div>
 
                     <div class="accordion-item">
                         <button class="accordion-header">
-                            <span>Can I change my delivery address?</span>
+                            <span>{{ geo_strings.faq_shipping_q4 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="accordion-content">
-                            <p>You can change your delivery address during checkout before placing your order. Once an order has been placed and processed, address changes may not be possible. Contact our customer service immediately if you need to modify your address.</p>
+                            <p>{{ geo_strings.faq_shipping_a4 }}</p>
                         </div>
                     </div>
 
                     <div class="accordion-item">
                         <button class="accordion-header">
-                            <span>What if my package is damaged?</span>
+                            <span>{{ geo_strings.faq_shipping_q5 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="accordion-content">
-                            <p>We take great care in packaging all items. If you receive a damaged product, please contact us within 48 hours with photos of the damage. We'll either send a replacement or issue a full refund at no cost to you.</p>
+                            <p>{{ geo_strings.faq_shipping_a5 }}</p>
                         </div>
                     </div>
                 </div>
@@ -155,56 +155,56 @@
             <!-- Returns & Warranty FAQs -->
             <div class="faq-category">
                 <h2 class="category-title">
-                    <i class="fas fa-undo"></i> Returns & Warranty
+                    <i class="fas fa-undo"></i> {{ geo_strings.faq_category_returns }}
                 </h2>
                 <div class="accordion">
                     <div class="accordion-item">
                         <button class="accordion-header">
-                            <span>What's your return policy?</span>
+                            <span>{{ geo_strings.faq_returns_q1 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="accordion-content">
-                            <p>We offer a 30-day money-back guarantee! If you're not completely satisfied with your purchase, you can return it within 30 days of receipt for a full refund or exchange. Items must be in original condition with all packaging and accessories.</p>
+                            <p>{{ geo_strings.faq_returns_a1 }}</p>
                         </div>
                     </div>
 
                     <div class="accordion-item">
                         <button class="accordion-header">
-                            <span>How do I initiate a return?</span>
+                            <span>{{ geo_strings.faq_returns_q2 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="accordion-content">
-                            <p>Visit your account on our website, locate the order you wish to return, and click "Return Item". Follow the instructions to generate a return shipping label. Once we receive your return, we'll process your refund within 5-7 business days.</p>
+                            <p>{{ geo_strings.faq_returns_a2 }}</p>
                         </div>
                     </div>
 
                     <div class="accordion-item">
                         <button class="accordion-header">
-                            <span>Do you offer product warranty?</span>
+                            <span>{{ geo_strings.faq_returns_q3 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="accordion-content">
-                            <p>Most of our electronic products come with a 1-year manufacturer's warranty covering defects in materials and workmanship. Warranty details are included with your product documentation. Extended warranties are available for certain items at checkout.</p>
+                            <p>{{ geo_strings.faq_returns_a3 }}</p>
                         </div>
                     </div>
 
                     <div class="accordion-item">
                         <button class="accordion-header">
-                            <span>Who pays for return shipping?</span>
+                            <span>{{ geo_strings.faq_returns_q4 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="accordion-content">
-                            <p>For defective products or our error, we cover return shipping costs. For regular returns due to change of mind, the customer is responsible for return shipping. However, we provide a prepaid return label for your convenience on most orders.</p>
+                            <p>{{ geo_strings.faq_returns_a4 }}</p>
                         </div>
                     </div>
 
                     <div class="accordion-item">
                         <button class="accordion-header">
-                            <span>Can I exchange a product instead of returning it?</span>
+                            <span>{{ geo_strings.faq_returns_q5 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="accordion-content">
-                            <p>Yes! You can exchange any product for a different size, color, or item within 30 days. Exchanges are processed quickly, and if the new item is more expensive, you'll only pay the difference. If it's less expensive, we'll refund the difference.</p>
+                            <p>{{ geo_strings.faq_returns_a5 }}</p>
                         </div>
                     </div>
                 </div>
@@ -213,56 +213,56 @@
             <!-- Account & Loyalty FAQs -->
             <div class="faq-category">
                 <h2 class="category-title">
-                    <i class="fas fa-user-check"></i> Account & Loyalty
+                    <i class="fas fa-user-check"></i> {{ geo_strings.faq_category_account }}
                 </h2>
                 <div class="accordion">
                     <div class="accordion-item">
                         <button class="accordion-header">
-                            <span>How do I create an account?</span>
+                            <span>{{ geo_strings.faq_account_q1 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="accordion-content">
-                            <p>Click on the "Create Account" button in the header, fill in your email address and create a password. You can also sign up with your Google or Facebook account for faster registration. Once confirmed, you'll have access to order history, wishlists, and exclusive deals.</p>
+                            <p>{{ geo_strings.faq_account_a1 }}</p>
                         </div>
                     </div>
 
                     <div class="accordion-item">
                         <button class="accordion-header">
-                            <span>Can I purchase without creating an account?</span>
+                            <span>{{ geo_strings.faq_account_q2 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="accordion-content">
-                            <p>Yes! You can checkout as a guest without creating an account. However, we recommend creating an account so you can track orders, save favorite items, and receive exclusive discounts and early access to sales.</p>
+                            <p>{{ geo_strings.faq_account_a2 }}</p>
                         </div>
                     </div>
 
                     <div class="accordion-item">
                         <button class="accordion-header">
-                            <span>Do you have a loyalty program?</span>
+                            <span>{{ geo_strings.faq_account_q3 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="accordion-content">
-                            <p>Yes! ElegantShop Plus is our exclusive loyalty program. Members earn points on every purchase that can be redeemed for discounts. You'll also get early access to sales, exclusive products, and special birthday rewards. Join for free when you create an account!</p>
+                            <p>{{ geo_strings.faq_account_a3 }}</p>
                         </div>
                     </div>
 
                     <div class="accordion-item">
                         <button class="accordion-header">
-                            <span>How can I reset my password?</span>
+                            <span>{{ geo_strings.faq_account_q4 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="accordion-content">
-                            <p>Click "Forgot Password" on the login page and enter your email address. You'll receive a password reset link via email. Click the link, follow the instructions, and create a new password. If you don't receive the email, check your spam folder.</p>
+                            <p>{{ geo_strings.faq_account_a4 }}</p>
                         </div>
                     </div>
 
                     <div class="accordion-item">
                         <button class="accordion-header">
-                            <span>Can I apply a coupon code?</span>
+                            <span>{{ geo_strings.faq_account_q5 }}</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         <div class="accordion-content">
-                            <p>Absolutely! Enter your coupon code in the "Promo Code" field during checkout. Discount codes are case-sensitive, so make sure to enter them exactly as provided. If your code isn't working, it may have expired or reached its usage limit.</p>
+                            <p>{{ geo_strings.faq_account_a5 }}</p>
                         </div>
                     </div>
                 </div>
@@ -273,11 +273,11 @@
     <!-- Still have questions CTA -->
     <section class="faq-cta">
         <div class="container">
-            <h2>Still have questions?</h2>
-            <p>Our customer service team is here to help!</p>
+            <h2>{{ geo_strings.faq_cta_title }}</h2>
+            <p>{{ geo_strings.faq_cta_text }}</p>
             <div class="cta-buttons">
-                <a href="contact.html" class="btn btn-primary">Contact Us</a>
-                <a href="store.html" class="btn btn-secondary">Continue Shopping</a>
+                <a href="{% url 'store:contact' %}" class="btn btn-primary">{{ geo_strings.faq_cta_contact }}</a>
+                <a href="{% url 'store:store' %}" class="btn btn-secondary">{{ geo_strings.faq_cta_continue }}</a>
             </div>
         </div>
     </section>
@@ -287,8 +287,8 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h4>About ElegantShop</h4>
-                    <p>We provide premium quality products for modern living with exceptional customer service.</p>
+                    <h4>{{ geo_strings.footer_about_title }}</h4>
+                    <p>{{ geo_strings.footer_about_text }}</p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-facebook"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
@@ -297,36 +297,36 @@
                     </div>
                 </div>
                 <div class="footer-section">
-                    <h4>Quick Links</h4>
+                    <h4>{{ geo_strings.footer_quick_links }}</h4>
                     <ul>
-                        <li><a href="../index.html">Home</a></li>
-                        <li><a href="store.html">Shop</a></li>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="{% url 'store:home' %}">{{ geo_strings.footer_home }}</a></li>
+                        <li><a href="{% url 'store:store' %}">{{ geo_strings.footer_shop }}</a></li>
+                        <li><a href="{% url 'store:about' %}">{{ geo_strings.footer_about }}</a></li>
+                        <li><a href="{% url 'store:contact' %}">{{ geo_strings.footer_contact }}</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h4>Customer Service</h4>
+                    <h4>{{ geo_strings.footer_customer_service }}</h4>
                     <ul>
-                        <li><a href="#">Shipping Info</a></li>
-                        <li><a href="#">Returns</a></li>
-                        <li><a href="faq.html">FAQ</a></li>
-                        <li><a href="#">Track Order</a></li>
+                        <li><a href="#">{{ geo_strings.footer_shipping_info }}</a></li>
+                        <li><a href="#">{{ geo_strings.footer_returns }}</a></li>
+                        <li><a href="{% url 'store:faq' %}">{{ geo_strings.footer_faq }}</a></li>
+                        <li><a href="#">{{ geo_strings.footer_track_order }}</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h4>Contact Info</h4>
-                    <p><strong>Email:</strong> info@elegantshop.com</p>
-                    <p><strong>Phone:</strong> +1 (555) 123-4567</p>
-                    <p><strong>Address:</strong> 123 Shopping Street, Commerce City, CC 12345</p>
+                    <h4>{{ geo_strings.footer_contact_info }}</h4>
+                    <p><strong>{{ geo_strings.footer_email }}:</strong> info@elegantshop.com</p>
+                    <p><strong>{{ geo_strings.footer_phone }}:</strong> +1 (555) 123-4567</p>
+                    <p><strong>{{ geo_strings.footer_address }}:</strong> 123 Shopping Street, Commerce City, CC 12345</p>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 ElegantShop. All rights reserved.</p>
+                <p>&copy; 2026 ElegantShop. {{ geo_strings.footer_rights }}</p>
                 <div class="footer-links">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                    <a href="#">Cookie Policy</a>
+                    <a href="#">{{ geo_strings.footer_privacy }}</a>
+                    <a href="#">{{ geo_strings.footer_terms }}</a>
+                    <a href="#">{{ geo_strings.footer_cookies }}</a>
                 </div>
             </div>
         </div>
@@ -336,11 +336,11 @@
     <div class="modal" id="cartModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Shopping Cart</h2>
+                <h2>{{ geo_strings.cart_title }}</h2>
                 <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body">
-                <p class="empty-cart-msg">Your cart is empty</p>
+                <p class="empty-cart-msg">{{ geo_strings.cart_empty_title }}</p>
             </div>
         </div>
     </div>
@@ -348,13 +348,13 @@
     <div class="modal" id="userModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Account</h2>
+                <h2>{{ geo_strings.store_modal_account }}</h2>
                 <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="auth-buttons">
-                    <button class="btn btn-primary" style="width: 100%;">Sign In</button>
-                    <button class="btn btn-secondary" style="width: 100%;">Create Account</button>
+                    <button class="btn btn-primary" style="width: 100%;">{{ geo_strings.store_modal_sign_in }}</button>
+                    <button class="btn btn-secondary" style="width: 100%;">{{ geo_strings.store_modal_create_account }}</button>
                 </div>
             </div>
         </div>
@@ -362,7 +362,7 @@
 
     <div class="alert alert-success" id="successAlert">
         <i class="fas fa-check-circle"></i>
-        <span>Operation completed successfully!</span>
+        <span>{{ geo_strings.store_alert_added_cart }}</span>
     </div>
 
     <script src="{% static "js/main.js" %}"></script>

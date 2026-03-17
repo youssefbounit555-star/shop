@@ -2,11 +2,11 @@
 {% load static %}
 {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ geo_profile.language }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us - ElegantShop</title>
+    <title>{{ geo_strings.contact_title }} - ElegantShop</title>
     <link rel="stylesheet" href="{% static "css/main.css" %}">
     <link rel="stylesheet" href="{% static "css/contact.css" %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,7 +15,7 @@
     <!-- Search Bar -->
     <div class="search-bar" id="searchBar">
         <div class="search-container">
-            <input type="text" placeholder="Search for products...">
+            <input type="text" placeholder="{{ geo_strings.search_placeholder }}">
             <button><i class="fas fa-search"></i></button>
         </div>
         <button class="close-btn" id="closeSearch">&times;</button>
@@ -24,8 +24,8 @@
     <!-- Hero Section -->
     <section class="contact-hero">
         <div class="container">
-            <h1>Get In Touch</h1>
-            <p>We'd love to hear from you. Reach out to us anytime and we'll get back to you as soon as possible.</p>
+            <h1>{{ geo_strings.contact_hero_title }}</h1>
+            <p>{{ geo_strings.contact_hero_text }}</p>
         </div>
     </section>
 
@@ -35,66 +35,71 @@
             <div class="contact-wrapper">
                 <!-- Contact Form -->
                 <div class="contact-form-container">
-                    <h2>Send us a Message</h2>
-                    <form class="contact-form" id="contactForm">
+                    <h2>{{ geo_strings.contact_form_title }}</h2>
+                    <form class="contact-form" id="contactForm"
+                          data-msg-required="{{ geo_strings.contact_error_required }}"
+                          data-msg-invalid-email="{{ geo_strings.contact_error_email }}"
+                          data-msg-invalid-phone="{{ geo_strings.contact_error_phone }}"
+                          data-msg-success="{{ geo_strings.contact_success_message }}"
+                          data-msg-sending="{{ geo_strings.contact_sending }}">
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="fullName">Full Name *</label>
+                                <label for="fullName">{{ geo_strings.contact_form_name }} *</label>
                                 <input type="text" id="fullName" name="fullName" required>
                             </div>
                             <div class="form-group">
-                                <label for="email">Email Address *</label>
+                                <label for="email">{{ geo_strings.contact_form_email }} *</label>
                                 <input type="email" id="email" name="email" required>
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="phone">Phone Number</label>
+                                <label for="phone">{{ geo_strings.contact_form_phone }}</label>
                                 <input type="tel" id="phone" name="phone">
                             </div>
                             <div class="form-group">
-                                <label for="subject">Subject *</label>
+                                <label for="subject">{{ geo_strings.contact_form_subject }} *</label>
                                 <select id="subject" name="subject" required>
-                                    <option value="">Select a subject</option>
-                                    <option value="product-inquiry">Product Inquiry</option>
-                                    <option value="order-issue">Order Issue</option>
-                                    <option value="return">Return & Refund</option>
-                                    <option value="complaint">Complaint</option>
-                                    <option value="suggestion">Suggestion</option>
-                                    <option value="partnership">Partnership Opportunity</option>
-                                    <option value="other">Other</option>
+                                    <option value="">{{ geo_strings.contact_subject_default }}</option>
+                                    <option value="product-inquiry">{{ geo_strings.contact_subject_product }}</option>
+                                    <option value="order-issue">{{ geo_strings.contact_subject_order }}</option>
+                                    <option value="return">{{ geo_strings.contact_subject_return }}</option>
+                                    <option value="complaint">{{ geo_strings.contact_subject_complaint }}</option>
+                                    <option value="suggestion">{{ geo_strings.contact_subject_suggestion }}</option>
+                                    <option value="partnership">{{ geo_strings.contact_subject_partnership }}</option>
+                                    <option value="other">{{ geo_strings.contact_subject_other }}</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="message">Message *</label>
+                            <label for="message">{{ geo_strings.contact_form_message }} *</label>
                             <textarea id="message" name="message" rows="6" required></textarea>
                         </div>
 
                         <div class="form-group checkbox">
                             <input type="checkbox" id="subscribe" name="subscribe">
-                            <label for="subscribe">Subscribe to our newsletter for updates and exclusive offers</label>
+                            <label for="subscribe">{{ geo_strings.contact_form_subscribe }}</label>
                         </div>
 
                         <button type="submit" class="btn btn-primary" style="width: 100%;">
-                            Send Message <i class="fas fa-paper-plane"></i>
+                            {{ geo_strings.contact_form_send }} <i class="fas fa-paper-plane"></i>
                         </button>
                     </form>
                 </div>
 
                 <!-- Contact Info -->
                 <div class="contact-info">
-                    <h2>Contact Information</h2>
+                    <h2>{{ geo_strings.contact_info_title }}</h2>
                     
                     <div class="info-card">
                         <div class="info-icon">
                             <i class="fas fa-map-marker-alt"></i>
                         </div>
                         <div class="info-content">
-                            <h3>Address</h3>
-                            <p>123 Shopping Street<br>Commerce City, CC 12345<br>United States</p>
+                            <h3>{{ geo_strings.contact_info_address_title }}</h3>
+                            <p>{{ geo_strings.contact_info_address_line1 }}<br>{{ geo_strings.contact_info_address_line2 }}<br>{{ geo_strings.contact_info_address_line3 }}</p>
                         </div>
                     </div>
 
@@ -103,8 +108,8 @@
                             <i class="fas fa-phone-alt"></i>
                         </div>
                         <div class="info-content">
-                            <h3>Phone</h3>
-                            <p>Main: +1 (555) 123-4567<br>Support: +1 (555) 123-4568<br>Monday to Friday, 9am - 6pm EST</p>
+                            <h3>{{ geo_strings.contact_info_phone_title }}</h3>
+                            <p>{{ geo_strings.contact_info_phone_line1 }}<br>{{ geo_strings.contact_info_phone_line2 }}<br>{{ geo_strings.contact_info_phone_line3 }}</p>
                         </div>
                     </div>
 
@@ -113,7 +118,7 @@
                             <i class="fas fa-envelope"></i>
                         </div>
                         <div class="info-content">
-                            <h3>Email</h3>
+                            <h3>{{ geo_strings.contact_info_email_title }}</h3>
                             <p>info@elegantshop.com<br>support@elegantshop.com<br>sales@elegantshop.com</p>
                         </div>
                     </div>
@@ -123,13 +128,13 @@
                             <i class="fas fa-clock"></i>
                         </div>
                         <div class="info-content">
-                            <h3>Business Hours</h3>
-                            <p>Monday - Friday: 9:00 AM - 6:00 PM<br>Saturday: 10:00 AM - 4:00 PM<br>Sunday: Closed</p>
+                            <h3>{{ geo_strings.contact_info_hours_title }}</h3>
+                            <p>{{ geo_strings.contact_info_hours_line1 }}<br>{{ geo_strings.contact_info_hours_line2 }}<br>{{ geo_strings.contact_info_hours_line3 }}</p>
                         </div>
                     </div>
 
                     <div class="social-info">
-                        <h3>Follow Us</h3>
+                        <h3>{{ geo_strings.contact_follow_title }}</h3>
                         <div class="social-links" style="justify-content: flex-start; gap: 1rem;">
                             <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
                             <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
@@ -146,60 +151,60 @@
     <!-- Support Categories -->
     <section class="support-categories">
         <div class="container">
-            <h2 class="section-title">How Can We Help?</h2>
+            <h2 class="section-title">{{ geo_strings.contact_support_title }}</h2>
             <div class="categories-grid">
-                <div class="category-box">
+                <div class="category-box" data-subject="product-inquiry">
                     <div class="category-icon">
                         <i class="fas fa-shopping-bag"></i>
                     </div>
-                    <h3>Product Information</h3>
-                    <p>Questions about our products, specifications, availability, and recommendations</p>
-                    <a href="#" class="small-link">Learn more <i class="fas fa-arrow-right"></i></a>
+                    <h3>{{ geo_strings.contact_support_product_title }}</h3>
+                    <p>{{ geo_strings.contact_support_product_text }}</p>
+                    <a href="#" class="small-link">{{ geo_strings.contact_support_learn }} <i class="fas fa-arrow-right"></i></a>
                 </div>
 
-                <div class="category-box">
+                <div class="category-box" data-subject="order-issue">
                     <div class="category-icon">
                         <i class="fas fa-truck"></i>
                     </div>
-                    <h3>Shipping & Delivery</h3>
-                    <p>Information about shipping options, delivery times, and tracking orders</p>
-                    <a href="#" class="small-link">Learn more <i class="fas fa-arrow-right"></i></a>
+                    <h3>{{ geo_strings.contact_support_shipping_title }}</h3>
+                    <p>{{ geo_strings.contact_support_shipping_text }}</p>
+                    <a href="#" class="small-link">{{ geo_strings.contact_support_learn }} <i class="fas fa-arrow-right"></i></a>
                 </div>
 
-                <div class="category-box">
+                <div class="category-box" data-subject="return">
                     <div class="category-icon">
                         <i class="fas fa-undo"></i>
                     </div>
-                    <h3>Returns & Refunds</h3>
-                    <p>Details about our return policy, exchange options, and refund processing</p>
-                    <a href="faq.html" class="small-link">Learn more <i class="fas fa-arrow-right"></i></a>
+                    <h3>{{ geo_strings.contact_support_returns_title }}</h3>
+                    <p>{{ geo_strings.contact_support_returns_text }}</p>
+                    <a href="{% url 'store:faq' %}" class="small-link">{{ geo_strings.contact_support_learn }} <i class="fas fa-arrow-right"></i></a>
                 </div>
 
-                <div class="category-box">
+                <div class="category-box" data-subject="other">
                     <div class="category-icon">
                         <i class="fas fa-user"></i>
                     </div>
-                    <h3>Account Support</h3>
-                    <p>Help with account creation, login, password reset, and profile management</p>
-                    <a href="#" class="small-link">Learn more <i class="fas fa-arrow-right"></i></a>
+                    <h3>{{ geo_strings.contact_support_account_title }}</h3>
+                    <p>{{ geo_strings.contact_support_account_text }}</p>
+                    <a href="#" class="small-link">{{ geo_strings.contact_support_learn }} <i class="fas fa-arrow-right"></i></a>
                 </div>
 
-                <div class="category-box">
+                <div class="category-box" data-subject="complaint">
                     <div class="category-icon">
                         <i class="fas fa-exclamation-circle"></i>
                     </div>
-                    <h3>Report an Issue</h3>
-                    <p>Report damaged products, missing items, or any other concerns</p>
-                    <a href="#" class="small-link">Learn more <i class="fas fa-arrow-right"></i></a>
+                    <h3>{{ geo_strings.contact_support_issue_title }}</h3>
+                    <p>{{ geo_strings.contact_support_issue_text }}</p>
+                    <a href="#" class="small-link">{{ geo_strings.contact_support_learn }} <i class="fas fa-arrow-right"></i></a>
                 </div>
 
-                <div class="category-box">
+                <div class="category-box" data-subject="partnership">
                     <div class="category-icon">
                         <i class="fas fa-handshake"></i>
                     </div>
-                    <h3>Partnership</h3>
-                    <p>Inquiries about partnerships, collaborations, and business opportunities</p>
-                    <a href="#" class="small-link">Learn more <i class="fas fa-arrow-right"></i></a>
+                    <h3>{{ geo_strings.contact_support_partner_title }}</h3>
+                    <p>{{ geo_strings.contact_support_partner_text }}</p>
+                    <a href="#" class="small-link">{{ geo_strings.contact_support_learn }} <i class="fas fa-arrow-right"></i></a>
                 </div>
             </div>
         </div>
@@ -210,8 +215,8 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h4>About ElegantShop</h4>
-                    <p>We provide premium quality products for modern living with exceptional customer service.</p>
+                    <h4>{{ geo_strings.footer_about_title }}</h4>
+                    <p>{{ geo_strings.footer_about_text }}</p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-facebook"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
@@ -220,36 +225,36 @@
                     </div>
                 </div>
                 <div class="footer-section">
-                    <h4>Quick Links</h4>
+                    <h4>{{ geo_strings.footer_quick_links }}</h4>
                     <ul>
-                        <li><a href="../index.html">Home</a></li>
-                        <li><a href="store.html">Shop</a></li>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="{% url 'store:home' %}">{{ geo_strings.footer_home }}</a></li>
+                        <li><a href="{% url 'store:store' %}">{{ geo_strings.footer_shop }}</a></li>
+                        <li><a href="{% url 'store:about' %}">{{ geo_strings.footer_about }}</a></li>
+                        <li><a href="{% url 'store:contact' %}">{{ geo_strings.footer_contact }}</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h4>Customer Service</h4>
+                    <h4>{{ geo_strings.footer_customer_service }}</h4>
                     <ul>
-                        <li><a href="#">Shipping Info</a></li>
-                        <li><a href="#">Returns</a></li>
-                        <li><a href="faq.html">FAQ</a></li>
-                        <li><a href="#">Track Order</a></li>
+                        <li><a href="#">{{ geo_strings.footer_shipping_info }}</a></li>
+                        <li><a href="#">{{ geo_strings.footer_returns }}</a></li>
+                        <li><a href="{% url 'store:faq' %}">{{ geo_strings.footer_faq }}</a></li>
+                        <li><a href="#">{{ geo_strings.footer_track_order }}</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h4>Contact Info</h4>
-                    <p><strong>Email:</strong> info@elegantshop.com</p>
-                    <p><strong>Phone:</strong> +1 (555) 123-4567</p>
-                    <p><strong>Address:</strong> 123 Shopping Street, Commerce City, CC 12345</p>
+                    <h4>{{ geo_strings.footer_contact_info }}</h4>
+                    <p><strong>{{ geo_strings.footer_email }}:</strong> info@elegantshop.com</p>
+                    <p><strong>{{ geo_strings.footer_phone }}:</strong> +1 (555) 123-4567</p>
+                    <p><strong>{{ geo_strings.footer_address }}:</strong> 123 Shopping Street, Commerce City, CC 12345</p>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 ElegantShop. All rights reserved.</p>
+                <p>&copy; 2026 ElegantShop. {{ geo_strings.footer_rights }}</p>
                 <div class="footer-links">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                    <a href="#">Cookie Policy</a>
+                    <a href="#">{{ geo_strings.footer_privacy }}</a>
+                    <a href="#">{{ geo_strings.footer_terms }}</a>
+                    <a href="#">{{ geo_strings.footer_cookies }}</a>
                 </div>
             </div>
         </div>
@@ -259,11 +264,11 @@
     <div class="modal" id="cartModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Shopping Cart</h2>
+                <h2>{{ geo_strings.cart_title }}</h2>
                 <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body">
-                <p class="empty-cart-msg">Your cart is empty</p>
+                <p class="empty-cart-msg">{{ geo_strings.cart_empty_title }}</p>
             </div>
         </div>
     </div>
@@ -271,13 +276,13 @@
     <div class="modal" id="userModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Account</h2>
+                <h2>{{ geo_strings.store_modal_account }}</h2>
                 <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="auth-buttons">
-                    <button class="btn btn-primary" style="width: 100%;">Sign In</button>
-                    <button class="btn btn-secondary" style="width: 100%;">Create Account</button>
+                    <button class="btn btn-primary" style="width: 100%;">{{ geo_strings.store_modal_sign_in }}</button>
+                    <button class="btn btn-secondary" style="width: 100%;">{{ geo_strings.store_modal_create_account }}</button>
                 </div>
             </div>
         </div>
@@ -285,7 +290,7 @@
 
     <div class="alert alert-success" id="successAlert">
         <i class="fas fa-check-circle"></i>
-        <span>Message sent successfully! We'll be in touch soon.</span>
+        <span>{{ geo_strings.contact_success_alert }}</span>
     </div>
 
     <script src="{% static "js/main.js" %}"></script>
